@@ -2,7 +2,7 @@ import React from 'react'
 import '../styles/home.css';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Navbar, Container, Button, Form, Row, Col } from 'react-bootstrap';
-import { BiGridAlt, BiPackage, BiPlus, BiReceipt, BiPurchaseTagAlt, BiBuilding, BiPrinter, BiPaperPlane, BiUser, BiUserPlus, BiNotepad, BiListPlus, BiCube, BiCog, BiCartAdd } from "react-icons/bi";
+import { BiGridAlt, BiPackage, BiPlus, BiReceipt, BiPurchaseTagAlt, BiBuilding, BiPrinter, BiPaperPlane, BiUser, BiUserPlus, BiNotepad, BiArrowFromBottom, BiListPlus, BiCube, BiCog, BiCartAdd } from "react-icons/bi";
 
 
 
@@ -10,6 +10,8 @@ function Home() {
     return (
         <>
             <Row>
+            <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><BiArrowFromBottom/></a>
+
                 <Navbar expand="lg" class="bg-body-tertiary" id='header'>
                     <Container fluid>
                         <Navbar.Brand href="#home" className='navbarbrand'>
