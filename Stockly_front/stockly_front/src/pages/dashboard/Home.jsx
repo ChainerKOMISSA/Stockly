@@ -2,7 +2,7 @@ import React from 'react'
 import '../styles/home.css';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Navbar, Container, Button, Form, Row, Col } from 'react-bootstrap';
-import { BiGridAlt, BiPackage, BiPlus, BiReceipt, BiPurchaseTagAlt, BiBuilding, BiPrinter, BiPaperPlane,BiUser, BiUserPlus, BiNotepad, BiListPlus, BiCube, BiCog, BiCartAdd } from "react-icons/bi";
+import { BiGridAlt, BiPackage, BiPlus, BiReceipt, BiPurchaseTagAlt, BiBuilding, BiPrinter, BiPaperPlane, BiUser, BiUserPlus, BiNotepad, BiListPlus, BiCube, BiCog, BiCartAdd } from "react-icons/bi";
 
 
 
@@ -22,7 +22,6 @@ function Home() {
                             />{' '}
                             Stockly
                         </Navbar.Brand>
-                        {/* <Navbar.Brand href="#" className='navbarbrand'>Stockly</Navbar.Brand> */}
                         <Navbar.Toggle aria-controls="navbarScroll" />
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -54,7 +53,6 @@ function Home() {
                 </Navbar>
             </Row>
             <Row>
-                <Col>
                     <aside id="sidebar" class="sidebar">
                         <ul class="sidebar-nav" id="sidebar-nav">
                             <li>
@@ -119,13 +117,13 @@ function Home() {
 
                             <li class="nav-heading">LIVRAISONS</li>
                             <li>
-                                <Link to="/products" class="nav-link collapsed">
+                                <Link to="/deliveries" class="nav-link collapsed">
                                     <BiNotepad id='icon' />
                                     <span>Livraisons</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link to="/addproduct" class="nav-link collapsed">
+                                <Link to="/newdelivery" class="nav-link collapsed">
                                     <BiListPlus id='icon' />
                                     <span>Nouvelle livraison</span>
                                 </Link>
@@ -133,14 +131,14 @@ function Home() {
 
                             <li class="nav-heading">FOURNISSEURS</li>
                             <li>
-                                <Link to="/products" class="nav-link collapsed">
+                                <Link to="/suppliers" class="nav-link collapsed">
                                     <BiBuilding id='icon' />
                                     <span>Fournisseurs</span>
                                 </Link>
                             </li>
-                            
+
                             <li>
-                                <Link to="/addproduct" class="nav-link collapsed">
+                                <Link to="/newsupplier" class="nav-link collapsed">
                                     <BiPlus id='icon' />
                                     <span>Nouveau fournisseur</span>
                                 </Link>
@@ -148,36 +146,39 @@ function Home() {
 
                             <li class="nav-heading">EMPLOYES</li>
                             <li>
-                                <Link to="/products" class="nav-link collapsed">
+                                <Link to="/employees" class="nav-link collapsed">
                                     <BiUser id='icon' />
                                     <span>Employés</span>
                                 </Link>
                             </li>
                             <li>
-                                <Link to="/addproduct" class="nav-link collapsed">
+                                <Link to="/newemployee" class="nav-link collapsed">
                                     <BiUserPlus id='icon' />
                                     <span>Nouvel employé</span>
                                 </Link>
                             </li>
-
                             <li>
-                                <Link to="/dashboard" class="else">
-                                    <BiCog id='elseicon' />
+                                <Link to="/dashboard" class="nav-link collapsed">
+                                    <BiCog id='icon' />
                                     <span>Paramètres</span>
                                 </Link>
                             </li>
-                            <li>
-                                <Link to="/dashboard" class="else">
-                                    <BiGridAlt id='elseicon' />
-                                    <span>Déconnexion</span>
-                                </Link>
-                            </li>
-
                         </ul>
                     </aside>
-                </Col>
-                <Col>
-                    <Outlet id="outlet" />
+                <Col id='contentcol'>
+                    <Row id="outlet">
+                        <Outlet />
+                    </Row>
+                    <Row id='footerrow'>
+                        <footer id="footer" class="footer">
+                            <div class="copyright">
+                                &copy; Copyright <strong><span>Stockly</span></strong>. Tous droits réservés
+                            </div>
+                            <div class="credits">
+                                Credits to <a href="">Chainer KOMISSA ZOTSU</a>
+                            </div>
+                        </footer>
+                    </Row>
                 </Col>
             </Row>
 
