@@ -20,7 +20,8 @@ import Deliveries from './pages/dashboard/Deliveries/Deliveries';
 import Newdelivery from './pages/dashboard/Deliveries/Newdelivery';
 import Suppliers from './pages/dashboard/Suppliers/Suppliers';
 import Newsupplier from './pages/dashboard/Suppliers/Newsupplier';
-
+import Incidents from './pages/dashboard/Incidents';
+import Depenses from './pages/dashboard/Depenses';
 
 
 
@@ -46,6 +47,8 @@ function App() {
           <Route path="newsupplier" element={<Newsupplier/>} />
           <Route path="employees" element={<Employees />} />
           <Route path="newemployee" element={<Newemployee/>} />
+          <Route path="incidents" element={<Incidents />} />
+          <Route path="depenses" element={<Depenses/>} />
         </Route>
 
         <Route path="/login" element={<Login />} />

@@ -2,7 +2,7 @@ import React from 'react'
 import '../styles/home.css';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Navbar, Container, Button, Form, Row, Col } from 'react-bootstrap';
-import { BiGridAlt, BiPackage, BiPlus, BiReceipt, BiPurchaseTagAlt, BiBuilding, BiPrinter, BiPaperPlane, BiUser, BiUserPlus, BiNotepad, BiArrowFromBottom, BiListPlus, BiCube, BiCog, BiCartAdd } from "react-icons/bi";
+import { BiGridAlt, BiPackage, BiPlus, BiPurchaseTagAlt, BiBuilding, BiUser, BiUserPlus, BiNotepad, BiArrowFromBottom, BiListPlus, BiCube, BiCog, BiCartAdd } from "react-icons/bi";
 
 
 
