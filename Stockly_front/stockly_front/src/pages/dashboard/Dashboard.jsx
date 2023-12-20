@@ -1,8 +1,9 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import '../styles/dashboard.css'
 import { Card, Row, Col } from 'react-bootstrap'
-import { BiCloudLightning, BiMoney,BiMoneyWithdraw, BiInfoCircle, BiPurchaseTagAlt, BiBuilding, BiUser, BiNotepad, BiCube} from "react-icons/bi";
+import { BiCloudLightning, BiMoney, BiMoneyWithdraw, BiInfoCircle, BiPurchaseTagAlt, BiBuilding, BiUser, BiNotepad, BiCube } from "react-icons/bi";
 import { Link } from 'react-router-dom';
+import { API_URL } from '../../components/constantes';
 
 
 const cardStyles = {
@@ -43,14 +44,14 @@ const titlestyle = {
   fontSize: '18px',
   color: '#012970',
   fontWeight: '600',
-  margin :  0,
-  padding :  0,
+  margin: 0,
+  padding: 0,
 }
 
 const cardgeneral = {
-  width: '17rem', 
-  border: 'white', 
-  borderRadius: '5px', 
+  width: '17rem',
+  border: 'white',
+  borderRadius: '5px',
   boxShadow: '0px 0 30px rgba(1, 41, 112, 0.1)'
 }
 
@@ -59,12 +60,102 @@ const cardgeneral = {
 function Dashboard() {
   const [nbproducts, setNbproducts] = useState([]);
   const [nborders, setOrders] = useState([]);
+  const [nbrupture, setNbrupture] = useState([]);
   const [nbfrs, setFrs] = useState([]);
   const [nbemployes, setNbEmployes] = useState([]);
   const [sumdepenses, setSumdepenses] = useState([]);
   const [sumventes, setSumventes] = useState([]);
 
-  
+
+  //Nombre de produits
+  useEffect(() => {
+    fetch(`${API_URL}/statproduct`)
+      .then(response => response.json())
+      .then(data => {
+        setNbproducts(data)
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération des statistiques des produits: ', error)
+      })
+  });
+
+
+  //Nombre de commandes
+  useEffect(() => {
+    fetch(`${API_URL}/statorder`)
+      .then(response => response.json())
+      .then(data => {
+        setOrders(data)
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération des statistiques des commandes: ', error)
+      })
+  });
+
+
+  // Somme des ventes
+  useEffect(() => {
+    fetch(`${API_URL}/statsales`)
+      .then(response => response.json())
+      .then(data => {
+        setSumventes(data)
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération des statistiques des ventes: ', error)
+      })
+  });
+
+
+  // Nombre de rupture de stock
+  useEffect(() => {
+    fetch(`${API_URL}/statrupture`)
+      .then(response => response.json())
+      .then(data => {
+        setNbrupture(data)
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération des statistiques des ruptures de stock: ', error)
+      })
+  });
+
+
+  // Somme des dépenses
+  useEffect(() => {
+    fetch(`${API_URL}/statdepenses`)
+      .then(response => response.json())
+      .then(data => {
+        setSumdepenses(data)
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération des statistiques des dépenses: ', error)
+      })
+  });
+
+  // Nombre de fournisseurs
+  useEffect(() => {
+    fetch(`${API_URL}/statfrs`)
+      .then(response => response.json())
+      .then(data => {
+        setFrs(data)
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération des statistiques des fournisseurs: ', error)
+      })
+  });
+
+  // Nombre d'employés
+  useEffect(() => {
+    fetch(`${API_URL}/statemploye`)
+      .then(response => response.json())
+      .then(data => {
+        setNbEmployes(data)
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération des statistiques des employés: ', error)
+      })
+  });
+
+
 
   return (
     <div id="main" class="main">
@@ -86,7 +177,7 @@ function Dashboard() {
                   <Card.Subtitle className="mb-2" style={titlestyle}>Produits en stock</Card.Subtitle>
                   <Card.Text>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '20px' }}><b>600</b></span>
+                      <span style={{ fontSize: '20px' }}><b>{nbproducts.map(nbproduct => (nbproduct.nbProd))}</b></span>
                       <Card style={cardStyles}>
                         <BiCube style={iconStyles} size={25} />
                       </Card>
@@ -103,7 +194,7 @@ function Dashboard() {
                   <Card.Subtitle className="mb-2" style={titlestyle}>Ventes</Card.Subtitle>
                   <Card.Text>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '20px' }}><b>585 900 F</b></span>
+                      <span style={{ fontSize: '20px' }}><b>{sumventes.map(sumvente => (sumvente.SumVente))} F</b></span>
                       <Card style={cardStyles}>
                         <BiMoney style={iconStyles} size={25} />
                       </Card>
@@ -120,7 +211,7 @@ function Dashboard() {
                   <Card.Subtitle className="mb-2" style={titlestyle}>Produits en rupture</Card.Subtitle>
                   <Card.Text>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '20px' }}><b>3</b></span>
+                      <span style={{ fontSize: '20px' }}><b>{nbrupture.map(nbrupt => (nbrupt.NbRupture))}</b></span>
                       <Card style={cardStyles2}>
                         <BiInfoCircle style={iconStyles2} size={25} />
                       </Card>
@@ -140,7 +231,7 @@ function Dashboard() {
                   <Card.Subtitle className="mb-2" style={titlestyle}>Commandes</Card.Subtitle>
                   <Card.Text>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '20px' }}><b>4</b></span>
+                      <span style={{ fontSize: '20px' }}><b>{nborders.map(nborder => (nborder.nbOrders))}</b></span>
                       <Card style={cardStyles}>
                         <BiPurchaseTagAlt style={iconStyles} size={25} />
                       </Card>
@@ -174,7 +265,7 @@ function Dashboard() {
                   <Card.Subtitle className="mb-2" style={titlestyle}>Dépenses</Card.Subtitle>
                   <Card.Text>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '20px' }}><b>27 000 F</b></span>
+                      <span style={{ fontSize: '20px' }}><b>{sumdepenses.map(sumdepense => (sumdepense.SumDepense))} F</b></span>
                       <Card style={cardStyles2}>
                         <BiMoneyWithdraw style={iconStyles2} size={25} />
                       </Card>
@@ -194,7 +285,7 @@ function Dashboard() {
                   <Card.Subtitle className="mb-2" style={titlestyle}>Fournisseurs</Card.Subtitle>
                   <Card.Text>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '20px' }}><b>15</b></span>
+                      <span style={{ fontSize: '20px' }}><b>{nbfrs.map(nbfr => (nbfr.nbFrs))}</b></span>
                       <Card style={cardStyles}>
                         <BiBuilding style={iconStyles} size={25} />
                       </Card>
@@ -205,13 +296,13 @@ function Dashboard() {
             </Link>
           </Col>
           <Col>
-          <Link style={{ textDecoration: 'none' }} to='/employees'>
+            <Link style={{ textDecoration: 'none' }} to='/employees'>
               <Card style={cardgeneral} id='card'>
                 <Card.Body>
                   <Card.Subtitle className="mb-2" style={titlestyle}>Employés</Card.Subtitle>
                   <Card.Text>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '20px' }}><b>20</b></span>
+                      <span style={{ fontSize: '20px' }}><b>{nbemployes.map(nbemploye => (nbemploye.nbEmployes))}</b></span>
                       <Card style={cardStyles}>
                         <BiUser style={iconStyles} size={25} />
                       </Card>
