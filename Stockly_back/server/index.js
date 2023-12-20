@@ -55,7 +55,7 @@ app.get('/products', (req, res) => {
     });
 });
 
-app.put('/products/:id', (req, res) => {
+app.put('/product/:id', (req, res) => {
     const { Nom_Produit, Prix_Produit, Id_Categorie, Date_Peremption, Quantite_stock } = req.body;
     const { id } = req.params;
     const sql = 'UPDATE produit SET Nom_Produit = ?, Prix_Produit = ?, Id_Categorie = ?, Date_Peremption = ?, Quantite_stock = ? WHERE id = ?';
@@ -65,7 +65,7 @@ app.put('/products/:id', (req, res) => {
     });
 });
 
-app.delete('/products/:id', (req, res) => {
+app.delete('/product/:id', (req, res) => {
     const { id } = req.params;
     const sql = 'DELETE FROM produit WHERE id = ?';
     db.query(sql, [id], (err, result) => {
@@ -97,7 +97,7 @@ app.get('/categories', (req, res) => {
     });
 });
 
-app.put('/categories/:id', (req, res) => {
+app.put('/category/:id', (req, res) => {
     const { Libelle_Categorie, Description_Categorie } = req.body;
     const { id } = req.params;
     const sql = 'UPDATE categorie SET Libelle_Categorie = ?, Description_Categorie = ? WHERE id = ?';
@@ -107,7 +107,7 @@ app.put('/categories/:id', (req, res) => {
     });
 });
 
-app.delete('/categories/:id', (req, res) => {
+app.delete('/category/:id', (req, res) => {
     const { id } = req.params;
     const sql = 'DELETE FROM categorie WHERE id = ?';
     db.query(sql, [id], (err, result) => {
@@ -121,9 +121,301 @@ app.delete('/categories/:id', (req, res) => {
 
 
 
+// Routes pour la table Fournisseur
+
+app.post('/createsupplier', (req, res) => {
+    const {Nom_Frs, Contact_Frs, Adresse_Frs} = req.body;
+    const sql = 'INSERT INTO fournisseur VALUES (?, ?, ?)';
+    db.query(sql, [Nom_Frs, Contact_Frs, Adresse_Frs], (error, result) => {
+        if(error)throw error;
+        res.json(result);
+    });
+});
+
+app.get('/suppliers', (req, res) => {
+    const sql = `SELECT * FROM fournisseur`;
+    db.query(sql, (error, result) => {
+        if (error) throw error;
+        res.json(result);
+    });
+});
+
+app.put('/supplier/:id', (req, res) => {
+    const { Nom_Frs, Contact_Frs, Adresse_Frs } = req.body;
+    const { id } = req.params;
+    const sql = 'UPDATE fournisseur SET Nom_Frs = ?, Contact_Frs = ?, Adresse_Frs = ? WHERE id = ?';
+    db.query(sql, [Nom_Frs, Contact_Frs, Adresse_Frs, id], (err, result) => {
+      if (error) throw error;
+      res.json(result);
+    });
+});
+
+app.delete('/supplier/:id', (req, res) => {
+    const { id } = req.params;
+    const sql = 'DELETE FROM fournisseur WHERE id = ?';
+    db.query(sql, [id], (err, result) => {
+      if (error) throw error;
+      res.json(result);
+    });
+});
 
 
 
+
+
+
+// Routes pour la table Commande
+
+app.post('/createorder', (req, res) => {
+    const {Id_Produit, Id_Frs, Prix_Achat, Quantite_Cmd, Montant_Cmd, Date_Cmd} = req.body;
+    const sql = 'INSERT INTO commande VALUES (?, ?, ?, ?, ?, ?)';
+    db.query(sql, [Id_Produit, Id_Frs, Prix_Achat, Quantite_Cmd, Montant_Cmd, Date_Cmd], (error, result) => {
+        if(error)throw error;
+        res.json(result);
+    });
+});
+
+app.get('/orders', (req, res) => {
+    const sql = `SELECT c.Id_Commande, p.Nom_Produit, f.Nom_Frs, c.Prix_Achat, c.Quantite_Cmd, c.Montant_Cmd, c.Date_Cmd
+     FROM commande c JOIN produit p ON p.Id_Produit = c.Id_Produit
+     JOIN fournisseur f ON f.Id_Frs = c.Id_Frs`;
+    db.query(sql, (error, result) => {
+        if (error) throw error;
+        res.json(result);
+    });
+});
+
+app.put('/order/:id', (req, res) => {
+    const { Id_Produit, Id_Frs, Prix_Achat, Quantite_Cmd, Montant_Cmd, Date_Cmd } = req.body;
+    const { id } = req.params;
+    const sql = 'UPDATE commande SET Id_Produit = ?, Id_Frs = ?, Prix_Achat = ?, Quantite_Cmd = ?, Montant_Cmd = ?, Date_Cmd = ? WHERE id = ?';
+    db.query(sql, [Id_Produit, Id_Frs, Prix_Achat, Quantite_Cmd, Montant_Cmd, Date_Cmd, id], (err, result) => {
+      if (error) throw error;
+      res.json(result);
+    });
+});
+
+app.delete('/order/:id', (req, res) => {
+    const { id } = req.params;
+    const sql = 'DELETE FROM commande WHERE id = ?';
+    db.query(sql, [id], (err, result) => {
+      if (error) throw error;
+      res.json(result);
+    });
+});
+
+
+
+
+
+// Routes pour la table Livraison
+
+app.post('/createdelivery', (req, res) => {
+    const {Id_Commande, Date_Livraison} = req.body;
+    const sql = 'INSERT INTO livraison VALUES (?, ?)';
+    db.query(sql, [Id_Commande, Date_Livraison], (error, result) => {
+        if(error)throw error;
+        res.json(result);
+    });
+});
+
+app.get('/deliveries', (req, res) => {
+    const sql = `SELECT * FROM livraison`;
+    db.query(sql, (error, result) => {
+        if (error) throw error;
+        res.json(result);
+    });
+});
+
+app.put('/delivery/:id', (req, res) => {
+    const { Id_Commande, Date_Livraison } = req.body;
+    const { id } = req.params;
+    const sql = 'UPDATE livraison SET Id_Commande = ?, Date_Livraison = ? WHERE id = ?';
+    db.query(sql, [Id_Commande, Date_Livraison, id], (err, result) => {
+      if (error) throw error;
+      res.json(result);
+    });
+});
+
+app.delete('/delivery/:id', (req, res) => {
+    const { id } = req.params;
+    const sql = 'DELETE FROM livraison WHERE id = ?';
+    db.query(sql, [id], (err, result) => {
+      if (error) throw error;
+      res.json(result);
+    });
+});
+
+
+
+
+
+// Routes pour la table Incident
+app.post('/createincident', (req, res) => {
+    const {Libelle_Incid, Description_Incid, Date_Incid} = req.body;
+    const sql = 'INSERT INTO incident VALUES (?, ?, ?)';
+    db.query(sql, [Libelle_Incid, Description_Incid, Date_Incid], (error, result) => {
+        if(error)throw error;
+        res.json(result);
+    });
+});
+
+app.get('/incidents', (req, res) => {
+    const sql = `SELECT * FROM incident`;
+    db.query(sql, (error, result) => {
+        if (error) throw error;
+        res.json(result);
+    });
+});
+
+app.put('/incident/:id', (req, res) => {
+    const { Libelle_Incid, Description_Incid, Date_Incid } = req.body;
+    const { id } = req.params;
+    const sql = 'UPDATE incident SET Libelle_Incid = ?, Description_Incid = ?, Date_Incid = ? WHERE id = ?';
+    db.query(sql, [Libelle_Incid, Description_Incid, Date_Incid, id], (err, result) => {
+      if (error) throw error;
+      res.json(result);
+    });
+});
+
+app.delete('/incident/:id', (req, res) => {
+    const { id } = req.params;
+    const sql = 'DELETE FROM incident WHERE id = ?';
+    db.query(sql, [id], (err, result) => {
+      if (error) throw error;
+      res.json(result);
+    });
+});
+
+
+
+
+
+
+
+// Routes pour la table Dépense
+app.post('/createdepense', (req, res) => {
+    const {Libelle_Depense, Montant_Depense, Date_Depense} = req.body;
+    const sql = 'INSERT INTO depense VALUES (?, ?, ?)';
+    db.query(sql, [Libelle_Depense, Montant_Depense, Date_Depense], (error, result) => {
+        if(error)throw error;
+        res.json(result);
+    });
+});
+
+app.get('/depenses', (req, res) => {
+    const sql = `SELECT * FROM depense`;
+    db.query(sql, (error, result) => {
+        if (error) throw error;
+        res.json(result);
+    });
+});
+
+app.put('/depense/:id', (req, res) => {
+    const { Libelle_Depense, Montant_Depense, Date_Depense } = req.body;
+    const { id } = req.params;
+    const sql = 'UPDATE depense SET Libelle_Depense = ?, Montant_Depense = ?, Date_Depense = ? WHERE id = ?';
+    db.query(sql, [Libelle_Depense, Montant_Depense, Date_Depense, id], (err, result) => {
+      if (error) throw error;
+      res.json(result);
+    });
+});
+
+app.delete('/depense/:id', (req, res) => {
+    const { id } = req.params;
+    const sql = 'DELETE FROM depense WHERE id = ?';
+    db.query(sql, [id], (err, result) => {
+      if (error) throw error;
+      res.json(result);
+    });
+});
+
+
+
+
+
+
+
+
+// Routes pour la table Vente
+app.post('/createsale', (req, res) => {
+    const {Id_Produit, Prix_Vente, Quantite_Vente, Montant_Vente, Date_Vente} = req.body;
+    const sql = 'INSERT INTO vente VALUES (?, ?, ?, ? ,?)';
+    db.query(sql, [Id_Produit, Prix_Vente, Quantite_Vente, Montant_Vente, Date_Vente], (error, result) => {
+        if(error)throw error;
+        res.json(result);
+    });
+});
+
+app.get('/sales', (req, res) => {
+    const sql = `SELECT v.Id_Vente, p.Nom_Produit, v.Prix_Vente, v.Quantite_Vente, v.Montant_Vente, v.Date_Vente 
+    FROM vente v JOIN produit p ON p.Id_Produit = v.Id_Produit`;
+    db.query(sql, (error, result) => {
+        if (error) throw error;
+        res.json(result);
+    });
+});
+
+app.put('/sale/:id', (req, res) => {
+    const { Id_Produit, Prix_Vente, Quantite_Vente, Montant_Vente, Date_Vente } = req.body;
+    const { id } = req.params;
+    const sql = 'UPDATE vente SET Id_Produit = ?, Prix_Vente = ?, Quantite_Vente = ?, Montant_Vente = ?, Date_Vente = ? WHERE id = ?';
+    db.query(sql, [Id_Produit, Prix_Vente, Quantite_Vente, Montant_Vente, Date_Vente, id], (err, result) => {
+      if (error) throw error;
+      res.json(result);
+    });
+});
+
+app.delete('/sale/:id', (req, res) => {
+    const { id } = req.params;
+    const sql = 'DELETE FROM vente WHERE id = ?';
+    db.query(sql, [id], (err, result) => {
+      if (error) throw error;
+      res.json(result);
+    });
+});
+
+
+
+
+
+
+// Routes pour la table Employe
+app.post('/createemployee', (req, res) => {
+    const {nom, prenom, contact} = req.body;
+    const sql = 'INSERT INTO employe VALUES (?, ?, ?)';
+    db.query(sql, [nom, prenom, contact], (error, result) => {
+        if(error)throw error;
+        res.json(result);
+    });
+});
+
+app.get('/employees', (req, res) => {
+    const sql = `SELECT * FROM employe`;
+    db.query(sql, (error, result) => {
+        if (error) throw error;
+        res.json(result);
+    });
+});
+
+app.put('/employee/:id', (req, res) => {
+    const { nom, prenom, contact } = req.body;
+    const { id } = req.params;
+    const sql = 'UPDATE employe SET nom = ?, prenom = ?, contact = ? WHERE id = ?';
+    db.query(sql, [nom, prenom, contact, id], (err, result) => {
+      if (error) throw error;
+      res.json(result);
+    });
+});
+
+app.delete('/employee/:id', (req, res) => {
+    const { id } = req.params;
+    const sql = 'DELETE FROM employe WHERE id = ?';
+    db.query(sql, [id], (err, result) => {
+      if (error) throw error;
+      res.json(result);
+    });
+});
 
 
 

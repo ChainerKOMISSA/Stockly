@@ -45,7 +45,7 @@ function Categories() {
         setCategories(data)
       })
       .catch(error => {
-        console.error('Erreur lors de la récupération des categories: ', error)
+        console.error('Erreur lors de la récupération des catégories: ', error)
       })
   }, []);
 
@@ -64,7 +64,7 @@ function Categories() {
         <div class="card">
           <div class="card-body">
             <div class="card-toolbar">
-              <Link to="/addproduct">
+              <Link to="/addcategory">
                 <Button variant='primary' style={btnStyles}>Ajouter une catégorie</Button>
               </Link>
               <Link>

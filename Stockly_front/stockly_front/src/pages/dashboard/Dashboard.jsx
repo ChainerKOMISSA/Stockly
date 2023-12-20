@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import '../styles/dashboard.css'
 import { Card, Row, Col } from 'react-bootstrap'
 import { BiCloudLightning, BiMoney,BiMoneyWithdraw, BiInfoCircle, BiPurchaseTagAlt, BiBuilding, BiUser, BiNotepad, BiCube} from "react-icons/bi";
@@ -57,6 +57,15 @@ const cardgeneral = {
 
 
 function Dashboard() {
+  const [nbproducts, setNbproducts] = useState([]);
+  const [nborders, setOrders] = useState([]);
+  const [nbfrs, setFrs] = useState([]);
+  const [nbemployes, setNbEmployes] = useState([]);
+  const [sumdepenses, setSumdepenses] = useState([]);
+  const [sumventes, setSumventes] = useState([]);
+
+  
+
   return (
     <div id="main" class="main">
       <div class="pagetitle">
