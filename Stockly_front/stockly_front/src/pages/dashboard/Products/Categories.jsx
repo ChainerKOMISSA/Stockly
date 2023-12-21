@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { API_URL } from '../../../components/constantes'
-import { Button } from 'react-bootstrap'
+import { Button, Form, Modal, Row, Col } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { BiX, BiPencil } from "react-icons/bi";
 
@@ -37,6 +37,16 @@ const btnStyles = {
 function Categories() {
 
   const [categories, setCategories] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({});
+
+  const openModal = () => {
+    setShowModal(true)
+  }
+
+  const closeModal = () => {
+    setShowModal(false)
+  }
 
   useEffect(() => {
     fetch(`${API_URL}/categories`)
@@ -48,6 +58,50 @@ function Categories() {
         console.error('Erreur lors de la récupération des catégories: ', error)
       })
   }, []);
+
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  }
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(`${API_URL}/createcategory`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Enregistrement réussi', data);
+        closeModal();
+      } else {
+        const errorData = await response.json();
+        console.error('Une erreur s\'est produite: ', errorData)
+      }
+    }
+    catch (error) {
+      console.error('Une erreur s\'est produite: ', error)
+    }
+  }
+
+const handleDelete = (id) => {
+
+}
+
+const handleUpdate = (id) => {
+  
+}
 
   return (
     <div id="main" class="main">
@@ -64,8 +118,8 @@ function Categories() {
         <div class="card">
           <div class="card-body">
             <div class="card-toolbar">
-              <Link to="/addcategory">
-                <Button variant='primary' style={btnStyles}>Ajouter une catégorie</Button>
+              <Link>
+                <Button variant='primary' style={btnStyles} onClick={openModal}>Ajouter une catégorie</Button>
               </Link>
               <Link>
                 <Button variant='outline-primary' style={btnStyles}>Imprimer la liste des catégories</Button>
@@ -90,14 +144,10 @@ function Categories() {
                       <td>
                         <div class='row'>
                           <div class='col'>
-                            <Link style={{ textDecoration: 'none' }}>
-                              <BiPencil style={iconbtnedit} />
-                            </Link>
+                            <BiPencil style={iconbtnedit} onClick={handleUpdate(category.Id_Categorie)}/>
                           </div>
                           <div class='col'>
-                            <Link>
-                              <BiX style={iconbtndelete} />
-                            </Link>
+                            <BiX style={iconbtndelete} onClick={handleDelete(category.Id_Categorie)}/>
                           </div>
                         </div>
                       </td>
@@ -106,6 +156,33 @@ function Categories() {
                 }
               </tbody>
             </table>
+            <Modal show={showModal} onHide={closeModal} centered size='lg'>
+              <Modal.Header closeButton>
+                <Modal.Title>Créer une nouvelle catégorie</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <Form>
+                  <Row>
+                    <Col>
+                      <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                        <Form.Label>Libellé</Form.Label>
+                        <Form.Control type="text" placeholder="Entrez le libellé" name='Libelle_Categorie' value={formData.Libelle_Categorie} onChange={handleChange} />
+                      </Form.Group>
+                    </Col>
+                    <Col>
+                      <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                        <Form.Label>Description</Form.Label>
+                        <Form.Control type="text" placeholder="Entrez une description" name='Description_Categorie' value={formData.Description_Categorie} onChange={handleChange} />
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                </Form>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant='outline-secondary' onClick={closeModal}>Fermer</Button>
+                <Button variant='primary' type='submit' onClick={handleSubmit}>Enregistrer</Button>
+              </Modal.Footer>
+            </Modal>
           </div>
         </div>
       </section>

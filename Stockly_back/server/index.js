@@ -144,7 +144,7 @@ app.delete('/product/:id', (req, res) => {
 
 app.post('/createcategory', (req, res) => {
     const { Libelle_Categorie, Description_Categorie } = req.body;
-    const sql = 'INSERT INTO categorie VALUES (?, ?)';
+    const sql = 'INSERT INTO categorie (Libelle_Categorie, Description_Categorie) VALUES (?, ?)';
     db.query(sql, [Libelle_Categorie, Description_Categorie], (error, result) => {
         if (error) throw error;
         res.json(result);
