@@ -6,6 +6,14 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 In the project directory, you can run:
 
+### `Installation des packages`
+
+- npm install react-bootstrap
+- npm install react-dom
+- npm install react-icons
+- npm install sweetalert2
+
+
 ### `npm start`
 
 Runs the app in the development mode.\

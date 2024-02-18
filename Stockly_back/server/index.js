@@ -32,6 +32,10 @@ app.get('/', (req, res) => {
 
 
 
+// Routes pour l'authentification
+app.post('/login', (req, res) => {
+    res.json({message : "Login"})
+})
 
 
 
@@ -100,7 +104,7 @@ app.get('/statdepenses', (req, res) => {
 // Routes pour la table Produit
 app.post('/createproduct', (req, res) => {
     const { Nom_Produit, Prix_Produit, Id_Categorie, Date_Peremption, Quantite_stock } = req.body;
-    const sql = 'INSERT INTO produit VALUES (?, ?, ?, ?, ?)';
+    const sql = 'INSERT INTO produit (Nom_Produit, Prix_Produit, Id_Categorie, Date_Peremption, Quantite_stock) VALUES (?, ?, ?, ?, ?)';
     db.query(sql, [Nom_Produit, Prix_Produit, Id_Categorie, Date_Peremption, Quantite_stock], (error, result) => {
         if (error) throw error;
         res.json(result);
@@ -162,8 +166,8 @@ app.get('/categories', (req, res) => {
 app.put('/category/:id', (req, res) => {
     const { Libelle_Categorie, Description_Categorie } = req.body;
     const { id } = req.params;
-    const sql = 'UPDATE categorie SET Libelle_Categorie = ?, Description_Categorie = ? WHERE id = ?';
-    db.query(sql, [Libelle_Categorie, Description_Categorie, id], (err, result) => {
+    const sql = 'UPDATE categorie SET Libelle_Categorie = ?, Description_Categorie = ? WHERE Id_Categorie = ?';
+    db.query(sql, [Libelle_Categorie, Description_Categorie, id], (error, result) => {
         if (error) throw error;
         res.json(result);
     });
@@ -171,8 +175,8 @@ app.put('/category/:id', (req, res) => {
 
 app.delete('/category/:id', (req, res) => {
     const { id } = req.params;
-    const sql = 'DELETE FROM categorie WHERE id = ?';
-    db.query(sql, [id], (err, result) => {
+    const sql = 'DELETE FROM categorie WHERE Id_Categorie = ?';
+    db.query(sql, [id], (error, result) => {
         if (error) throw error;
         res.json(result);
     });

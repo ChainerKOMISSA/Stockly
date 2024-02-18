@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { API_URL } from '../../../components/constantes'
 import { Button, Form, Modal, Row, Col } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { BiX, BiPencil } from "react-icons/bi";
+import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../../components/alerts'
+
 
 const iconbtnedit = {
   color: '#4154f1',
-  backgroundColor: '#f6f9ff',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -19,7 +20,6 @@ const iconbtnedit = {
 
 const iconbtndelete = {
   color: '#e63333',
-  backgroundColor: '#FBE4E4',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -35,18 +35,20 @@ const btnStyles = {
 }
 
 function Categories() {
-
-  const [categories, setCategories] = useState([]);
-  const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate()
+  const [showcreateModal, setShowCreateModal] = useState(false);
+  const [showupdateModal, setShowUpdateModal] = useState(false);
+  const [categories, setCategories] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState(null)
   const [formData, setFormData] = useState({});
+  const [updatedData, setUpdatedData] = useState({});
 
-  const openModal = () => {
-    setShowModal(true)
-  }
+  const opencreateModal = () => { setShowCreateModal(true) }
+  const closecreateModal = () => { setShowCreateModal(false) }
 
-  const closeModal = () => {
-    setShowModal(false)
-  }
+  const openupdateModal = (category) => { setShowUpdateModal(true); setSelectedCategory(category) }
+  const closeupdateModal = () => { setShowUpdateModal(false); setSelectedCategory(null) }
+
 
   useEffect(() => {
     fetch(`${API_URL}/categories`)
@@ -83,25 +85,87 @@ function Categories() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Enregistrement réussi', data);
-        closeModal();
+        createSuccessAlert()
+        closecreateModal();
+        navigate(0)
       } else {
         const errorData = await response.json();
-        console.error('Une erreur s\'est produite: ', errorData)
+        failureAlert(errorData)
       }
     }
     catch (error) {
-      console.error('Une erreur s\'est produite: ', error)
+      failureAlert(error)
     }
   }
 
-const handleDelete = (id) => {
+  const handleUpdateChange = (e) => {
+    const { name, value } = e.target;
+    setUpdatedData({
+      ...updatedData,
+      [name]: value,
+    });
+  }
 
-}
+  useEffect(() => {
+    if (selectedCategory) {
+      setUpdatedData({
+        Libelle_Categorie: selectedCategory.Libelle_Categorie,
+        Description_Categorie: selectedCategory.Description_Categorie,
+      });
+    }
+  }, [selectedCategory]);
 
-const handleUpdate = (id) => {
-  
-}
+
+  const handleUpdate = async (e, id) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(`${API_URL}/category/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        updateSuccessAlert()
+        closecreateModal();
+        navigate(0)
+      } else {
+        const errorData = await response.json();
+        failureAlert(errorData)
+      }
+    }
+    catch (error) {
+      failureAlert(error)
+    }
+  }
+
+
+  const handleDelete = (id) => {
+    try {
+      const response = fetch(`${API_URL}/category/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const data = response.json();
+        deleteSuccessAlert()
+        navigate(0)
+      } else {
+        const errorData = response.json();
+        failureAlert(errorData)
+      }
+    }
+    catch (error) {
+      failureAlert(error)
+    }
+  }
 
   return (
     <div id="main" class="main">
@@ -119,7 +183,7 @@ const handleUpdate = (id) => {
           <div class="card-body">
             <div class="card-toolbar">
               <Link>
-                <Button variant='primary' style={btnStyles} onClick={openModal}>Ajouter une catégorie</Button>
+                <Button variant='primary' style={btnStyles} onClick={opencreateModal}>Ajouter une catégorie</Button>
               </Link>
               <Link>
                 <Button variant='outline-primary' style={btnStyles}>Imprimer la liste des catégories</Button>
@@ -136,18 +200,18 @@ const handleUpdate = (id) => {
               </thead>
               <tbody>
                 {
-                  categories.map(category => (
+                  categories.map((category, index) => (
                     <tr key={category.Id_Categorie}>
-                      <th scope="row">{category.Id_Categorie}</th>
+                      <th scope="row">{index += 1}</th>
                       <td>{category.Libelle_Categorie}</td>
                       <td>{category.Description_Categorie}</td>
                       <td>
                         <div class='row'>
                           <div class='col'>
-                            <BiPencil style={iconbtnedit} onClick={handleUpdate(category.Id_Categorie)}/>
+                            <BiPencil style={iconbtnedit} onClick={() => openupdateModal(category)} />
                           </div>
                           <div class='col'>
-                            <BiX style={iconbtndelete} onClick={handleDelete(category.Id_Categorie)}/>
+                            <BiX style={iconbtndelete} onClick={() => handleDelete(category.Id_Categorie)} />
                           </div>
                         </div>
                       </td>
@@ -156,7 +220,7 @@ const handleUpdate = (id) => {
                 }
               </tbody>
             </table>
-            <Modal show={showModal} onHide={closeModal} centered size='lg'>
+            <Modal show={showcreateModal} onHide={closecreateModal} centered size='lg'>
               <Modal.Header closeButton>
                 <Modal.Title>Créer une nouvelle catégorie</Modal.Title>
               </Modal.Header>
@@ -179,10 +243,42 @@ const handleUpdate = (id) => {
                 </Form>
               </Modal.Body>
               <Modal.Footer>
-                <Button variant='outline-secondary' onClick={closeModal}>Fermer</Button>
+                <Button variant='outline-secondary' onClick={closecreateModal}>Fermer</Button>
                 <Button variant='primary' type='submit' onClick={handleSubmit}>Enregistrer</Button>
               </Modal.Footer>
             </Modal>
+
+            {
+              selectedCategory && (
+                <Modal show={showupdateModal} onHide={closeupdateModal} centered size='lg'>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Modifier la catégorie</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    <Form>
+                      <Row>
+                        <Col>
+                          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                            <Form.Label>Libellé</Form.Label>
+                            <Form.Control type="text" placeholder="Modifiez le libellé" name='Libelle_Categorie' value={updatedData.Libelle_Categorie} onChange={handleUpdateChange} />
+                          </Form.Group>
+                        </Col>
+                        <Col>
+                          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                            <Form.Label>Description</Form.Label>
+                            <Form.Control type="text" placeholder="Modifiez une description" name='Description_Categorie' value={updatedData.Description_Categorie} onChange={handleUpdateChange} />
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                    </Form>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant='outline-secondary' onClick={closeupdateModal}>Annuler</Button>
+                    <Button variant='primary' type='submit' onClick={(e) => handleUpdate(e, selectedCategory.Id_Categorie)}>Enregistrer les modifications</Button>
+                  </Modal.Footer>
+                </Modal>
+              )
+            }
           </div>
         </div>
       </section>
