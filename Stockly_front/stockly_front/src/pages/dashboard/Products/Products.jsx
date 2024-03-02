@@ -183,16 +183,27 @@ function Products() {
 
 
   return (
-    <div id="main" class="main">
-      <div class="pagetitle">
-        <h1>Liste des produits</h1>
-        <nav>
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Acceuil</a></li>
-            <li class="breadcrumb-item active">Liste des produits</li>
-          </ol>
-        </nav>
+    <>
+    <div id="kt_app_toolbar" className="app-toolbar pt-7 pt-lg-10">
+        <div className="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
+          <div className="page-title d-flex flex-column justify-content-center gap-1 me-3">
+            <ul className="breadcrumb breadcrumb-separatorless fw-semibold fs-7">
+              <li className="breadcrumb-item text-gray-700 fw-bold lh-1 mx-n1">
+                <Link to={'/'} className="text-hover-primary">
+                  <i className="ki-outline ki-home text-gray-700 fs-6"></i>
+                </Link>
+              </li>
+              <li className="breadcrumb-item">
+                <i className="ki-outline ki-right fs-7 text-gray-700"></i>
+              </li>
+              <li className="breadcrumb-item text-gray-700 fw-bold lh-1 mx-n1">Accueil</li>
+            </ul>
+            <h1 className="page-heading d-flex flex-column justify-content-center text-gray-900 fw-bold fs-3 m-0">Liste des produits</h1>
+          </div>
+        </div>
       </div>
+
+      <div id="main" class="main">
       <section class="products">
         <div class="card">
           <div class="card-body">
@@ -373,6 +384,7 @@ function Products() {
         </div>
       </section>
     </div>
+    </>
   )
 }
 
