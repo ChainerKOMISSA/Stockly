@@ -75,6 +75,12 @@ const Header = () => {
                                                 <span class="menu-arrow d-lg-none"></span>
                                             </span>
                                         </div>
+                                        <div data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-placement="bottom-start" data-kt-menu-offset="-400,0" class="menu-item menu-lg-down-accordion me-0 me-lg-2">
+                                            <span class="menu-link" onClick={() => navigation("deliveries")}>
+                                                <span class="menu-title">Livraisons</span>
+                                                <span class="menu-arrow d-lg-none"></span>
+                                            </span>
+                                        </div>
                                     </div>
                                     {/*end::Menu*/}
                                 </div>
