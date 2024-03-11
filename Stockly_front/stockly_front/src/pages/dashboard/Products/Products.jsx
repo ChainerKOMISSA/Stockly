@@ -1,40 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Form, Modal, Row, Col } from 'react-bootstrap'
+// import { Button, Form, Modal, Row, Col } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { API_URL } from '../../../components/constantes'
 import { BiX, BiPencil } from "react-icons/bi";
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../../components/alerts'
 
 
-const btnStyles = {
-  margin: '5px'
-}
-
-const iconbtnedit = {
-  color: '#4154f1',
-  backgroundColor: '#f6f9ff',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  borderRadius: '50%',
-  width: '1.2rem',
-  height: '1.2rem',
-  border: 'white',
-  fontSize: '3.5rem',
-}
-
-const iconbtndelete = {
-  color: '#e63333',
-  backgroundColor: '#FBE4E4',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  borderRadius: '50%',
-  width: '1.2rem',
-  height: '1.2rem',
-  border: 'white',
-  fontSize: '3.5rem',
-}
 
 function Products() {
   const navigate = useNavigate();
@@ -184,206 +155,119 @@ function Products() {
 
   return (
     <>
-    <div id="kt_app_toolbar" className="app-toolbar pt-7 pt-lg-10">
-        <div className="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
-          <div className="page-title d-flex flex-column justify-content-center gap-1 me-3">
-            <ul className="breadcrumb breadcrumb-separatorless fw-semibold fs-7">
-              <li className="breadcrumb-item text-gray-700 fw-bold lh-1 mx-n1">
-                <Link to={'/'} className="text-hover-primary">
-                  <i className="ki-outline ki-home text-gray-700 fs-6"></i>
-                </Link>
+      <div id="kt_app_toolbar" class="app-toolbar pt-7 pt-lg-10">
+        <div class="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
+          <div class="page-title d-flex flex-column justify-content-center gap-1 me-3">
+            <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7">
+              <li class="breadcrumb-item text-gray-700 fw-bold lh-1 mx-n1">
+                <a href="index.html" class="text-hover-primary">
+                  <i class="ki-outline ki-home text-gray-700 fs-6"></i>
+                </a>
               </li>
-              <li className="breadcrumb-item">
-                <i className="ki-outline ki-right fs-7 text-gray-700"></i>
+              <li class="breadcrumb-item">
+                <i class="ki-outline ki-right fs-7 text-gray-700"></i>
               </li>
-              <li className="breadcrumb-item text-gray-700 fw-bold lh-1 mx-n1">Accueil</li>
+              <li class="breadcrumb-item text-gray-700 fw-bold lh-1 mx-n1">Accueil</li>
+              <li class="breadcrumb-item">
+                <i class="ki-outline ki-right fs-7 text-gray-700"></i>
+              </li>
+              <li class="breadcrumb-item text-gray-500 mx-n1">Produits</li>
             </ul>
-            <h1 className="page-heading d-flex flex-column justify-content-center text-gray-900 fw-bold fs-3 m-0">Liste des produits</h1>
+            <h1 class="page-heading d-flex flex-column justify-content-center text-gray-900 fw-bold fs-3 m-0">Liste des produits</h1>
           </div>
         </div>
       </div>
 
-      <div id="main" class="main">
-      <section class="products">
-        <div class="card">
-          <div class="card-body">
-            <div class="card-toolbar">
-              <Link>
-                <Button variant='primary' style={btnStyles} onClick={opencreateModal}>Ajouter un produit</Button>
-              </Link>
-              <Link>
-                <Button variant='outline-primary' style={btnStyles}>Imprimer la liste des produits</Button>
-              </Link>
-            </div>
-            <table class="table table-hover">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Nom</th>
-                  <th scope="col">Catégorie</th>
-                  <th scope="col">Prix</th>
-                  <th scope="col">Stock</th>
-                  <th scope="col">Péremption</th>
-                  <th scope="col">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {
-                  produits.map(produit => (
-                    <tr key={produit.Id_Produit}>
-                      <th scope="row">{produit.Id_Produit}</th>
-                      <td>{produit.Nom_Produit}</td>
-                      <td>{produit.Libelle_Categorie}</td>
-                      <td>{produit.Prix_Produit}</td>
-                      <td>{produit.Quantite_stock}</td>
-                      <td>{produit.Date_Peremption}</td>
-                      <td>
-                        <div class='row'>
-                          <div class='col'>
-                            <Link style={{ textDecoration: 'none' }}>
-                              <BiPencil style={iconbtnedit} />
-                            </Link>
-                          </div>
-                          <div class='col'>
-                            <Link>
-                              <BiX style={iconbtndelete} />
-                            </Link>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-            <Modal show={showcreateModal} onHide={closecreateModal} centered size='lg'>
-              <Modal.Header closeButton>
-                <Modal.Title>Enregistrer un nouveau produit</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <Form>
-                  <Row>
-                    <Form.Group className="mb-3" controlId="formBasicEmail">
-                      <Form.Label>Nom du produit</Form.Label>
-                      <Form.Control type="text" placeholder="Entrez le nom du produit" name='Nom_Produit' value={formData.Nom_Produit} onChange={handleChange} />
-                    </Form.Group>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <Form.Group className="mb-3" controlId="formBasicPassword">
-                        <Form.Label>Catégorie</Form.Label>
-                        <Form.Select aria-label="Default select example" name='Id_Categorie' value={formData.Id_Categorie} onChange={handleChange}>
-                          <option>Sélectionnez...</option>
-                          {
-                            categories.map(category => (
-                              <option value={category.Id_Categorie}>{category.Libelle_Categorie}</option>
-                            ))
-                          }
-                        </Form.Select>
-                      </Form.Group>
-                    </Col>
-                    <Col>
-                      <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Label>Prix du produit</Form.Label>
-                        <Form.Control type="number" placeholder="Entrez le prix" name='Prix_Produit' value={formData.Prix_Produit} onChange={handleChange} />
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <Form.Group className="mb-3" controlId="formBasicPassword">
-                        <Form.Label>Quantité à ajouter</Form.Label>
-                        <Form.Control type="number" placeholder="Entrez la quantité" name='Quantite_stock' value={formData.Quantite_stock} onChange={handleChange} />
-                      </Form.Group>
-                    </Col>
-                    <Col>
-                      <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Label>Date de péremption</Form.Label>
-                        <Form.Control type="date" placeholder="Entrez la date" name='Date_Peremption' value={formData.Date_Peremption} onChange={handleChange} />
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                  <Button variant="secondary" type="reset" style={{ margin: '1%' }}>
-                    Annuler
-                  </Button>
-                  <Button variant="primary" type="submit" onClick={handleSubmit} style={{ margin: '1%' }}>
-                    Enregistrer
-                  </Button>
-                </Form>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button variant='outline-secondary' onClick={closecreateModal}>Fermer</Button>
-                <Button variant='primary' type='submit' onClick={handleSubmit}>Enregistrer</Button>
-              </Modal.Footer>
-            </Modal>
+      <div id="kt_app_content" class="app-content">
+        <div class="card mb-5 mb-xl-8">
+          <div class="card-header border-0 pt-5">
+            {/* <h3 class="card-title align-items-start flex-column">
+              <span class="card-label fw-bold fs-3 mb-1">Members Statistics</span>
+              <span class="text-muted mt-1 fw-semibold fs-7">Over 500 members</span>
+            </h3> */}
+            <div class="card-toolbar align-items-center gap-2 gap-lg-3" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover" title="Click to add a user">
+              <a href="#" class="btn btn-sm btn-light btn-active-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_invite_friends">
+                <i class="ki-outline ki-plus fs-2"></i>
+                Nouveau produit
+              </a>
 
-            {
-              selectedProduct && (
-                <Modal show={showupdateModal} onHide={closeupdateModal} centered size='lg'>
-                  <Modal.Header closeButton>
-                    <Modal.Title>Modifier le produit</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    <Form>
-                      <Row>
-                        <Form.Group className="mb-3" controlId="formBasicEmail">
-                          <Form.Label>Nom du produit</Form.Label>
-                          <Form.Control type="text" placeholder="Entrez le nom du produit" name='Nom_Produit' value={formData.Nom_Produit} onChange={handleChange} />
-                        </Form.Group>
-                      </Row>
-                      <Row>
-                        <Col>
-                          <Form.Group className="mb-3" controlId="formBasicPassword">
-                            <Form.Label>Catégorie</Form.Label>
-                            <Form.Select aria-label="Default select example" name='Id_Categorie' value={formData.Id_Categorie} onChange={handleChange}>
-                              <option>Sélectionnez...</option>
-                              {
-                                categories.map(category => (
-                                  <option value={category.Id_Categorie}>{category.Libelle_Categorie}</option>
-                                ))
-                              }
-                            </Form.Select>
-                          </Form.Group>
-                        </Col>
-                        <Col>
-                          <Form.Group className="mb-3" controlId="formBasicEmail">
-                            <Form.Label>Prix du produit</Form.Label>
-                            <Form.Control type="number" placeholder="Entrez le prix" name='Prix_Produit' value={formData.Prix_Produit} onChange={handleChange} />
-                          </Form.Group>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col>
-                          <Form.Group className="mb-3" controlId="formBasicPassword">
-                            <Form.Label>Quantité à ajouter</Form.Label>
-                            <Form.Control type="number" placeholder="Entrez la quantité" name='Quantite_stock' value={formData.Quantite_stock} onChange={handleChange} />
-                          </Form.Group>
-                        </Col>
-                        <Col>
-                          <Form.Group className="mb-3" controlId="formBasicEmail">
-                            <Form.Label>Date de péremption</Form.Label>
-                            <Form.Control type="date" placeholder="Entrez la date" name='Date_Peremption' value={formData.Date_Peremption} onChange={handleChange} />
-                          </Form.Group>
-                        </Col>
-                      </Row>
-                      <Button variant="secondary" type="reset" style={{ margin: '1%' }}>
-                        Annuler
-                      </Button>
-                      <Button variant="primary" type="submit" onClick={handleSubmit} style={{ margin: '1%' }}>
-                        Enregistrer
-                      </Button>
-                    </Form>
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <Button variant='outline-secondary' onClick={closeupdateModal}>Annuler</Button>
-                    <Button variant='primary' type='submit' onClick={(e) => handleUpdate(e, selectedProduct.Id_Produit)}>Enregistrer les modifications</Button>
-                  </Modal.Footer>
-                </Modal>
-              )
-            }
+              <a href="#" class="btn btn-sm btn-light-primary">
+                <i class="ki-outline ki-printer fs-2"></i>
+                Exporter
+              </a>
+
+            </div>
+          </div>
+          <div class="card-body py-3">
+            <div class="table-responsive">
+              <table class="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+                <thead>
+                  <tr class="fw-bold text-muted">
+                    <th class="w-25px">
+                      <div class="form-check form-check-sm form-check-custom form-check-solid">
+                        <input class="form-check-input" type="checkbox" value="1" data-kt-check="true" data-kt-check-target=".widget-9-check" />
+                      </div>
+                    </th>
+                    <th class="min-w-150px">Catégorie</th>
+                    <th class="min-w-200px">Produit</th>
+                    <th class="min-w-150px">Prix</th>
+                    <th class="min-w-150px">Quantité en stock</th>
+                    <th class="min-w-150px">Péremption</th>
+                    <th class="min-w-100px text-end">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    produits.map((produit, index) => (
+                      <tr key={index}>
+                        <td>
+                          <div class="form-check form-check-sm form-check-custom form-check-solid">
+                            <input class="form-check-input widget-9-check" type="checkbox" value="1" />
+                          </div>
+                        </td>
+                        <td>
+                          <div class="d-flex align-items-center">
+                            <div class="d-flex justify-content-start flex-column">
+                              <a href="#" class="text-gray-900 fw-bold text-hover-primary fs-6">{produit.Libelle_Categorie}</a>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <a href="#" class="text-gray-900 fw-bold text-hover-primary fs-6">{produit.Nom_Produit}</a>
+                        </td>
+                        <td class="text-end">
+                          <div class="d-flex flex-column w-100 me-2">
+                            <div class="d-flex flex-stack mb-2">
+                              <span class="text-gray-500 fw-bold text-hover-primary d-block fs-6">{produit.Prix_Produit}</span>
+                            </div>
+                            {/* <div class="progress h-6px w-100">
+                              <div class="progress-bar bg-primary" role="progressbar" style={{ width: "50%" }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div> */}
+                          </div>
+                        </td>
+                        <td>
+                          <div class="d-flex justify-content-end flex-shrink-0">
+                            {/* <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                          <i class="ki-outline ki-file fs-2"></i>
+                        </a> */}
+                            <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                              <i class="ki-outline ki-pencil fs-2"></i>
+                            </a>
+                            <a href="#" class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm">
+                              <i class="ki-outline ki-trash fs-2"></i>
+                            </a>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  }
+
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      </section>
-    </div>
+      </div>
     </>
   )
 }
