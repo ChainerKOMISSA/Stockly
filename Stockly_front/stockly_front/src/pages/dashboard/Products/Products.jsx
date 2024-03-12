@@ -42,7 +42,8 @@ function Products() {
   }
 
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
       const response = await fetch(`${API_URL}/createproduct`, {
         method: 'POST',
@@ -53,11 +54,12 @@ function Products() {
       });
 
       if (response.ok) {
+        const data = await response.json();
         createSuccessAlert();
         navigate(0)
       } else {
         const errorData = await response.json();
-        throw new Error(errorData.message);
+        failureAlert(errorData)
       }
     } catch (error) {
       failureAlert(error);
@@ -100,6 +102,8 @@ function Products() {
       setUpdatedData({
         Nom_Produit: selectedProduct.Nom_Produit,
         Prix_Produit: selectedProduct.Prix_Produit,
+        Quantite_Stock: selectedProduct.Quantite_Stock,
+        Date_Peremption : selectedProduct.Date_Peremption,
       });
     }
   }, [selectedProduct]);
@@ -132,7 +136,6 @@ function Products() {
 
 
   useEffect(() => {
-
     fetch(`${API_URL}/products`)
       .then(response => response.json())
       .then(data => {
@@ -141,7 +144,6 @@ function Products() {
       .catch(error => {
         console.error('Erreur lors de la récupération des produits: ', error)
       })
-
   }, []);
 
 
@@ -338,7 +340,7 @@ function Products() {
                                     <i className="ki-outline ki-information fs-7"></i>
                                   </span>
                                 </label>
-                                <input type="number" className="form-control form-control-solid" name="Quantite_stock" value={formData.Quantite_stock} onChange={handleChange} />
+                                <input type="number" min={0} className="form-control form-control-solid" name="Quantite_stock" value={formData.Quantite_stock} onChange={handleChange} />
                               </div>
                             </div>
                           </div>

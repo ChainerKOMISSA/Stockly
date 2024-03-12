@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import { API_URL } from '../../../components/constantes'
-// import { Button, Form, Modal, Row, Col } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { BiX, BiPencil } from "react-icons/bi";
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../../components/alerts'
@@ -59,7 +58,6 @@ function Categories() {
       if (response.ok) {
         const data = await response.json();
         createSuccessAlert()
-        closecreateModal();
         navigate(0)
       } else {
         const errorData = await response.json();
@@ -173,7 +171,6 @@ function Categories() {
                 <i className="ki-outline ki-plus fs-2"></i>
                 Nouvelle catégorie
               </a>
-
               <a href="#" className="btn btn-sm btn-light-primary">
                 <i className="ki-outline ki-printer fs-2"></i>
                 Exporter
@@ -230,6 +227,56 @@ function Categories() {
                 }
               </tbody>
             </table>
+            {/* Create Category Modal */}
+            <div className="modal fade" id="kt_modal_share_earn" tabindex="-1" aria-hidden="true" >
+              <div className="modal-dialog modal-dialog-centered mw-800px">
+                <div className="modal-content">
+                  <div className="modal-header pb-0 border-0 justify-content-end">
+                    <div className="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                      <i className="ki-outline ki-cross fs-1"></i>
+                    </div>
+                  </div>
+                  <div className="modal-body scroll-y pt-0 pb-15">
+                    <div className="mw-lg-600px mx-auto">
+                      <div className="mb-13 text-center">
+                        <h1 className="mb-3">Créer une catégorie</h1>
+                        <div className="text-muted fw-semibold fs-5">Entrez les informations pour créer la catégorie.
+                        </div>
+                      </div>
+                      <form id="kt_ecommerce_settings_general_form" className="form">
+                        <div className="fv-row mb-7">
+                          <label className="fs-6 fw-semibold form-label mt-3">
+                            <span className="required">Libellé de la catégorie</span>
+                            <span className="ms-1" data-bs-toggle="tooltip" title="Entrez le libellé de la catégorie">
+                              <i className="ki-outline ki-information fs-7"></i>
+                            </span>
+                          </label>
+                          <input type="text" className="form-control form-control-solid" name="Libelle_Categorie" value={formData.Libelle_Categorie} onChange={handleChange} />
+                        </div>
+                        <div className="fv-row mb-7">
+                          <label className="fs-6 fw-semibold form-label mt-3">
+                            <span className="required">Description de la catégorie</span>
+                            <span className="ms-1" data-bs-toggle="tooltip" title="Entrez la description">
+                              <i className="ki-outline ki-information fs-7"></i>
+                            </span>
+                          </label>
+                          <input type="text" className="form-control form-control-solid" name="Description_Categorie" value={formData.Description_Categorie} onChange={handleChange} />
+                        </div>
+                        <div class="separator mb-6"></div>
+                        <div class="d-flex justify-content-end">
+                          <button type="reset" data-kt-contacts-type="cancel" class="btn btn-light me-3">Annuler</button>
+                          <button class="btn btn-primary">
+                            <span class="indicator-label" onClick={handleSubmit}>Enregistrer</span>
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            {/* End Create Product Modal */}
           </div>
         </div>
       </div>

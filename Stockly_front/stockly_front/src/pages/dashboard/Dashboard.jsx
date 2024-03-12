@@ -150,7 +150,7 @@ function Dashboard() {
           <div class="col-xl-4">
             <div class="card bg-light-warning card-xl-stretch mb-xl-8">
               <div class="card-body my-3">
-                <a href="#" class="card-title fw-bold text-warning fs-5 mb-3 d-block">Dépenses éffectuées</a>
+                <a href="#" class="card-title fw-bold text-warning fs-5 mb-3 d-block">Dépenses effectuées</a>
                 <div class="py-1">
                   <span class="text-gray-900 fs-1 fw-bold me-2">{sumdepenses.map(sumdepense => (sumdepense.SumDepense))}</span>
                   <span class="fw-semibold text-muted fs-7">FCFA</span>
