@@ -13,6 +13,7 @@ import Employees from './pages/dashboard/Employees/Employees';
 import Suppliers from './pages/dashboard/Suppliers/Suppliers';
 import Categories from './pages/dashboard/Products/Categories';
 import Deliveries from './pages/dashboard/Deliveries/Deliveries';
+import Liquidation from './pages/dashboard/Liquidation';
 
 
 
@@ -32,6 +33,7 @@ function App() {
           <Route path="employees" element={<Employees />} />
           <Route path="incidents" element={<Incidents />} />
           <Route path="depenses" element={<Depenses />} />
+          <Route path="liquidation" element={<Liquidation />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

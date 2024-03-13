@@ -1,8 +1,4 @@
 import React, { useState, useEffect } from 'react'
-// import { Card, Row, Col } from 'react-bootstrap'
-import { BiCloudLightning, BiMoney, BiMoneyWithdraw, BiInfoCircle, BiPurchaseTagAlt, BiBuilding, BiUser, BiNotepad, BiCube } from "react-icons/bi";
-import { IoIosCube, IoIosCash, IoIosInformationCircle } from "react-icons/io";
-import { Link } from 'react-router-dom';
 import { API_URL } from '../../components/constantes';
 
 
@@ -81,35 +77,10 @@ function Dashboard() {
       })
   });
 
-  // Nombre de fournisseurs
-  useEffect(() => {
-    fetch(`${API_URL}/statfrs`)
-      .then(response => response.json())
-      .then(data => {
-        setFrs(data)
-      })
-      .catch(error => {
-        console.error('Erreur lors de la récupération des statistiques des fournisseurs: ', error)
-      })
-  });
-
-  // Nombre d'employés
-  useEffect(() => {
-    fetch(`${API_URL}/statemploye`)
-      .then(response => response.json())
-      .then(data => {
-        setNbEmployes(data)
-      })
-      .catch(error => {
-        console.error('Erreur lors de la récupération des statistiques des employés: ', error)
-      })
-  });
-
-
 
   return (
     <>
-      <div id="kt_app_toolbar" class="app-toolbar pt-7 pt-lg-10">
+      <div id="kt_app_toolbar" className="app-toolbar pt-7 pt-lg-10">
         <div className="app-toolbar-wrapper d-flex flex-stack flex-wrap gap-4 w-100">
           <div className="page-title d-flex flex-column justify-content-center gap-1 me-3">
             <ul className="breadcrumb breadcrumb-separatorless fw-semibold fs-7">
@@ -131,122 +102,136 @@ function Dashboard() {
         </div>
       </div>
 
-      <div id="kt_app_content" class="app-content">
-        <div class="row g-5 g-xl-8">
-          <div class="col-xl-4">
-            <div class="card bg-light-success card-xl-stretch mb-xl-8">
-              <div class="card-body my-3">
-                <a href="#" class="card-title fw-bold text-success fs-5 mb-3 d-block">Ventes réalisées</a>
-                <div class="py-1">
-                  <span class="text-gray-900 fs-1 fw-bold me-2">{sumventes.map(sumvente => (sumvente.SumVente))}</span>
-                  <span class="fw-semibold text-muted fs-7">FCFA</span>
+      <div id="kt_app_content" className="app-content">
+        <div className="row g-5 g-xl-8">
+          <div className="col-xl-4">
+            <div className="card bg-light-success card-xl-stretch mb-xl-8">
+              <div className="card-body my-3">
+                <a href="#" className="card-title fw-bold text-success fs-5 mb-3 d-block">Ventes réalisées</a>
+                <div className="py-1">
+                  <span className="text-gray-900 fs-1 fw-bold me-2">{sumventes.map(sumvente => (sumvente.SumVente))}</span>
+                  <span className="fw-semibold text-muted fs-7">FCFA</span>
                 </div>
-                <div class="progress h-7px bg-success bg-opacity-50 mt-7">
-                  <div class="progress-bar bg-success" role="progressbar" style={{ width: "50%" }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-xl-4">
-            <div class="card bg-light-warning card-xl-stretch mb-xl-8">
-              <div class="card-body my-3">
-                <a href="#" class="card-title fw-bold text-warning fs-5 mb-3 d-block">Dépenses effectuées</a>
-                <div class="py-1">
-                  <span class="text-gray-900 fs-1 fw-bold me-2">{sumdepenses.map(sumdepense => (sumdepense.SumDepense))}</span>
-                  <span class="fw-semibold text-muted fs-7">FCFA</span>
-                </div>
-                <div class="progress h-7px bg-warning bg-opacity-50 mt-7">
-                  <div class="progress-bar bg-warning" role="progressbar" style={{ width: "15%" }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                <div className="progress h-7px bg-success bg-opacity-50 mt-7">
+                  <div className="progress-bar bg-success" role="progressbar" style={{ width: "50%" }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="col-xl-4">
-            <div class="card bg-light-danger card-xl-stretch mb-5 mb-xl-8">
-              <div class="card-body my-3">
-                <a href="#" class="card-title fw-bold text-danger fs-5 mb-3 d-block">Alerte stock</a>
-                <div class="py-1">
-                  <span class="text-gray-900 fs-1 fw-bold me-2">{nbrupture.map(nbrupt => (nbrupt.NbRupture))}</span>
-                  <span class="fw-semibold text-muted fs-7">produit(s)</span>
+          <div className="col-xl-4">
+            <div className="card bg-light-warning card-xl-stretch mb-xl-8">
+              <div className="card-body my-3">
+                <a href="#" className="card-title fw-bold text-warning fs-5 mb-3 d-block">Dépenses effectuées</a>
+                <div className="py-1">
+                  <span className="text-gray-900 fs-1 fw-bold me-2">{sumdepenses.map(sumdepense => (sumdepense.SumDepense))}</span>
+                  <span className="fw-semibold text-muted fs-7">FCFA</span>
                 </div>
-                <div class="progress h-7px bg-danger bg-opacity-50 mt-7">
-                  <div class="progress-bar bg-danger" role="progressbar" style={{ width: "76%" }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                <div className="progress h-7px bg-warning bg-opacity-50 mt-7">
+                  <div className="progress-bar bg-warning" role="progressbar" style={{ width: "15%" }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-xl-4">
+            <div className="card bg-light-danger card-xl-stretch mb-5 mb-xl-8">
+              <div className="card-body my-3">
+                <a href="#" className="card-title fw-bold text-danger fs-5 mb-3 d-block">Alerte stock</a>
+                <div className="py-1">
+                  <span className="text-gray-900 fs-1 fw-bold me-2">{nbrupture.map(nbrupt => (nbrupt.NbRupture))}</span>
+                  <span className="fw-semibold text-muted fs-7">produit(s)</span>
+                </div>
+                <div className="progress h-7px bg-danger bg-opacity-50 mt-7">
+                  <div className="progress-bar bg-danger" role="progressbar" style={{ width: "76%" }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-xl-4">
+            <div className="card bg-light-danger card-xl-stretch mb-5 mb-xl-8">
+              <div className="card-body my-4">
+                <i className="ki-outline text-danger ki-information-3 fs-2qx"></i> <a href="/liquidation" className="card-title fw-bold text-danger fs-5 mb-3 d-block">Produits à liquider</a>
+                {/* <div className="py-1">
+                  <span className="text-gray-900 fs-1 fw-bold me-2"></span>
+                  <span className="fw-semibold text-muted fs-7"></span>
+                </div> */}
+                {/* <div className="progress h-7px bg-danger bg-opacity-50 mt-7">
+                  <div className="progress-bar bg-danger" role="progressbar" style={{ width: "76%" }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                </div> */}
               </div>
             </div>
           </div>
         </div>
-        {/* <ul class="nav nav-pills nav-pills-custom mb-3">
-          <li class="nav-item mb-3 me-3 me-lg-6">
-            <a class="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
-              <div class="nav-icon">
+        {/* <ul className="nav nav-pills nav-pills-custom mb-3">
+          <li className="nav-item mb-3 me-3 me-lg-6">
+            <a className="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
+              <div className="nav-icon">
               <i className="ki-outline ki-cube-2 text-gray-700 fs-2x"></i>
               </div>
-              <span class="nav-text text-gray-700 fw-bold fs-6 lh-1">Produits</span>
+              <span className="nav-text text-gray-700 fw-bold fs-6 lh-1">Produits</span>
             </a>
           </li>
-          <li class="nav-item mb-3 me-3 me-lg-6">
-            <a class="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
-              <div class="nav-icon">
+          <li className="nav-item mb-3 me-3 me-lg-6">
+            <a className="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
+              <div className="nav-icon">
               <i className="ki-outline ki-abstract-28 text-gray-700 fs-2x"></i>
               </div>
-              <span class="nav-text text-gray-700 fw-bold fs-6 lh-1">Catégories</span>
+              <span className="nav-text text-gray-700 fw-bold fs-6 lh-1">Catégories</span>
             </a>
           </li>
-          <li class="nav-item mb-3 me-3 me-lg-6">
-            <a class="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
-              <div class="nav-icon">
+          <li className="nav-item mb-3 me-3 me-lg-6">
+            <a className="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
+              <div className="nav-icon">
               <i className="ki-outline ki-basket-ok text-gray-700 fs-2x"></i>
               </div>
-              <span class="nav-text text-gray-700 fw-bold fs-6 lh-1">Ventes</span>
+              <span className="nav-text text-gray-700 fw-bold fs-6 lh-1">Ventes</span>
             </a>
           </li>
-          <li class="nav-item mb-3 me-3 me-lg-6">
-            <a class="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
-              <div class="nav-icon">
+          <li className="nav-item mb-3 me-3 me-lg-6">
+            <a className="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
+              <div className="nav-icon">
               <i className="ki-outline ki-files-tablet text-gray-700 fs-2x"></i>
               </div>
-              <span class="nav-text text-gray-700 fw-bold fs-6 lh-1">Commandes</span>
+              <span className="nav-text text-gray-700 fw-bold fs-6 lh-1">Commandes</span>
             </a>
           </li>
-          <li class="nav-item mb-3 me-3 me-lg-6">
-            <a class="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
-              <div class="nav-icon">
+          <li className="nav-item mb-3 me-3 me-lg-6">
+            <a className="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
+              <div className="nav-icon">
               <i className="ki-outline ki-tablet-ok text-gray-700 fs-2x"></i>
               </div>
-              <span class="nav-text text-gray-700 fw-bold fs-6 lh-1">Livraisons</span>
+              <span className="nav-text text-gray-700 fw-bold fs-6 lh-1">Livraisons</span>
             </a>
           </li>
-          <li class="nav-item mb-3 me-3 me-lg-6">
-            <a class="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
-              <div class="nav-icon">
+          <li className="nav-item mb-3 me-3 me-lg-6">
+            <a className="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
+              <div className="nav-icon">
               <i className="ki-outline ki-delivery-2 text-gray-700 fs-2x"></i>
               </div>
-              <span class="nav-text text-gray-700 fw-bold fs-6 lh-1">Fournisseurs</span>
+              <span className="nav-text text-gray-700 fw-bold fs-6 lh-1">Fournisseurs</span>
             </a>
           </li>
-          <li class="nav-item mb-3 me-3 me-lg-6">
-            <a class="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
-              <div class="nav-icon">
+          <li className="nav-item mb-3 me-3 me-lg-6">
+            <a className="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
+              <div className="nav-icon">
               <i className="ki-outline ki-profile-user text-gray-700 fs-2x"></i>
               </div>
-              <span class="nav-text text-gray-700 fw-bold fs-6 lh-1">Employés</span>
+              <span className="nav-text text-gray-700 fw-bold fs-6 lh-1">Employés</span>
             </a>
           </li>
-          <li class="nav-item mb-3 me-3 me-lg-6">
-            <a class="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
-              <div class="nav-icon">
+          <li className="nav-item mb-3 me-3 me-lg-6">
+            <a className="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
+              <div className="nav-icon">
               <i className="ki-outline ki-wallet text-gray-700 fs-2x"></i>
               </div>
-              <span class="nav-text text-gray-700 fw-bold fs-6 lh-1">Dépenses</span>
+              <span className="nav-text text-gray-700 fw-bold fs-6 lh-1">Dépenses</span>
             </a>
           </li>
-          <li class="nav-item mb-3 me-3 me-lg-6">
-            <a class="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
-              <div class="nav-icon">
+          <li className="nav-item mb-3 me-3 me-lg-6">
+            <a className="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
+              <div className="nav-icon">
               <i className="ki-outline ki-information-3 text-gray-700 fs-2x"></i>
               </div>
-              <span class="nav-text text-gray-700 fw-bold fs-6 lh-1">Incidents</span>
+              <span className="nav-text text-gray-700 fw-bold fs-6 lh-1">Incidents</span>
             </a>
           </li>
         </ul> */}

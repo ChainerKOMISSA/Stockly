@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { API_URL } from '../../../components/constantes'
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../../components/alerts'
 import { getCurrentDate } from '../../../helpers/CalendarControl' 
+import { formatDate} from '../../../helpers/DateFormat'
 
 
 function Products() {
@@ -205,7 +206,7 @@ function Products() {
                     <th className="min-w-300px">Produit</th>
                     <th className="min-w-100px">Prix</th>
                     <th className="min-w-100px">Quantité</th>
-                    <th className="min-w-200px">Péremption</th>
+                    <th className="min-w-100px">Péremption</th>
                     <th className="min-w-100px text-end">Actions</th>
                   </tr>
                 </thead>
@@ -248,7 +249,7 @@ function Products() {
                         <td className="text-end">
                           <div className="d-flex flex-column w-100 me-2">
                             <div className="d-flex flex-stack mb-2">
-                              <span className="text-gray-700 fw-bold text-hover-primary d-block fs-6">{produit.Date_Peremption}</span>
+                              <span className="text-gray-700 fw-bold text-hover-primary d-block fs-6">{formatDate(produit.Date_Peremption)}</span>
                             </div>
                           </div>
                         </td>
@@ -271,7 +272,7 @@ function Products() {
                 </tbody>
               </table>
               {/* Create Product Modal */}
-              <div className="modal fade" id="kt_modal_share_earn" tabindex="-1" aria-hidden="true" >
+              <div className="modal fade" id="kt_modal_share_earn" tabIndex="-1" aria-hidden="true" >
                 <div className="modal-dialog modal-dialog-centered mw-800px">
                   <div className="modal-content">
                     <div className="modal-header pb-0 border-0 justify-content-end">
@@ -372,7 +373,7 @@ function Products() {
               {/* Edit Product Modal */}
               {
                 selectedProduct && (
-                  <div className="modal fade" id="kt_modal_edit" tabindex="-1" aria-hidden="true" >
+                  <div className="modal fade" id="kt_modal_edit" tabIndex="-1" aria-hidden="true" >
                     <div className="modal-dialog modal-dialog-centered mw-800px">
                       <div className="modal-content">
                         <div className="modal-header pb-0 border-0 justify-content-end">

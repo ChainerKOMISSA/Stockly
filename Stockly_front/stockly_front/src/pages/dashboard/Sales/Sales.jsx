@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../../components/alerts'
 import { MontantInputControl } from '../../../helpers/InputControls'
 import { getCurrentDate } from '../../../helpers/CalendarControl'
+import {formatDate} from '../../../helpers/DateFormat'
 
 
 
@@ -221,8 +222,8 @@ function Sales() {
                         <input className="form-check-input" type="checkbox" value="1" data-kt-check="true" data-kt-check-target=".widget-9-check" />
                       </div>
                     </th>
-                    <th className="min-w-200px">Date</th>
-                    <th className="min-w-150px">Produit vendu</th>
+                    <th className="min-w-150px">Date</th>
+                    <th className="min-w-200px">Produit vendu</th>
                     <th className="min-w-100px">Prix</th>
                     <th className="min-w-100px">Quantité</th>
                     <th className="min-w-150px">Montant</th>
@@ -241,7 +242,7 @@ function Sales() {
                         <td>
                           <div className="d-flex align-items-center">
                             <div className="d-flex justify-content-start flex-column">
-                              <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{sale.Date_Vente}</a>
+                              <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{formatDate(sale.Date_Vente)}</a>
                             </div>
                           </div>
                         </td>
