@@ -1,9 +1,13 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-// import './Sidebar.css'
+import React, {useState} from 'react'
 
 
 const Sidebar = () => {
+    const [activeMenu, setActiveMenu] = useState('');
+
+    const handleMenuClick = (menuName) => {
+        setActiveMenu(menuName);
+    };
+
     return (
         <>
             <div id="kt_app_sidebar" className="app-sidebar flex-column flex-shrink-0" data-kt-drawer="true" data-kt-drawer-name="app-sidebar" data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true" data-kt-drawer-width="auto" data-kt-drawer-direction="start" data-kt-drawer-toggle="#kt_app_sidebar_mobile_toggle">
@@ -16,7 +20,7 @@ const Sidebar = () => {
                                 </div>
                             </div>
                             <div className="menu-item">
-                                <a className="menu-link active" href="/dashboard">
+                                <a className={`menu-link ${activeMenu === 'dashboard' ? 'active' : ''}`} href="/dashboard" onClick={() => handleMenuClick('dashboard')}>
                                     <span className="menu-bullet">
                                         <span className="bullet bullet-dot"></span>
                                     </span>
@@ -24,7 +28,7 @@ const Sidebar = () => {
                                 </a>
                             </div>
                             <div className="menu-item">
-                                <a className="menu-link" href="/suppliers">
+                                <a className={`menu-link ${activeMenu === 'suppliers' ? 'active' : ''}`} href="/suppliers" onClick={() => handleMenuClick('suppliers')}>
                                     <span className="menu-bullet">
                                         <span className="bullet bullet-dot"></span>
                                     </span>
@@ -32,7 +36,7 @@ const Sidebar = () => {
                                 </a>
                             </div>
                             <div className="menu-item">
-                                <a className="menu-link" href="/employees">
+                                <a className={`menu-link ${activeMenu === 'employees' ? 'active' : ''}`} href="/employees" onClick={() => handleMenuClick('employees')}>
                                     <span className="menu-bullet">
                                         <span className="bullet bullet-dot"></span>
                                     </span>
@@ -40,7 +44,7 @@ const Sidebar = () => {
                                 </a>
                             </div>
                             <div className="menu-item">
-                                <a className="menu-link" href="incidents">
+                                <a className={`menu-link ${activeMenu === 'incidents' ? 'active' : ''}`} href="incidents" onClick={() => handleMenuClick('incidents')}>
                                     <span className="menu-bullet">
                                         <span className="bullet bullet-dot"></span>
                                     </span>
@@ -48,7 +52,7 @@ const Sidebar = () => {
                                 </a>
                             </div>
                             <div className="menu-item">
-                                <a className="menu-link" href="depenses">
+                                <a className={`menu-link ${activeMenu === 'depenses' ? 'active' : ''}`} href="depenses" onClick={() => handleMenuClick('depenses')}>
                                     <span className="menu-bullet">
                                         <span className="bullet bullet-dot"></span>
                                     </span>
@@ -56,7 +60,7 @@ const Sidebar = () => {
                                 </a>
                             </div>
                             <div className="menu-item">
-                                <a className="menu-link" href="#">
+                                <a className={`menu-link ${activeMenu === 'settings' ? 'active' : ''}`} href="#" onClick={() => handleMenuClick('settings')}>
                                     <span className="menu-bullet">
                                         <span className="bullet bullet-dot"></span>
                                     </span>
