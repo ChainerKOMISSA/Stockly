@@ -174,42 +174,41 @@ function Depenses() {
               </a>
             </div>
           </div>
-        </div>
-        <div className="card-body py-3">
-          <div className="table-responsive">
-            <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
-              <thead>
-                <tr className="fw-bold text-muted">
-                  <th className="w-25px">
-                    <div className="form-check form-check-sm form-check-custom form-check-solid">
-                      <input className="form-check-input" type="checkbox" value="1" data-kt-check="true" data-kt-check-target=".widget-9-check" />
-                    </div>
-                  </th>
-                  <th className="min-w-300px">Date</th>
-                  <th className="min-w-400px">Libellé</th>
-                  <th className="min-w-250px">Montant</th>
-                  {/* <th className="min-w-100px text-end">Actions</th> */}
-                </tr>
-              </thead>
-              <tbody>
-                {
-                  depenses.map((depense, index) => (
-                    <tr key={index}>
-                      <td>
-                        <div className="form-check form-check-sm form-check-custom form-check-solid">
-                          <input className="form-check-input widget-9-check" type="checkbox" value="1" />
-                        </div>
-                      </td>
-                      <td>
-                        <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{depense.Date_Depense}</a>
-                      </td>
-                      <td>
-                        <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{depense.Libelle_Depense}</a>
-                      </td>
-                      <td>
-                        <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{depense.Montant_Depense}</a>
-                      </td>
-                      {/* <td>
+          <div className="card-body py-3">
+            <div className="table-responsive">
+              <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+                <thead>
+                  <tr className="fw-bold text-muted">
+                    <th className="w-25px">
+                      <div className="form-check form-check-sm form-check-custom form-check-solid">
+                        <input className="form-check-input" type="checkbox" value="1" data-kt-check="true" data-kt-check-target=".widget-9-check" />
+                      </div>
+                    </th>
+                    <th className="min-w-300px">Date</th>
+                    <th className="min-w-400px">Libellé</th>
+                    <th className="min-w-250px">Montant</th>
+                    {/* <th className="min-w-100px text-end">Actions</th> */}
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    depenses.map((depense, index) => (
+                      <tr key={index}>
+                        <td>
+                          <div className="form-check form-check-sm form-check-custom form-check-solid">
+                            <input className="form-check-input widget-9-check" type="checkbox" value="1" />
+                          </div>
+                        </td>
+                        <td>
+                          <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{depense.Date_Depense}</a>
+                        </td>
+                        <td>
+                          <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{depense.Libelle_Depense}</a>
+                        </td>
+                        <td>
+                          <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{depense.Montant_Depense}</a>
+                        </td>
+                        {/* <td>
                         <div className="d-flex justify-content-end flex-shrink-0">
                           <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#kt_modal_edit" onClick={() => openupdateModal(depense.Id_Depense)}>
                             <i className="ki-outline ki-pencil fs-2"></i>
@@ -219,11 +218,12 @@ function Depenses() {
                           </a>
                         </div>
                       </td> */}
-                    </tr>
-                  ))
-                }
-              </tbody>
-            </table>
+                      </tr>
+                    ))
+                  }
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

@@ -174,57 +174,57 @@ function Incidents() {
               </a>
             </div>
           </div>
-        </div>
-        <div className="card-body py-3">
-          <div className="table-responsive">
-            <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
-              <thead>
-                <tr className="fw-bold text-muted">
-                  <th className="w-25px">
-                    <div className="form-check form-check-sm form-check-custom form-check-solid">
-                      <input className="form-check-input" type="checkbox" value="1" data-kt-check="true" data-kt-check-target=".widget-9-check" />
-                    </div>
-                  </th>
-                  <th className="min-w-200px">Date</th>
-                  <th className="min-w-200px">Libellé</th>
-                  <th className="min-w-300px">Description</th>
-                  <th className="min-w-100px text-end">Actions</th>
+          <div className="card-body py-3">
+            <div className="table-responsive">
+              <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+                <thead>
+                  <tr className="fw-bold text-muted">
+                    <th className="w-25px">
+                      <div className="form-check form-check-sm form-check-custom form-check-solid">
+                        <input className="form-check-input" type="checkbox" value="1" data-kt-check="true" data-kt-check-target=".widget-9-check" />
+                      </div>
+                    </th>
+                    <th className="min-w-200px">Date</th>
+                    <th className="min-w-200px">Libellé</th>
+                    <th className="min-w-300px">Description</th>
+                    <th className="min-w-100px text-end">Actions</th>
 
-                </tr>
-              </thead>
-              <tbody>
-                {
-                  incidents.map((incident, index) => (
-                    <tr key={index}>
-                      <td>
-                        <div className="form-check form-check-sm form-check-custom form-check-solid">
-                          <input className="form-check-input widget-9-check" type="checkbox" value="1" />
-                        </div>
-                      </td>
-                      <td>
-                        <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{incident.Date_Incid}</a>
-                      </td>
-                      <td>
-                        <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{incident.Libelle_Incid}</a>
-                      </td>
-                      <td>
-                        <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{incident.Description_Incid}</a>
-                      </td>
-                      <td>
-                        <div className="d-flex justify-content-end flex-shrink-0">
-                          <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#kt_modal_edit" onClick={() => openupdateModal(incident.Id_Incid)}>
-                            <i className="ki-outline ki-pencil fs-2"></i>
-                          </a>
-                          <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={() => handleDelete(incident.Id_Incid)}>
-                            <i className="ki-outline ki-trash fs-2"></i>
-                          </a>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                }
-              </tbody>
-            </table>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    incidents.map((incident, index) => (
+                      <tr key={index}>
+                        <td>
+                          <div className="form-check form-check-sm form-check-custom form-check-solid">
+                            <input className="form-check-input widget-9-check" type="checkbox" value="1" />
+                          </div>
+                        </td>
+                        <td>
+                          <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{incident.Date_Incid}</a>
+                        </td>
+                        <td>
+                          <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{incident.Libelle_Incid}</a>
+                        </td>
+                        <td>
+                          <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{incident.Description_Incid}</a>
+                        </td>
+                        <td>
+                          <div className="d-flex justify-content-end flex-shrink-0">
+                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#kt_modal_edit" onClick={() => openupdateModal(incident.Id_Incid)}>
+                              <i className="ki-outline ki-pencil fs-2"></i>
+                            </a>
+                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={() => handleDelete(incident.Id_Incid)}>
+                              <i className="ki-outline ki-trash fs-2"></i>
+                            </a>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  }
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

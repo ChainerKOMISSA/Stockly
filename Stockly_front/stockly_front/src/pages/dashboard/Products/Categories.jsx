@@ -177,106 +177,106 @@ function Categories() {
               </a>
             </div>
           </div>
-        </div>
-        <div className="card-body py-3">
-          <div className="table-responsive">
-            <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
-              <thead>
-                <tr className="fw-bold text-muted">
-                  <th className="w-25px">
-                    <div className="form-check form-check-sm form-check-custom form-check-solid">
-                      <input className="form-check-input" type="checkbox" value="1" data-kt-check="true" data-kt-check-target=".widget-9-check" />
+          <div className="card-body py-3">
+            <div className="table-responsive">
+              <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+                <thead>
+                  <tr className="fw-bold text-muted">
+                    <th className="w-25px">
+                      <div className="form-check form-check-sm form-check-custom form-check-solid">
+                        <input className="form-check-input" type="checkbox" value="1" data-kt-check="true" data-kt-check-target=".widget-9-check" />
+                      </div>
+                    </th>
+                    <th className="min-w-150px">Libellé</th>
+                    <th className="min-w-200px">Description</th>
+                    <th className="min-w-100px text-end">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {
+                    categories.map((categorie, index) => (
+                      <tr key={index}>
+                        <td>
+                          <div className="form-check form-check-sm form-check-custom form-check-solid">
+                            <input className="form-check-input widget-9-check" type="checkbox" value="1" />
+                          </div>
+                        </td>
+                        <td>
+                          <div className="d-flex align-items-center">
+                            <div className="d-flex justify-content-start flex-column">
+                              <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{categorie.Libelle_Categorie}</a>
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{categorie.Description_Categorie}</a>
+                        </td>
+                        <td>
+                          <div className="d-flex justify-content-end flex-shrink-0">
+                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#kt_modal_edit" onClick={() => openupdateModal(categorie.Id_Categorie)}>
+                              <i className="ki-outline ki-pencil fs-2"></i>
+                            </a>
+                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={() => handleDelete(categorie.Id_Categorie)}>
+                              <i className="ki-outline ki-trash fs-2"></i>
+                            </a>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  }
+                </tbody>
+              </table>
+              {/* Create Category Modal */}
+              <div className="modal fade" id="kt_modal_share_earn" tabindex="-1" aria-hidden="true" >
+                <div className="modal-dialog modal-dialog-centered mw-800px">
+                  <div className="modal-content">
+                    <div className="modal-header pb-0 border-0 justify-content-end">
+                      <div className="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                        <i className="ki-outline ki-cross fs-1"></i>
+                      </div>
                     </div>
-                  </th>
-                  <th className="min-w-150px">Libellé</th>
-                  <th className="min-w-200px">Description</th>
-                  <th className="min-w-100px text-end">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {
-                  categories.map((categorie, index) => (
-                    <tr key={index}>
-                      <td>
-                        <div className="form-check form-check-sm form-check-custom form-check-solid">
-                          <input className="form-check-input widget-9-check" type="checkbox" value="1" />
-                        </div>
-                      </td>
-                      <td>
-                        <div className="d-flex align-items-center">
-                          <div className="d-flex justify-content-start flex-column">
-                            <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{categorie.Libelle_Categorie}</a>
+                    <div className="modal-body scroll-y pt-0 pb-15">
+                      <div className="mw-lg-600px mx-auto">
+                        <div className="mb-13 text-center">
+                          <h1 className="mb-3">Créer une catégorie</h1>
+                          <div className="text-muted fw-semibold fs-5">Entrez les informations pour créer la catégorie.
                           </div>
                         </div>
-                      </td>
-                      <td>
-                        <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{categorie.Description_Categorie}</a>
-                      </td>
-                      <td>
-                        <div className="d-flex justify-content-end flex-shrink-0">
-                          <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#kt_modal_edit" onClick={() => openupdateModal(categorie.Id_Categorie)}>
-                            <i className="ki-outline ki-pencil fs-2"></i>
-                          </a>
-                          <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={() => handleDelete(categorie.Id_Categorie)}>
-                            <i className="ki-outline ki-trash fs-2"></i>
-                          </a>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                }
-              </tbody>
-            </table>
-            {/* Create Category Modal */}
-            <div className="modal fade" id="kt_modal_share_earn" tabindex="-1" aria-hidden="true" >
-              <div className="modal-dialog modal-dialog-centered mw-800px">
-                <div className="modal-content">
-                  <div className="modal-header pb-0 border-0 justify-content-end">
-                    <div className="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
-                      <i className="ki-outline ki-cross fs-1"></i>
-                    </div>
-                  </div>
-                  <div className="modal-body scroll-y pt-0 pb-15">
-                    <div className="mw-lg-600px mx-auto">
-                      <div className="mb-13 text-center">
-                        <h1 className="mb-3">Créer une catégorie</h1>
-                        <div className="text-muted fw-semibold fs-5">Entrez les informations pour créer la catégorie.
-                        </div>
+                        <form id="kt_ecommerce_settings_general_form" className="form">
+                          <div className="fv-row mb-7">
+                            <label className="fs-6 fw-semibold form-label mt-3">
+                              <span className="required">Libellé de la catégorie</span>
+                              <span className="ms-1" data-bs-toggle="tooltip" title="Entrez le libellé de la catégorie">
+                                <i className="ki-outline ki-information fs-7"></i>
+                              </span>
+                            </label>
+                            <input type="text" className="form-control form-control-solid" name="Libelle_Categorie" value={formData.Libelle_Categorie} onChange={handleChange} />
+                          </div>
+                          <div className="fv-row mb-7">
+                            <label className="fs-6 fw-semibold form-label mt-3">
+                              <span className="required">Description de la catégorie</span>
+                              <span className="ms-1" data-bs-toggle="tooltip" title="Entrez la description">
+                                <i className="ki-outline ki-information fs-7"></i>
+                              </span>
+                            </label>
+                            <input type="text" className="form-control form-control-solid" name="Description_Categorie" value={formData.Description_Categorie} onChange={handleChange} />
+                          </div>
+                          <div class="separator mb-6"></div>
+                          <div class="d-flex justify-content-end">
+                            <button type="reset" data-kt-contacts-type="cancel" class="btn btn-light me-3">Annuler</button>
+                            <button class="btn btn-primary">
+                              <span class="indicator-label" onClick={handleSubmit}>Enregistrer</span>
+                            </button>
+                          </div>
+                        </form>
                       </div>
-                      <form id="kt_ecommerce_settings_general_form" className="form">
-                        <div className="fv-row mb-7">
-                          <label className="fs-6 fw-semibold form-label mt-3">
-                            <span className="required">Libellé de la catégorie</span>
-                            <span className="ms-1" data-bs-toggle="tooltip" title="Entrez le libellé de la catégorie">
-                              <i className="ki-outline ki-information fs-7"></i>
-                            </span>
-                          </label>
-                          <input type="text" className="form-control form-control-solid" name="Libelle_Categorie" value={formData.Libelle_Categorie} onChange={handleChange} />
-                        </div>
-                        <div className="fv-row mb-7">
-                          <label className="fs-6 fw-semibold form-label mt-3">
-                            <span className="required">Description de la catégorie</span>
-                            <span className="ms-1" data-bs-toggle="tooltip" title="Entrez la description">
-                              <i className="ki-outline ki-information fs-7"></i>
-                            </span>
-                          </label>
-                          <input type="text" className="form-control form-control-solid" name="Description_Categorie" value={formData.Description_Categorie} onChange={handleChange} />
-                        </div>
-                        <div class="separator mb-6"></div>
-                        <div class="d-flex justify-content-end">
-                          <button type="reset" data-kt-contacts-type="cancel" class="btn btn-light me-3">Annuler</button>
-                          <button class="btn btn-primary">
-                            <span class="indicator-label" onClick={handleSubmit}>Enregistrer</span>
-                          </button>
-                        </div>
-                      </form>
                     </div>
-                  </div>
 
+                  </div>
                 </div>
               </div>
+              {/* End Create Product Modal */}
             </div>
-            {/* End Create Product Modal */}
           </div>
         </div>
       </div>

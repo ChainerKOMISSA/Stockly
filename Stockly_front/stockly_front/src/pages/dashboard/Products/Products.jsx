@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { API_URL } from '../../../components/constantes'
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../../components/alerts'
-
+import { getCurrentDate } from '../../../helpers/CalendarControl' 
 
 
 function Products() {
@@ -201,11 +201,11 @@ function Products() {
                         <input className="form-check-input" type="checkbox" value="1" data-kt-check="true" data-kt-check-target=".widget-9-check" />
                       </div>
                     </th>
-                    <th className="min-w-150px">Catégorie</th>
-                    <th className="min-w-200px">Produit</th>
-                    <th className="min-w-150px">Prix</th>
-                    <th className="min-w-150px">Quantité en stock</th>
-                    <th className="min-w-150px">Péremption</th>
+                    <th className="min-w-200px">Catégorie</th>
+                    <th className="min-w-300px">Produit</th>
+                    <th className="min-w-100px">Prix</th>
+                    <th className="min-w-100px">Quantité</th>
+                    <th className="min-w-200px">Péremption</th>
                     <th className="min-w-100px text-end">Actions</th>
                   </tr>
                 </thead>
@@ -351,7 +351,7 @@ function Products() {
                                 <i className="ki-outline ki-information fs-7"></i>
                               </span>
                             </label>
-                            <input type="date" className="form-control form-control-solid" name="Date_Peremption" value={formData.Date_Peremption} onChange={handleChange} />
+                            <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="Date_Peremption" value={formData.Date_Peremption} onChange={handleChange} />
                           </div>
                           <div class="separator mb-6"></div>
                           <div class="d-flex justify-content-end">
