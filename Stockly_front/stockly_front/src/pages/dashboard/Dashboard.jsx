@@ -135,7 +135,7 @@ function Dashboard() {
           <div className="col-xl-4">
             <div className="card bg-light-danger card-xl-stretch mb-5 mb-xl-8">
               <div className="card-body my-3">
-                <a href="#" className="card-title fw-bold text-danger fs-5 mb-3 d-block">Alerte stock</a>
+                <a href="/rupture" className="card-title fw-bold text-danger fs-5 mb-3 d-block">Alerte stock</a>
                 <div className="py-1">
                   <span className="text-gray-900 fs-1 fw-bold me-2">{nbrupture.map(nbrupt => (nbrupt.NbRupture))}</span>
                   <span className="fw-semibold text-muted fs-7">produit(s)</span>

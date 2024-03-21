@@ -4,7 +4,7 @@ import { API_URL } from '../../../components/constantes'
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../../components/alerts'
 import { getCurrentDate } from '../../../helpers/CalendarControl' 
 import { formatDate} from '../../../helpers/DateFormat'
-
+import Swal from 'sweetalert2'
 
 function Products() {
   const navigate = useNavigate();
@@ -67,6 +67,23 @@ function Products() {
     }
   }
 
+  function confirmDelete(id) {
+    Swal.fire({
+      title: "Etes-vous sûr de supprimer?",
+      text: "Cette action est irréversible",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "Annuler",
+      confirmButtonText: "Oui, supprimer"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleDelete(id);
+      }
+    });
+  }
+
 
   const handleDelete = async (id) => {
     try {
@@ -82,7 +99,7 @@ function Products() {
         navigate(0)
       } else {
         const errorData = await response.json();
-        throw new Error(errorData.message);
+        failureAlert(errorData)
       }
     } catch (error) {
       failureAlert(error);
@@ -261,7 +278,7 @@ function Products() {
                             <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#kt_modal_edit" onClick={() => openupdateModal(produit.Id_Produit)}>
                               <i className="ki-outline ki-pencil fs-2"></i>
                             </a>
-                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={() => handleDelete(produit.Id_Produit)}>
+                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={(e) => confirmDelete(produit.Id_Produit)}>
                               <i className="ki-outline ki-trash fs-2"></i>
                             </a>
                           </div>

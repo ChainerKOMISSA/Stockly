@@ -3,6 +3,7 @@ import { API_URL } from '../../../components/constantes'
 import { Link, useNavigate } from 'react-router-dom'
 import { BiX, BiPencil } from "react-icons/bi";
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../../components/alerts'
+import Swal from 'sweetalert2'
 
 
 
@@ -18,9 +19,10 @@ function Categories() {
   const opencreateModal = () => { setShowCreateModal(true) }
   const closecreateModal = () => { setShowCreateModal(false) }
 
-  const openupdateModal = (category) => { setShowUpdateModal(true); setSelectedCategory(category) }
+  const openupdateModal = (category) => { setSelectedCategory(category); setShowUpdateModal(true); console.log(showupdateModal); }
   const closeupdateModal = () => { setShowUpdateModal(false); setSelectedCategory(null) }
 
+  useEffect(() => { }, [showupdateModal])
 
   useEffect(() => {
     fetch(`${API_URL}/categories`)
@@ -47,7 +49,7 @@ function Categories() {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${API_URL}/createcategory`, {
+      const response = await fetch(`${API_URL}/categories`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -80,8 +82,8 @@ function Categories() {
   useEffect(() => {
     if (selectedCategory) {
       setUpdatedData({
-        Libelle_Categorie: selectedCategory.Libelle_Categorie,
-        Description_Categorie: selectedCategory.Description_Categorie,
+        libelle: selectedCategory.libelle,
+        description: selectedCategory.description,
       });
     }
   }, [selectedCategory]);
@@ -91,7 +93,7 @@ function Categories() {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${API_URL}/category/${id}`, {
+      const response = await fetch(`${API_URL}/categories/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -115,17 +117,33 @@ function Categories() {
   }
 
 
-  const handleDelete = (id) => {
+  function confirmDelete(id) {
+    Swal.fire({
+      title: "Etes-vous sûr de supprimer?",
+      text: "Cette action est irréversible",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "Annuler",
+      confirmButtonText: "Oui, supprimer"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleDelete(id);
+      }
+    });
+  }
+
+  const handleDelete = async (id) => {
     try {
-      const response = fetch(`${API_URL}/category/${id}`, {
+      const response = await fetch(`${API_URL}/categories/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
         },
       });
-
+      
       if (response.ok) {
-        const data = response.json();
         deleteSuccessAlert()
         navigate(0)
       } else {
@@ -167,7 +185,7 @@ function Categories() {
         <div className="card mb-5 mb-xl-8">
           <div className="card-header border-0 pt-5">
             <div className="card-toolbar align-items-center gap-2 gap-lg-3" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover" title="Click to add a user">
-              <a href="#" className="btn btn-sm btn-light btn-active-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_share_earn" onClick={() => opencreateModal()}>
+              <a href="#" className="btn btn-sm btn-light btn-active-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_share_earn">
                 <i className="ki-outline ki-plus fs-2"></i>
                 Nouvelle catégorie
               </a>
@@ -204,19 +222,19 @@ function Categories() {
                         <td>
                           <div className="d-flex align-items-center">
                             <div className="d-flex justify-content-start flex-column">
-                              <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{categorie.Libelle_Categorie}</a>
+                              <a className="text-gray-900 fw-bold text-hover-primary fs-6">{categorie.libelle}</a>
                             </div>
                           </div>
                         </td>
                         <td>
-                          <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{categorie.Description_Categorie}</a>
+                          <a className="text-gray-900 fw-bold text-hover-primary fs-6">{categorie.description}</a>
                         </td>
                         <td>
                           <div className="d-flex justify-content-end flex-shrink-0">
-                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#kt_modal_edit" onClick={() => openupdateModal(categorie.Id_Categorie)}>
+                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#kt_modal_edit" data-category-id={categorie.id}>
                               <i className="ki-outline ki-pencil fs-2"></i>
                             </a>
-                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={() => handleDelete(categorie.Id_Categorie)}>
+                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={(e) => confirmDelete(categorie.id)}>
                               <i className="ki-outline ki-trash fs-2"></i>
                             </a>
                           </div>
@@ -227,7 +245,7 @@ function Categories() {
                 </tbody>
               </table>
               {/* Create Category Modal */}
-              <div className="modal fade" id="kt_modal_share_earn" tabindex="-1" aria-hidden="true" >
+              <div className="modal fade" id="kt_modal_share_earn" tabIndex="-1" aria-hidden="true" >
                 <div className="modal-dialog modal-dialog-centered mw-800px">
                   <div className="modal-content">
                     <div className="modal-header pb-0 border-0 justify-content-end">
@@ -250,7 +268,7 @@ function Categories() {
                                 <i className="ki-outline ki-information fs-7"></i>
                               </span>
                             </label>
-                            <input type="text" className="form-control form-control-solid" name="Libelle_Categorie" value={formData.Libelle_Categorie} onChange={handleChange} />
+                            <input type="text" className="form-control form-control-solid" name="libelle" value={formData.libelle} onChange={handleChange} />
                           </div>
                           <div className="fv-row mb-7">
                             <label className="fs-6 fw-semibold form-label mt-3">
@@ -259,13 +277,13 @@ function Categories() {
                                 <i className="ki-outline ki-information fs-7"></i>
                               </span>
                             </label>
-                            <input type="text" className="form-control form-control-solid" name="Description_Categorie" value={formData.Description_Categorie} onChange={handleChange} />
+                            <input type="text" className="form-control form-control-solid" name="description" value={formData.description} onChange={handleChange} />
                           </div>
                           <div class="separator mb-6"></div>
                           <div class="d-flex justify-content-end">
                             <button type="reset" data-kt-contacts-type="cancel" class="btn btn-light me-3">Annuler</button>
-                            <button class="btn btn-primary">
-                              <span class="indicator-label" onClick={handleSubmit}>Enregistrer</span>
+                            <button class="btn btn-primary" onClick={handleSubmit}>
+                              <span class="indicator-label">Enregistrer</span>
                             </button>
                           </div>
                         </form>
@@ -275,7 +293,57 @@ function Categories() {
                   </div>
                 </div>
               </div>
-              {/* End Create Product Modal */}
+              {/* End Create Modal */}
+              {/* Create Category Modal */}
+              <div className="modal fade" id="kt_modal_edit" tabIndex="-1" aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered mw-800px">
+                  <div className="modal-content">
+                    <div className="modal-header pb-0 border-0 justify-content-end">
+                      <div className="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                        <i className="ki-outline ki-cross fs-1"></i>
+                      </div>
+                    </div>
+                    <div className="modal-body scroll-y pt-0 pb-15">
+                      <div className="mw-lg-600px mx-auto">
+                        <div className="mb-13 text-center">
+                          <h1 className="mb-3">Modifier la catégorie</h1>
+                          <div className="text-muted fw-semibold fs-5">Entrez les informations pour modifier la catégorie.
+                          </div>
+                        </div>
+                        <form id="kt_ecommerce_settings_general_form" className="form">
+                          <div className="fv-row mb-7">
+                            <label className="fs-6 fw-semibold form-label mt-3">
+                              <span className="required">Libellé de la catégorie</span>
+                              <span className="ms-1" data-bs-toggle="tooltip" title="Entrez le libellé de la catégorie">
+                                <i className="ki-outline ki-information fs-7"></i>
+                              </span>
+                            </label>
+                            <input type="text" className="form-control form-control-solid" name="libelle" value={updatedData.libelle} onChange={handleUpdateChange} />
+                          </div>
+                          <div className="fv-row mb-7">
+                            <label className="fs-6 fw-semibold form-label mt-3">
+                              <span className="required">Description de la catégorie</span>
+                              <span className="ms-1" data-bs-toggle="tooltip" title="Entrez la description">
+                                <i className="ki-outline ki-information fs-7"></i>
+                              </span>
+                            </label>
+                            <input type="text" className="form-control form-control-solid" name="description" value={updatedData.description} onChange={handleUpdateChange} />
+                          </div>
+                          <div class="separator mb-6"></div>
+                          <div class="d-flex justify-content-end">
+                            <button type="reset" data-kt-contacts-type="cancel" class="btn btn-light me-3">Annuler</button>
+                            <button class="btn btn-primary">
+                              <span class="indicator-label" onClick={(e) => handleUpdate(e, selectedCategory.Id_Categorie)}>Enregistrer les modifications</span>
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              {/* End Create Modal */}
             </div>
           </div>
         </div>

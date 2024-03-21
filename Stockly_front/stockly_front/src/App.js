@@ -14,6 +14,7 @@ import Suppliers from './pages/dashboard/Suppliers/Suppliers';
 import Categories from './pages/dashboard/Products/Categories';
 import Deliveries from './pages/dashboard/Deliveries/Deliveries';
 import Liquidation from './pages/dashboard/Liquidation';
+import Rupture from './pages/dashboard/Rupture';
 
 
 
@@ -34,6 +35,7 @@ function App() {
           <Route path="incidents" element={<Incidents />} />
           <Route path="depenses" element={<Depenses />} />
           <Route path="liquidation" element={<Liquidation />} />
+          <Route path="rupture" element={<Rupture />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

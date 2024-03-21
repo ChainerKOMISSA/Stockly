@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { API_URL } from '../../components/constantes';
 import { Link, useNavigate } from 'react-router-dom'
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../components/alerts'
-
+import { getCurrentDate } from '../../helpers/CalendarControl';
+import { formatDate } from '../../helpers/DateFormat';
 
 
 function Depenses() {
@@ -164,7 +165,7 @@ function Depenses() {
         <div className="card mb-5 mb-xl-8">
           <div className="card-header border-0 pt-5">
             <div className="card-toolbar align-items-center gap-2 gap-lg-3" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover" title="Click to add a user">
-              <a href="#" className="btn btn-sm btn-light btn-active-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_share_earn" onClick={() => opencreateModal()}>
+              <a href="#" className="btn btn-sm btn-light btn-active-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_share_earn">
                 <i className="ki-outline ki-plus fs-2"></i>
                 Enregistrer une dépense
               </a>
@@ -184,10 +185,9 @@ function Depenses() {
                         <input className="form-check-input" type="checkbox" value="1" data-kt-check="true" data-kt-check-target=".widget-9-check" />
                       </div>
                     </th>
-                    <th className="min-w-300px">Date</th>
+                    <th className="min-w-200px">Date</th>
                     <th className="min-w-400px">Libellé</th>
-                    <th className="min-w-250px">Montant</th>
-                    {/* <th className="min-w-100px text-end">Actions</th> */}
+                    <th className="min-w-100px">Montant</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -200,7 +200,7 @@ function Depenses() {
                           </div>
                         </td>
                         <td>
-                          <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{depense.Date_Depense}</a>
+                          <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{formatDate(depense.Date_Depense)}</a>
                         </td>
                         <td>
                           <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{depense.Libelle_Depense}</a>
@@ -223,6 +223,65 @@ function Depenses() {
                   }
                 </tbody>
               </table>
+              {/* Create Category Modal */}
+              <div className="modal fade" id="kt_modal_share_earn" tabIndex="-1" aria-hidden="true" >
+                <div className="modal-dialog modal-dialog-centered mw-800px">
+                  <div className="modal-content">
+                    <div className="modal-header pb-0 border-0 justify-content-end">
+                      <div className="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                        <i className="ki-outline ki-cross fs-1"></i>
+                      </div>
+                    </div>
+                    <div className="modal-body scroll-y pt-0 pb-15">
+                      <div className="mw-lg-600px mx-auto">
+                        <div className="mb-13 text-center">
+                          <h1 className="mb-3">Enregistrer une dépense</h1>
+                          <div className="text-muted fw-semibold fs-5">Entrez les informations pour enregistrer la dépense.
+                          </div>
+                        </div>
+                        <form id="kt_ecommerce_settings_general_form" className="form">
+                          <div className="fv-row mb-7">
+                            <label className="fs-6 fw-semibold form-label mt-3">
+                              <span className="required">Date</span>
+                              <span className="ms-1" data-bs-toggle="tooltip" title="Entrez la date de la dépense">
+                                <i className="ki-outline ki-information fs-7"></i>
+                              </span>
+                            </label>
+                            <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="Date_Depense" value={formData.Date_Depense} onChange={handleChange} />
+                          </div>
+                          <div className="fv-row mb-7">
+                            <label className="fs-6 fw-semibold form-label mt-3">
+                              <span className="required">Libellé de la dépense</span>
+                              <span className="ms-1" data-bs-toggle="tooltip" title="Entrez le libellé">
+                                <i className="ki-outline ki-information fs-7"></i>
+                              </span>
+                            </label>
+                            <input type="text" className="form-control form-control-solid" name="Libelle_Depense" value={formData.Libelle_Depense} onChange={handleChange} />
+                          </div>
+                          <div className="fv-row mb-7">
+                            <label className="fs-6 fw-semibold form-label mt-3">
+                              <span className="required">Montant de la dépense</span>
+                              <span className="ms-1" data-bs-toggle="tooltip" title="Entrez le montant">
+                                <i className="ki-outline ki-information fs-7"></i>
+                              </span>
+                            </label>
+                            <input type="number" className="form-control form-control-solid" name="Montant_Depense" value={formData.Montant_Depense} onChange={handleChange} />
+                          </div>
+                          <div class="separator mb-6"></div>
+                          <div class="d-flex justify-content-end">
+                            <button type="reset" data-kt-contacts-type="cancel" class="btn btn-light me-3">Annuler</button>
+                            <button class="btn btn-primary" onClick={handleSubmit}>
+                              <span class="indicator-label">Enregistrer</span>
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+              {/* End Create Modal */}
             </div>
           </div>
         </div>

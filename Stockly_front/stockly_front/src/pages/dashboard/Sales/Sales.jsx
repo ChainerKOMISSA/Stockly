@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../../components/alerts'
 import { MontantInputControl } from '../../../helpers/InputControls'
 import { getCurrentDate } from '../../../helpers/CalendarControl'
-import {formatDate} from '../../../helpers/DateFormat'
+import { formatDate } from '../../../helpers/DateFormat'
 
 
 
@@ -170,9 +170,21 @@ function Sales() {
   }
 
   const addProductToList = () => {
+    // let date = e.target.value("Date_Vente")
+    // let prod = e.target.value("Id_Produit")
+    // let prix = e.target.value("Prix_Vente")
+    // let quantite = e.target.value("Quantite_Vente")
+    // let montant = e.target.value("Montant_Vente")
 
+    document.getElementById("product_list_table").hidden = false;
+    document.getElementById("bill_button").hidden = false;
+    document.getElementById("CancelBtn").hidden = false;
+    document.getElementById("SaveBtn").hidden = false;
+
+    let table = document.getElementById("product_list_table")
   }
 
+  
   return (
     <>
       <div id="kt_app_toolbar" className="app-toolbar pt-7 pt-lg-10">
@@ -226,7 +238,6 @@ function Sales() {
                     <th className="min-w-200px">Produit vendu</th>
                     <th className="min-w-100px">Prix</th>
                     <th className="min-w-100px">Quantité</th>
-                    <th className="min-w-150px">Montant</th>
                     <th className="min-w-100px text-end">Actions</th>
                   </tr>
                 </thead>
@@ -254,9 +265,6 @@ function Sales() {
                         </td>
                         <td>
                           <a className="text-gray-900 fw-bold text-hover-primary fs-6">{sale.Quantite_Vente}</a>
-                        </td>
-                        <td>
-                          <a className="text-gray-900 fw-bold text-hover-primary fs-6">{sale.Montant_Vente}</a>
                         </td>
                         <td>
                           <div className="d-flex justify-content-end flex-shrink-0">
@@ -297,7 +305,7 @@ function Sales() {
                                 <i className="ki-outline ki-information fs-7"></i>
                               </span>
                             </label>
-                            <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="Date_Vente" value={formData.Date_Vente} onChange={handleChange} />
+                            <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="Date_Vente" id='Date_Vente' value={formData.Date_Vente} onChange={handleChange} />
                           </div>
                           <div className="row row-cols-1 row-cols-sm-2 rol-cols-md-1 row-cols-lg-2">
                             <div className="col">
@@ -309,7 +317,7 @@ function Sales() {
                                   </span>
                                 </label>
                                 <div className="w-100">
-                                  <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Sélectionnez..." onChange={handleChangeProduit} name='Id_Produit'>
+                                  <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Sélectionnez..." onChange={handleChangeProduit} name="Id_Produit">
                                     <option value="">Sélectionnez...</option>
                                     {
                                       produits.map((produit, index) => (
@@ -341,7 +349,7 @@ function Sales() {
                                     <i className="ki-outline ki-information fs-7"></i>
                                   </span>
                                 </label>
-                                <input type="number" min={0} className="form-control form-control-solid" name="Quantite_Vente" value={formData.Quantite_Vente} onChange={handleChange} />
+                                <input type="number" min={0} className="form-control form-control-solid" id="Quantite_Vente" name="Quantite_Vente" value={formData.Quantite_Vente} onChange={handleChange} />
                               </div>
                             </div>
                             <div className="col">
@@ -358,18 +366,18 @@ function Sales() {
                             </div>
                           </div>
                           <div className="d-flex justify-content-end">
-                            <button className="btn btn-primary">
+                            <button className="btn btn-primary" id="BtnAjouter" onClick={addProductToList}>
                               <span className="indicator-label">Ajouter</span>
                             </button>
                           </div>
 
-                          <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4" id="product_list_table">
+                          <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4" id="product_list_table" hidden="true">
                             <thead>
                               <tr className="fw-bold text-muted">
-                                <th className="min-w-200px">Produit</th>
-                                <th className="min-w-200px">Prix</th>
-                                <th className="min-w-200px">Quantité</th>
-                                <th className="min-w-200px">Montant</th>
+                                <th className="min-w-200px" id="nom_produit">Produit</th>
+                                <th className="min-w-200px" id="prix_produit">Prix</th>
+                                <th className="min-w-200px" id="qtte_produit">Quantité</th>
+                                <th className="min-w-200px" id="montant_produit">Montant</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -379,28 +387,21 @@ function Sales() {
                                 <td>Produit</td>
                                 <td>Produit</td>
                               </tr>
-                              <tr>
-                                <td>Produit</td>
-                                <td>Produit</td>
-                                <td>Produit</td>
-                                <td>Produit</td>
-                              </tr>
                             </tbody>
                           </table>
                           <div className="d-flex justify-content-end" id="bill_button">
-                            <span className="btn btn-light me-3 fw-semibold fs-5"><i className="ki-outline ki-basket fs-3"></i> Montant total à payer :  FCFA</span>
+                            <span className="btn btn-light me-3 fw-semibold fs-5" hidden="true" id="bill_button"><i className="ki-outline ki-basket fs-3"></i> Montant total à payer :  FCFA</span>
                           </div><br />
                           <div className="separator mb-6"></div>
                           <div className="d-flex justify-content-end">
-                            <button type="reset" data-kt-contacts-type="cancel" className="btn btn-light me-3">Annuler</button>
-                            <button className="btn btn-primary">
+                            <button type="reset" data-kt-contacts-type="cancel" className="btn btn-light me-3" hidden="true" id="CancelBtn">Annuler</button>
+                            <button className="btn btn-primary" hidden="true" id="SaveBtn">
                               <span className="indicator-label" onClick={handleSubmit}>Enregistrer</span>
                             </button>
                           </div>
                         </form>
                       </div>
                     </div>
-
                   </div>
                 </div>
               </div>

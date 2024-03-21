@@ -60,6 +60,14 @@ const Sidebar = () => {
                                 </a>
                             </div>
                             <div className="menu-item">
+                                <a className={`menu-link ${activeMenu === 'liquidation' ? 'active' : ''}`} href="liquidation" onClick={() => handleMenuClick('liquidation')}>
+                                    <span className="menu-bullet">
+                                        <span className="bullet bullet-dot"></span>
+                                    </span>
+                                    <span className="menu-title">Produits à liquider</span>
+                                </a>
+                            </div>
+                            <div className="menu-item">
                                 <a className={`menu-link ${activeMenu === 'settings' ? 'active' : ''}`} href="#" onClick={() => handleMenuClick('settings')}>
                                     <span className="menu-bullet">
                                         <span className="bullet bullet-dot"></span>
