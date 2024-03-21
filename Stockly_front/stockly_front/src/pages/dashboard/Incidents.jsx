@@ -47,7 +47,7 @@ function Incidents() {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${API_URL}/createincident`, {
+      const response = await fetch(`${API_URL}/incidents`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -80,9 +80,8 @@ function Incidents() {
   useEffect(() => {
     if (selectedIncident) {
       setUpdatedData({
-        Libelle_Incid: selectedIncident.Libelle_Incid,
-        Description_Incid: selectedIncident.Description_Incid,
-        Date_Incid: selectedIncident.Date_Incid,
+        libelle: selectedIncident.incident,
+        date: selectedIncident.date,
       });
     }
   }, [selectedIncident]);
@@ -91,7 +90,7 @@ function Incidents() {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${API_URL}/incident/${id}`, {
+      const response = await fetch(`${API_URL}/incidents/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -133,7 +132,7 @@ function Incidents() {
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`${API_URL}/incident/${id}`, {
+      const response = await fetch(`${API_URL}/incidents/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -205,7 +204,6 @@ function Incidents() {
                     </th>
                     <th className="min-w-100px">Date</th>
                     <th className="min-w-200px">Libellé</th>
-                    <th className="min-w-300px">Description</th>
                     <th className="min-w-100px text-end">Actions</th>
 
                   </tr>
@@ -220,20 +218,17 @@ function Incidents() {
                           </div>
                         </td>
                         <td>
-                          <a className="text-gray-900 fw-bold text-hover-primary fs-6">{formatDate(incident.Date_Incid)}</a>
+                          <a className="text-gray-900 fw-bold text-hover-primary fs-6">{formatDate(incident.date)}</a>
                         </td>
                         <td>
-                          <a className="text-gray-900 fw-bold text-hover-primary fs-6">{incident.Libelle_Incid}</a>
-                        </td>
-                        <td>
-                          <a className="text-gray-900 fw-bold text-hover-primary fs-6">{incident.Description_Incid}</a>
+                          <a className="text-gray-900 fw-bold text-hover-primary fs-6">{incident.libelle}</a>
                         </td>
                         <td>
                           <div className="d-flex justify-content-end flex-shrink-0">
                             <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#kt_modal_edit">
                               <i className="ki-outline ki-pencil fs-2"></i>
                             </a>
-                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={(e) => confirmDelete(incident.Id_Incid)}>
+                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={(e) => confirmDelete(incident.id)}>
                               <i className="ki-outline ki-trash fs-2"></i>
                             </a>
                           </div>
@@ -267,7 +262,7 @@ function Incidents() {
                                 <i className="ki-outline ki-information fs-7"></i>
                               </span>
                             </label>
-                            <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="Date_Incid" value={formData.Date_Incid} onChange={handleChange} />
+                            <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="date" value={formData.date} onChange={handleChange} />
                           </div>
                           <div className="fv-row mb-7">
                             <label className="fs-6 fw-semibold form-label mt-3">
@@ -276,16 +271,7 @@ function Incidents() {
                                 <i className="ki-outline ki-information fs-7"></i>
                               </span>
                             </label>
-                            <input type="text" className="form-control form-control-solid" name="Libelle_Incid" value={formData.Libelle_Incid} onChange={handleChange} />
-                          </div>
-                          <div className="fv-row mb-7">
-                            <label className="fs-6 fw-semibold form-label mt-3">
-                              <span className="required">Description de l'incident</span>
-                              <span className="ms-1" data-bs-toggle="tooltip" title="Entrez la description de l'incident">
-                                <i className="ki-outline ki-information fs-7"></i>
-                              </span>
-                            </label>
-                            <input type="textarea" className="form-control form-control-solid" name="Description_Incid" value={formData.Description_Incid} onChange={handleChange} />
+                            <input type="text" className="form-control form-control-solid" name="libelle" value={formData.libelle} onChange={handleChange} />
                           </div>
                           <div class="separator mb-6"></div>
                           <div class="d-flex justify-content-end">

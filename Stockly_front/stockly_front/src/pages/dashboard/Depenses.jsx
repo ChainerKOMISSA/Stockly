@@ -46,7 +46,7 @@ function Depenses() {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${API_URL}/createdepense`, {
+      const response = await fetch(`${API_URL}/depenses`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -79,9 +79,9 @@ function Depenses() {
   useEffect(() => {
     if (selectedDepense) {
       setUpdatedData({
-        Libelle_Depense: selectedDepense.Libelle_Depense,
-        Montant_Depense: selectedDepense.Montant_Depense,
-        Date_Depense: selectedDepense.Date_Depense,
+        libelle: selectedDepense.libelle,
+        montant: selectedDepense.montant,
+        date: selectedDepense.date,
       });
     }
   }, [selectedDepense]);
@@ -90,7 +90,7 @@ function Depenses() {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${API_URL}/depense/${id}`, {
+      const response = await fetch(`${API_URL}/depenses/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -115,7 +115,7 @@ function Depenses() {
 
   const handleDelete = (id) => {
     try {
-      const response = fetch(`${API_URL}/depense/${id}`, {
+      const response = fetch(`${API_URL}/depenses/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -200,13 +200,13 @@ function Depenses() {
                           </div>
                         </td>
                         <td>
-                          <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{formatDate(depense.Date_Depense)}</a>
+                          <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{formatDate(depense.date)}</a>
                         </td>
                         <td>
-                          <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{depense.Libelle_Depense}</a>
+                          <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{depense.libelle}</a>
                         </td>
                         <td>
-                          <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{depense.Montant_Depense}</a>
+                          <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{depense.montant}</a>
                         </td>
                         {/* <td>
                         <div className="d-flex justify-content-end flex-shrink-0">
@@ -247,7 +247,7 @@ function Depenses() {
                                 <i className="ki-outline ki-information fs-7"></i>
                               </span>
                             </label>
-                            <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="Date_Depense" value={formData.Date_Depense} onChange={handleChange} />
+                            <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="date" value={formData.date} onChange={handleChange} />
                           </div>
                           <div className="fv-row mb-7">
                             <label className="fs-6 fw-semibold form-label mt-3">
@@ -256,7 +256,7 @@ function Depenses() {
                                 <i className="ki-outline ki-information fs-7"></i>
                               </span>
                             </label>
-                            <input type="text" className="form-control form-control-solid" name="Libelle_Depense" value={formData.Libelle_Depense} onChange={handleChange} />
+                            <input type="text" className="form-control form-control-solid" name="libelle" value={formData.libelle} onChange={handleChange} />
                           </div>
                           <div className="fv-row mb-7">
                             <label className="fs-6 fw-semibold form-label mt-3">
@@ -265,7 +265,7 @@ function Depenses() {
                                 <i className="ki-outline ki-information fs-7"></i>
                               </span>
                             </label>
-                            <input type="number" className="form-control form-control-solid" name="Montant_Depense" value={formData.Montant_Depense} onChange={handleChange} />
+                            <input type="number" className="form-control form-control-solid" name="montant" value={formData.montant} onChange={handleChange} />
                           </div>
                           <div class="separator mb-6"></div>
                           <div class="d-flex justify-content-end">

@@ -13,6 +13,7 @@ function Sales() {
   const [showcreateModal, setShowCreateModal] = useState(false);
   const [showupdateModal, setShowUpdateModal] = useState(false);
   const [sales, setSales] = useState([])
+  const [produitsvente, setProduitsvente] = useState([])
   const [produits, setProduits] = useState([])
   const [selectedSale, setSelectedSale] = useState(null)
   const [formData, setFormData] = useState({});
@@ -26,7 +27,7 @@ function Sales() {
   const closeupdateModal = () => { setShowUpdateModal(false); setSelectedSale(null) }
 
   useEffect(() => {
-    fetch(`${API_URL}/sales`)
+    fetch(`${API_URL}/ventes`)
       .then(response => response.json())
       .then(data => {
         setSales(data)
@@ -37,7 +38,18 @@ function Sales() {
   }, []);
 
   useEffect(() => {
-    fetch(`${API_URL}/products`)
+    fetch(`${API_URL}/produitvente`)
+      .then(response => response.json())
+      .then(data => {
+        setProduitsvente(data)
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération des produits vendus: ', error)
+      })
+  }, []);
+
+  useEffect(() => {
+    fetch(`${API_URL}/produits`)
       .then(response => response.json())
       .then(data => {
         setProduits(data)
@@ -51,15 +63,15 @@ function Sales() {
 
   const handleChangeProduit = (e) => {
     let produitId = e.target.value;
-    let prd = produits.find(produit => produit.Id_Produit == produitId)
+    let prd = produits.find(produit => produit.id == produitId)
     setFormData(
       {
         ...formData,
-        Nom_Produit: prd.Nom_Produit,
-        Prix_Vente: prd.Prix_Produit
+        nom: prd.nom,
+        prix: prd.prix
       }
     )
-    setPrix(prd.Prix_Produit)
+    setPrix(prd.prix)
   }
 
   const handleChange = (e) => {
@@ -75,7 +87,7 @@ function Sales() {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${API_URL}/createsale`, {
+      const response = await fetch(`${API_URL}/ventes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -108,11 +120,8 @@ function Sales() {
   useEffect(() => {
     if (selectedSale) {
       setUpdatedData({
-        Id_Produit: selectedSale.Id_Produit,
-        Prix_Vente: selectedSale.Prix_Vente,
-        Quantite_Vente: selectedSale.Quantite_Vente,
-        Montant_Vente: selectedSale.Montant_Vente,
-        Date_Vente: selectedSale.Date_Vente,
+        id: selectedSale.id,
+        dateVente: selectedSale.dateVente,
       });
     }
   }, [selectedSale]);
@@ -122,7 +131,7 @@ function Sales() {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${API_URL}/category/${id}`, {
+      const response = await fetch(`${API_URL}/ventes/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -148,7 +157,7 @@ function Sales() {
 
   const handleDelete = (id) => {
     try {
-      const response = fetch(`${API_URL}/category/${id}`, {
+      const response = fetch(`${API_URL}/ventes/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -235,9 +244,8 @@ function Sales() {
                       </div>
                     </th>
                     <th className="min-w-150px">Date</th>
-                    <th className="min-w-200px">Produit vendu</th>
-                    <th className="min-w-100px">Prix</th>
-                    <th className="min-w-100px">Quantité</th>
+                    <th className="min-w-200px">Employe</th>
+                    <th className="min-w-100px">Montant</th>
                     <th className="min-w-100px text-end">Actions</th>
                   </tr>
                 </thead>
@@ -253,18 +261,16 @@ function Sales() {
                         <td>
                           <div className="d-flex align-items-center">
                             <div className="d-flex justify-content-start flex-column">
-                              <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{formatDate(sale.Date_Vente)}</a>
+                              <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{formatDate(sale.dateVente)}</a>
                             </div>
                           </div>
                         </td>
                         <td>
-                          <a className="text-gray-900 fw-bold text-hover-primary fs-6">{sale.Nom_Produit}</a>
+                          <a className="text-gray-900 fw-bold text-hover-primary fs-6">{sale.idEmploye}</a>
                         </td>
+
                         <td>
-                          <a className="text-gray-900 fw-bold text-hover-primary fs-6">{sale.Prix_Vente}</a>
-                        </td>
-                        <td>
-                          <a className="text-gray-900 fw-bold text-hover-primary fs-6">{sale.Quantite_Vente}</a>
+                          <a className="text-gray-900 fw-bold text-hover-primary fs-6"></a>
                         </td>
                         <td>
                           <div className="d-flex justify-content-end flex-shrink-0">

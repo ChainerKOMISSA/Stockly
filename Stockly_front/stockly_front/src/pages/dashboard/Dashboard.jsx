@@ -67,7 +67,7 @@ function Dashboard() {
 
   // Somme des dépenses
   useEffect(() => {
-    fetch(`${API_URL}/statdepenses`)
+    fetch(`${API_URL}/depenses/total`)
       .then(response => response.json())
       .then(data => {
         setSumdepenses(data)
@@ -123,7 +123,7 @@ function Dashboard() {
               <div className="card-body my-3">
                 <a href="#" className="card-title fw-bold text-warning fs-5 mb-3 d-block">Dépenses effectuées</a>
                 <div className="py-1">
-                  <span className="text-gray-900 fs-1 fw-bold me-2">{sumdepenses.map(sumdepense => (sumdepense.SumDepense))}</span>
+                  <span className="text-gray-900 fs-1 fw-bold me-2">{sumdepenses.somme}</span>
                   <span className="fw-semibold text-muted fs-7">FCFA</span>
                 </div>
                 <div className="progress h-7px bg-warning bg-opacity-50 mt-7">

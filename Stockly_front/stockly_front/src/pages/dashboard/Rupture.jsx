@@ -7,7 +7,7 @@ function Rupture() {
     const [ruptures, setRupture] = useState([]);
 
     useEffect(() => {
-        fetch(`${API_URL}/rupture`)
+        fetch(`${API_URL}/produits/rupture`)
             .then(response => response.json())
             .then(data => {
                 setRupture(data)
@@ -79,31 +79,31 @@ function Rupture() {
                                             <td>
                                                 <div className="d-flex align-items-center">
                                                     <div className="d-flex justify-content-start flex-column">
-                                                        <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{rupture.Libelle_Categorie}</a>
+                                                        <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{rupture.Categorie.libelle}</a>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
-                                                <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{rupture.Nom_Produit}</a>
+                                                <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{rupture.nom}</a>
                                             </td>
                                             <td className="text-end">
                                                 <div className="d-flex flex-column w-100 me-2">
                                                     <div className="d-flex flex-stack mb-2">
-                                                        <span className="text-gray-700 fw-bold text-hover-primary d-block fs-6">{rupture.Prix_Produit}</span>
+                                                        <span className="text-gray-700 fw-bold text-hover-primary d-block fs-6">{rupture.prix}</span>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className="text-end">
                                                 <div className="d-flex flex-column w-100 me-2">
                                                     <div className="d-flex flex-stack mb-2">
-                                                        <span className="text-danger fw-bold text-hover-primary d-block fs-6">{rupture.Quantite_stock}</span>
+                                                        <span className="text-danger fw-bold text-hover-primary d-block fs-6">{rupture.quantiteStock}</span>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className="text-end">
                                                 <div className="d-flex flex-column w-100 me-2">
                                                     <div className="d-flex flex-stack mb-2">
-                                                        <span className="text-gray-700 fw-bold d-block fs-6">{formatDate(rupture.Date_Peremption)}</span>
+                                                        <span className="text-gray-700 fw-bold d-block fs-6">{formatDate(rupture.datePeremption)}</span>
                                                     </div>
                                                 </div>
                                             </td>

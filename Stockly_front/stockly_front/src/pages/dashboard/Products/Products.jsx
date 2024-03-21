@@ -46,7 +46,7 @@ function Products() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${API_URL}/createproduct`, {
+      const response = await fetch(`${API_URL}/produits`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -87,7 +87,7 @@ function Products() {
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`${API_URL}/product/${id}`, {
+      const response = await fetch(`${API_URL}/produits/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -118,10 +118,10 @@ function Products() {
   useEffect(() => {
     if (selectedProduct) {
       setUpdatedData({
-        Nom_Produit: selectedProduct.Nom_Produit,
-        Prix_Produit: selectedProduct.Prix_Produit,
-        Quantite_Stock: selectedProduct.Quantite_Stock,
-        Date_Peremption : selectedProduct.Date_Peremption,
+        nom: selectedProduct.nom,
+        prix: selectedProduct.prix,
+        quantiteStock: selectedProduct.quantiteStock,
+        datePeremption : selectedProduct.datePeremption,
       });
     }
   }, [selectedProduct]);
@@ -130,7 +130,7 @@ function Products() {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${API_URL}/product/${id}`, {
+      const response = await fetch(`${API_URL}/produits/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -154,7 +154,7 @@ function Products() {
 
 
   useEffect(() => {
-    fetch(`${API_URL}/products`)
+    fetch(`${API_URL}/produits`)
       .then(response => response.json())
       .then(data => {
         setProduits(data)
@@ -239,17 +239,17 @@ function Products() {
                         <td>
                           <div className="d-flex align-items-center">
                             <div className="d-flex justify-content-start flex-column">
-                              <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{produit.Libelle_Categorie}</a>
+                              <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{produit.Categorie.libelle}</a>
                             </div>
                           </div>
                         </td>
                         <td>
-                          <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{produit.Nom_Produit}</a>
+                          <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{produit.nom}</a>
                         </td>
                         <td className="text-end">
                           <div className="d-flex flex-column w-100 me-2">
                             <div className="d-flex flex-stack mb-2">
-                              <span className="text-gray-700 fw-bold text-hover-primary d-block fs-6">{produit.Prix_Produit}</span>
+                              <span className="text-gray-700 fw-bold text-hover-primary d-block fs-6">{produit.prix}</span>
                             </div>
                             {/* <div className="progress h-6px w-100">
                               <div className="progress-bar bg-primary" role="progressbar" style={{ width: "50%" }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
@@ -259,14 +259,14 @@ function Products() {
                         <td className="text-end">
                           <div className="d-flex flex-column w-100 me-2">
                             <div className="d-flex flex-stack mb-2">
-                              <span className="text-gray-700 fw-bold text-hover-primary d-block fs-6">{produit.Quantite_stock}</span>
+                              <span className="text-gray-700 fw-bold text-hover-primary d-block fs-6">{produit.quantiteStock}</span>
                             </div>
                           </div>
                         </td>
                         <td className="text-end">
                           <div className="d-flex flex-column w-100 me-2">
                             <div className="d-flex flex-stack mb-2">
-                              <span className="text-gray-700 fw-bold text-hover-primary d-block fs-6">{formatDate(produit.Date_Peremption)}</span>
+                              <span className="text-gray-700 fw-bold text-hover-primary d-block fs-6">{formatDate(produit.datePeremption)}</span>
                             </div>
                           </div>
                         </td>
@@ -275,10 +275,10 @@ function Products() {
                             {/* <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                           <i className="ki-outline ki-file fs-2"></i>
                         </a> */}
-                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#kt_modal_edit" onClick={() => openupdateModal(produit.Id_Produit)}>
+                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#kt_modal_edit" onClick={() => openupdateModal(produit.id)}>
                               <i className="ki-outline ki-pencil fs-2"></i>
                             </a>
-                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={(e) => confirmDelete(produit.Id_Produit)}>
+                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={(e) => confirmDelete(produit.id)}>
                               <i className="ki-outline ki-trash fs-2"></i>
                             </a>
                           </div>
@@ -290,7 +290,7 @@ function Products() {
               </table>
               {/* Create Product Modal */}
               <div className="modal fade" id="kt_modal_share_earn" tabIndex="-1" aria-hidden="true" >
-                <div className="modal-dialog modal-dialog-centered mw-800px">
+                <div className="modal-dialog modal-dialog-centered mw-900px">
                   <div className="modal-content">
                     <div className="modal-header pb-0 border-0 justify-content-end">
                       <div className="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
@@ -298,7 +298,7 @@ function Products() {
                       </div>
                     </div>
                     <div className="modal-body scroll-y pt-0 pb-15">
-                      <div className="mw-lg-600px mx-auto">
+                      <div className="mw-lg-700px mx-auto">
                         <div className="mb-13 text-center">
                           <h1 className="mb-3">Ajouter un produit</h1>
                           <div className="text-muted fw-semibold fs-5">Entrez les informations pour ajouter le produit.
@@ -315,11 +315,11 @@ function Products() {
                                   </span>
                                 </label>
                                 <div className="w-100">
-                                  <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Sélectionnez..." onChange={handleChange} name='Id_Categorie'>
+                                  <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Sélectionnez..." onChange={handleChange} name='idCategorie'>
                                     <option value="">Sélectionnez...</option>
                                     {
                                       categories.map((categorie, index) => (
-                                        <option key={index} value={categorie.Id_Categorie}>{categorie.Libelle_Categorie}</option>
+                                        <option key={index} value={categorie.id}>{categorie.libelle}</option>
                                       ))
                                     }
                                   </select>
@@ -334,7 +334,7 @@ function Products() {
                                     <i className="ki-outline ki-information fs-7"></i>
                                   </span>
                                 </label>
-                                <input type="text" className="form-control form-control-solid" name="Nom_Produit" value={formData.Nom_Produit} onChange={handleChange} />
+                                <input type="text" className="form-control form-control-solid" name="nom" value={formData.nom} onChange={handleChange} />
                               </div>
                             </div>
                           </div>
@@ -347,7 +347,7 @@ function Products() {
                                     <i className="ki-outline ki-information fs-7"></i>
                                   </span>
                                 </label>
-                                <input type="number" className="form-control form-control-solid" name="Prix_Produit" value={formData.Prix_Produit} onChange={handleChange} />
+                                <input type="number" className="form-control form-control-solid" name="prix" value={formData.prix} onChange={handleChange} />
                               </div>
                             </div>
                             <div className="col">
@@ -358,7 +358,7 @@ function Products() {
                                     <i className="ki-outline ki-information fs-7"></i>
                                   </span>
                                 </label>
-                                <input type="number" min={0} className="form-control form-control-solid" name="Quantite_stock" value={formData.Quantite_stock} onChange={handleChange} />
+                                <input type="number" min={0} className="form-control form-control-solid" name="quantiteStock" value={formData.quantiteStock} onChange={handleChange} />
                               </div>
                             </div>
                           </div>
@@ -369,13 +369,13 @@ function Products() {
                                 <i className="ki-outline ki-information fs-7"></i>
                               </span>
                             </label>
-                            <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="Date_Peremption" value={formData.Date_Peremption} onChange={handleChange} />
+                            <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="datePeremption" value={formData.datePeremption} onChange={handleChange} />
                           </div>
                           <div class="separator mb-6"></div>
                           <div class="d-flex justify-content-end">
                             <button type="reset" data-kt-contacts-type="cancel" class="btn btn-light me-3">Annuler</button>
-                            <button class="btn btn-primary">
-                              <span class="indicator-label" onClick={handleSubmit}>Enregistrer</span>
+                            <button class="btn btn-primary" onClick={handleSubmit}>
+                              <span class="indicator-label">Enregistrer</span>
                             </button>
                           </div>
                         </form>
@@ -416,11 +416,11 @@ function Products() {
                                       </span>
                                     </label>
                                     <div className="w-100">
-                                      <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Sélectionnez..." onChange={handleUpdateChange} name='Id_Categorie' value={updatedData.Id_Categorie}>
+                                      <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Sélectionnez..." onChange={handleUpdateChange} name='idCategorie' value={updatedData.idCategorie}>
                                         <option value="">Sélectionnez...</option>
                                         {
                                           categories.map((categorie, index) => (
-                                            <option key={index} value={categorie.Id_Categorie}>{categorie.Libelle_Categorie}</option>
+                                            <option key={index} value={categorie.id}>{categorie.libelle}</option>
                                           ))
                                         }
                                       </select>
@@ -435,7 +435,7 @@ function Products() {
                                         <i className="ki-outline ki-information fs-7"></i>
                                       </span>
                                     </label>
-                                    <input type="text" className="form-control form-control-solid" name="Nom_Produit" value={updatedData.Nom_Produit} onChange={handleUpdateChange} />
+                                    <input type="text" className="form-control form-control-solid" name="nom" value={updatedData.nom} onChange={handleUpdateChange} />
                                   </div>
                                 </div>
                               </div>
@@ -448,7 +448,7 @@ function Products() {
                                         <i className="ki-outline ki-information fs-7"></i>
                                       </span>
                                     </label>
-                                    <input type="number" className="form-control form-control-solid" name="Prix_Produit" value={updatedData.Prix_Produit} onChange={handleUpdateChange} />
+                                    <input type="number" className="form-control form-control-solid" name="prix" value={updatedData.prix} onChange={handleUpdateChange} />
                                   </div>
                                 </div>
                                 <div className="col">
@@ -459,7 +459,7 @@ function Products() {
                                         <i className="ki-outline ki-information fs-7"></i>
                                       </span>
                                     </label>
-                                    <input type="number" className="form-control form-control-solid" name="Quantite_stock" value={updatedData.Quantite_stock} onChange={handleUpdateChange} />
+                                    <input type="number" className="form-control form-control-solid" name="quantiteStock" value={updatedData.quantiteStock} onChange={handleUpdateChange} />
                                   </div>
                                 </div>
                               </div>
@@ -470,7 +470,7 @@ function Products() {
                                     <i className="ki-outline ki-information fs-7"></i>
                                   </span>
                                 </label>
-                                <input type="date" className="form-control form-control-solid" name="Date_Peremption" value={updatedData.Date_Peremption} onChange={handleUpdateChange} />
+                                <input type="date" className="form-control form-control-solid" name="datePeremption" value={updatedData.datePeremption} onChange={handleUpdateChange} />
                               </div>
                               <div class="separator mb-6"></div>
                               <div class="d-flex justify-content-end">
