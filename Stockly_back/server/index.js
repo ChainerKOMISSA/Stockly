@@ -1,40 +1,69 @@
+require('dotenv').config()
 const express = require("express");
-const mysql = require("mysql");
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const sequelize = require('./src/models/database')
 
 const PORT = process.env.PORT || 3001;
 const app = express();
 
+const { categoryRouter } = require('./src/routes/CategoryRoutes');
+const { productRouter } = require('./src/routes/ProductRoutes');
+const { employeRouter } = require('./src/routes/EmployeeRoutes');
+const { roleRouter } = require('./src/routes/RoleRoutes');
+const { supplierRouter } = require('./src/routes/SupplierRoutes');
+const { depenseRouter } = require('./src/routes/DepenseRoutes')
+const { incidentRouter } = require('./src/routes/IncidentRoutes');
+const { commandeRouter } = require('./src/routes/OrderRoutes');
+const { livraisonRouter } = require('./src/routes/DeliveryRoutes');
+const { venteRouter } = require('./src/routes/SalesRoutes');
+const { produitVenteRouter } = require('./src/routes/ProduitVenteRoutes')
+const { produitCommandeRouter } = require('./src/routes/ProduitCommandeRoutes')
+
+
 // MySQL connection
-const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'dbstockly',
-});
+const dbConnection = async () => {
+    try {
+        await sequelize.authenticate();
+        await sequelize.sync({ alter: true });
+        console.log('Connection has been established successfully.');
+        app.use(cors());
+        app.use(bodyParser.json());
 
-db.connect((error) => {
-    if (error) {
-        console.error('Erreur de connexion à MySQL: ', error + stack);
-        return;
+        // Routers
+        app.get('/', (req, res) => {
+            res.json({ message: "Hello from server" });
+        })
+        app.use('/categories', categoryRouter)
+        app.use('/produits', productRouter)
+        app.use('/employes', employeRouter)
+        app.use('/roles', roleRouter)
+        app.use('/suppliers', supplierRouter)
+        app.use('/depenses', depenseRouter)
+        app.use('/incidents', incidentRouter)
+        app.use('/commandes', commandeRouter)
+        app.use('/ventes', venteRouter)
+        app.use('/livraisons', livraisonRouter)
+        app.use('/produitvente', produitVenteRouter)
+        app.use('/produitcommande', produitCommandeRouter)
+
+    } catch (error) {
+        console.error('Unable to connect to the database:', error);
     }
-    console.log('Connexion à MySQL réussie!');
-})
+}
 
-app.use(cors());
-app.use(bodyParser.json());
+dbConnection()
 
 
-app.get('/', (req, res) => {
-    res.json({ message: "Hello from server" });
-})
+
+
+
 
 
 
 // Routes pour l'authentification
 app.post('/login', (req, res) => {
-    res.json({message : "Login"})
+    res.json({ message: "Login" })
 })
 
 
@@ -80,6 +109,31 @@ app.get('/statrupture', (req, res) => {
     });
 })
 
+
+app.get('/rupture', (req, res) => {
+    const sql = `SELECT p.Id_Produit, p.Nom_Produit, p.Prix_Produit, p.Quantite_stock, p.Date_Peremption, c.Libelle_Categorie 
+    FROM produit p 
+    JOIN categorie c ON c.Id_Categorie = p.Id_Categorie 
+    WHERE p.Quantite_stock < 6`
+    db.query(sql, (error, result) => {
+        if (error) throw error;
+        res.json(result);
+    });
+})
+
+
+app.get('/peremption', (req, res) => {
+    const sql = `SELECT p.Id_Produit, p.Nom_Produit, p.Prix_Produit, p.Quantite_stock, p.Date_Peremption, c.Libelle_Categorie
+    FROM produit p 
+    JOIN categorie c ON c.Id_Categorie = p.Id_Categorie 
+    WHERE DATEDIFF(Date_Peremption, NOW()) <= 180`;
+    db.query(sql, (error, result) => {
+        if (error) throw error;
+        res.json(result);
+    });
+});
+
+
 app.get('/statsales', (req, res) => {
     const sql = 'SELECT SUM(Montant_Vente) as SumVente FROM vente'
     db.query(sql, (error, result) => {
@@ -104,12 +158,17 @@ app.get('/statdepenses', (req, res) => {
 // Routes pour la table Produit
 app.post('/createproduct', (req, res) => {
     const { Nom_Produit, Prix_Produit, Id_Categorie, Date_Peremption, Quantite_stock } = req.body;
+    let datePeremptionValue = Date_Peremption;
+    if (!Date_Peremption) {
+        datePeremptionValue = '9999-12-31';
+    }
     const sql = 'INSERT INTO produit (Nom_Produit, Prix_Produit, Id_Categorie, Date_Peremption, Quantite_stock) VALUES (?, ?, ?, ?, ?)';
-    db.query(sql, [Nom_Produit, Prix_Produit, Id_Categorie, Date_Peremption, Quantite_stock], (error, result) => {
+    db.query(sql, [Nom_Produit, Prix_Produit, Id_Categorie, datePeremptionValue, Quantite_stock], (error, result) => {
         if (error) throw error;
         res.json(result);
     });
 });
+
 
 app.get('/products', (req, res) => {
     const sql = `SELECT p.Id_Produit, p.Nom_Produit, p.Prix_Produit, p.Quantite_stock, p.Date_Peremption, c.Libelle_Categorie
@@ -124,8 +183,8 @@ app.get('/products', (req, res) => {
 app.put('/product/:id', (req, res) => {
     const { Nom_Produit, Prix_Produit, Id_Categorie, Date_Peremption, Quantite_stock } = req.body;
     const { id } = req.params;
-    const sql = 'UPDATE produit SET Nom_Produit = ?, Prix_Produit = ?, Id_Categorie = ?, Date_Peremption = ?, Quantite_stock = ? WHERE id = ?';
-    db.query(sql, [Nom_Produit, Prix_Produit, Id_Categorie, Date_Peremption, Quantite_stock, id], (err, result) => {
+    const sql = 'UPDATE produit SET Nom_Produit = ?, Prix_Produit = ?, Id_Categorie = ?, Date_Peremption = ?, Quantite_stock = ? WHERE Id_Produit = ?';
+    db.query(sql, [Nom_Produit, Prix_Produit, Id_Categorie, Date_Peremption, Quantite_stock, id], (error, result) => {
         if (error) throw error;
         res.json(result);
     });
@@ -133,54 +192,17 @@ app.put('/product/:id', (req, res) => {
 
 app.delete('/product/:id', (req, res) => {
     const { id } = req.params;
-    const sql = 'DELETE FROM produit WHERE id = ?';
-    db.query(sql, [id], (err, result) => {
-        if (error) throw error;
-        res.json(result);
-    });
-});
-
-
-
-
-
-// Routes pour la table Catégorie
-
-app.post('/createcategory', (req, res) => {
-    const { Libelle_Categorie, Description_Categorie } = req.body;
-    const sql = 'INSERT INTO categorie (Libelle_Categorie, Description_Categorie) VALUES (?, ?)';
-    db.query(sql, [Libelle_Categorie, Description_Categorie], (error, result) => {
-        if (error) throw error;
-        res.json(result);
-    });
-});
-
-app.get('/categories', (req, res) => {
-    const sql = `SELECT * FROM categorie`;
-    db.query(sql, (error, result) => {
-        if (error) throw error;
-        res.json(result);
-    });
-});
-
-app.put('/category/:id', (req, res) => {
-    const { Libelle_Categorie, Description_Categorie } = req.body;
-    const { id } = req.params;
-    const sql = 'UPDATE categorie SET Libelle_Categorie = ?, Description_Categorie = ? WHERE Id_Categorie = ?';
-    db.query(sql, [Libelle_Categorie, Description_Categorie, id], (error, result) => {
-        if (error) throw error;
-        res.json(result);
-    });
-});
-
-app.delete('/category/:id', (req, res) => {
-    const { id } = req.params;
-    const sql = 'DELETE FROM categorie WHERE Id_Categorie = ?';
+    const sql = 'DELETE FROM produit WHERE Id_Produit = ?';
     db.query(sql, [id], (error, result) => {
         if (error) throw error;
         res.json(result);
     });
 });
+
+
+
+
+
 
 
 
@@ -278,7 +300,7 @@ app.delete('/order/:id', (req, res) => {
 
 app.post('/createdelivery', (req, res) => {
     const { Id_Commande, Date_Livraison } = req.body;
-    const sql = 'INSERT INTO livraison VALUES (?, ?)';
+    const sql = 'INSERT INTO livraison (Id_Commande, Date_Livraison) VALUES (?, ?)';
     db.query(sql, [Id_Commande, Date_Livraison], (error, result) => {
         if (error) throw error;
         res.json(result);
@@ -319,7 +341,7 @@ app.delete('/delivery/:id', (req, res) => {
 // Routes pour la table Incident
 app.post('/createincident', (req, res) => {
     const { Libelle_Incid, Description_Incid, Date_Incid } = req.body;
-    const sql = 'INSERT INTO incident VALUES (?, ?, ?)';
+    const sql = 'INSERT INTO incident (Libelle_Incid, Description_Incid, Date_Incid) VALUES (?, ?, ?)';
     db.query(sql, [Libelle_Incid, Description_Incid, Date_Incid], (error, result) => {
         if (error) throw error;
         res.json(result);
@@ -337,18 +359,18 @@ app.get('/incidents', (req, res) => {
 app.put('/incident/:id', (req, res) => {
     const { Libelle_Incid, Description_Incid, Date_Incid } = req.body;
     const { id } = req.params;
-    const sql = 'UPDATE incident SET Libelle_Incid = ?, Description_Incid = ?, Date_Incid = ? WHERE id = ?';
+    const sql = 'UPDATE incident SET Libelle_Incid = ?, Description_Incid = ?, Date_Incid = ? WHERE Id_Incid = ?';
     db.query(sql, [Libelle_Incid, Description_Incid, Date_Incid, id], (err, result) => {
-        if (error) throw error;
+        if (err) throw err;
         res.json(result);
     });
 });
 
 app.delete('/incident/:id', (req, res) => {
     const { id } = req.params;
-    const sql = 'DELETE FROM incident WHERE id = ?';
+    const sql = 'DELETE FROM incident WHERE Id_Incid = ?';
     db.query(sql, [id], (err, result) => {
-        if (error) throw error;
+        if (err) throw err;
         res.json(result);
     });
 });
@@ -362,7 +384,7 @@ app.delete('/incident/:id', (req, res) => {
 // Routes pour la table Dépense
 app.post('/createdepense', (req, res) => {
     const { Libelle_Depense, Montant_Depense, Date_Depense } = req.body;
-    const sql = 'INSERT INTO depense VALUES (?, ?, ?)';
+    const sql = 'INSERT INTO depense (Libelle_Depense, Montant_Depense, Date_Depense) VALUES (?, ?, ?)';
     db.query(sql, [Libelle_Depense, Montant_Depense, Date_Depense], (error, result) => {
         if (error) throw error;
         res.json(result);
@@ -380,18 +402,18 @@ app.get('/depenses', (req, res) => {
 app.put('/depense/:id', (req, res) => {
     const { Libelle_Depense, Montant_Depense, Date_Depense } = req.body;
     const { id } = req.params;
-    const sql = 'UPDATE depense SET Libelle_Depense = ?, Montant_Depense = ?, Date_Depense = ? WHERE id = ?';
+    const sql = 'UPDATE depense SET Libelle_Depense = ?, Montant_Depense = ?, Date_Depense = ? WHERE Id_Depense = ?';
     db.query(sql, [Libelle_Depense, Montant_Depense, Date_Depense, id], (err, result) => {
-        if (error) throw error;
+        if (err) throw err;
         res.json(result);
     });
 });
 
 app.delete('/depense/:id', (req, res) => {
     const { id } = req.params;
-    const sql = 'DELETE FROM depense WHERE id = ?';
+    const sql = 'DELETE FROM depense WHERE Id_Depense = ?';
     db.query(sql, [id], (err, result) => {
-        if (error) throw error;
+        if (err) throw err;
         res.json(result);
     });
 });
@@ -405,16 +427,16 @@ app.delete('/depense/:id', (req, res) => {
 
 // Routes pour la table Vente
 app.post('/createsale', (req, res) => {
-    const { Id_Produit, Prix_Vente, Quantite_Vente, Montant_Vente, Date_Vente } = req.body;
-    const sql = 'INSERT INTO vente VALUES (?, ?, ?, ? ,?)';
-    db.query(sql, [Id_Produit, Prix_Vente, Quantite_Vente, Montant_Vente, Date_Vente], (error, result) => {
+    const { Id_Produit, Prix_Vente, Quantite_Vente, Date_Vente } = req.body;
+    const sql = 'INSERT INTO vente(Id_Produit, Prix_Vente, Quantite_Vente, Date_Vente) VALUES (?, ?, ? ,?)';
+    db.query(sql, [Id_Produit, Prix_Vente, Quantite_Vente, Date_Vente], (error, result) => {
         if (error) throw error;
         res.json(result);
     });
 });
 
 app.get('/sales', (req, res) => {
-    const sql = `SELECT v.Id_Vente, p.Nom_Produit, v.Prix_Vente, v.Quantite_Vente, v.Montant_Vente, v.Date_Vente 
+    const sql = `SELECT v.Id_Vente, p.Nom_Produit, v.Prix_Vente, v.Quantite_Vente, v.Date_Vente 
     FROM vente v JOIN produit p ON p.Id_Produit = v.Id_Produit`;
     db.query(sql, (error, result) => {
         if (error) throw error;
@@ -423,10 +445,10 @@ app.get('/sales', (req, res) => {
 });
 
 app.put('/sale/:id', (req, res) => {
-    const { Id_Produit, Prix_Vente, Quantite_Vente, Montant_Vente, Date_Vente } = req.body;
+    const { Id_Produit, Prix_Vente, Quantite_Vente, Date_Vente } = req.body;
     const { id } = req.params;
-    const sql = 'UPDATE vente SET Id_Produit = ?, Prix_Vente = ?, Quantite_Vente = ?, Montant_Vente = ?, Date_Vente = ? WHERE id = ?';
-    db.query(sql, [Id_Produit, Prix_Vente, Quantite_Vente, Montant_Vente, Date_Vente, id], (err, result) => {
+    const sql = 'UPDATE vente SET Id_Produit = ?, Prix_Vente = ?, Quantite_Vente = ?, Date_Vente = ? WHERE id = ?';
+    db.query(sql, [Id_Produit, Prix_Vente, Quantite_Vente, Date_Vente, id], (err, result) => {
         if (error) throw error;
         res.json(result);
     });
