@@ -1,6 +1,7 @@
 const Vente = require('../models/Sale');
 const Employe = require('../models/Employe')
 
+
 exports.getAllVentes = async (req, res) => {
     try {
         const ventes = await Vente.findAll({

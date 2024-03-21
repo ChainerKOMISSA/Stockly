@@ -1,5 +1,7 @@
+const { Op } = require("sequelize");
 const Produit = require('../models/Produit')
 const Categorie = require('../models/Categorie');
+
 
 exports.getAllProducts = async (req, res) => {
     try {
@@ -69,5 +71,45 @@ exports.deleteProductById = async (req, res) => {
     }
     catch (error) {
         res.status(500).json({ message: error.message });
+    }
+}
+
+exports.getLiquidation = async (req, res) => {
+    try {
+        const produits = await Produit.findAll({
+            include: {
+                model: Categorie,
+                attributes: ['libelle']
+            },
+            where: {
+                datePeremption: {
+                    [Op.lt]: new Date()
+                }
+            }
+        });
+        res.json(produits)
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
+exports.getRupture = async (req, res) => {
+    try {
+        const produits = await Produit.findAll({
+            include: {
+                model: Categorie,
+                attributes: ['libelle']
+            },
+            where: {
+                quantiteStock: {
+                    [Op.lt]: 6
+                }
+            }
+        });
+        res.json(produits)
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message })
     }
 }
