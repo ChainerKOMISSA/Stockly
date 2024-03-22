@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { API_URL } from '../../../components/constantes'
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../../components/alerts'
-import { getCurrentDate } from '../../../helpers/CalendarControl' 
-import { formatDate} from '../../../helpers/DateFormat'
+import { getCurrentDate } from '../../../helpers/CalendarControl'
+import { formatDate } from '../../../helpers/DateFormat'
 import Swal from 'sweetalert2'
 
 function Products() {
@@ -121,7 +121,7 @@ function Products() {
         nom: selectedProduct.nom,
         prix: selectedProduct.prix,
         quantiteStock: selectedProduct.quantiteStock,
-        datePeremption : selectedProduct.datePeremption,
+        datePeremption: selectedProduct.datePeremption,
       });
     }
   }, [selectedProduct]);
@@ -191,6 +191,24 @@ function Products() {
       </div>
 
       <div id="kt_app_content" className="app-content">
+        <div class="card card-flush pb-0 bgi-position-y-center bgi-no-repeat mb-10" style={{ backgroundSize: "auto calc(100% + 10rem)", backgroundPositionX: "100%", backgroundImage: "url('assets/media/illustrations/sketchy-1/4.png')" }}>
+          <div class="card-header pt-10">
+            <div class="d-flex align-items-center">
+              <div class="symbol symbol-circle me-5"></div>
+              <div class="d-flex flex-column">
+                <h2 class="mb-1">File Manager</h2>
+                <input type='search'/>
+                <div class="text-muted fw-bold">
+                  <a href="#">Keenthemes</a>
+                  <span class="mx-3">|</span>
+                  <a href="#">File Manager</a>
+                  <span class="mx-3">|</span>2.6 GB
+                  <span class="mx-3">|</span>758 items</div>
+              </div>
+            </div>
+          </div>
+          <div class="card-body pb-0"></div>
+        </div>
         <div className="card mb-5 mb-xl-8">
           <div className="card-header border-0 pt-5">
             {/* <h3 className="card-title align-items-start flex-column">

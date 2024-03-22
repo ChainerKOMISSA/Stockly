@@ -13,13 +13,17 @@ function Sales() {
   const [showcreateModal, setShowCreateModal] = useState(false);
   const [showupdateModal, setShowUpdateModal] = useState(false);
   const [sales, setSales] = useState([])
+  const [vendeurs, setVendeurs] = useState([])
   const [produitsvente, setProduitsvente] = useState([])
   const [produits, setProduits] = useState([])
   const [selectedSale, setSelectedSale] = useState(null)
   const [formData, setFormData] = useState({});
   const [listeProduits, setListeProduits] = useState([]);
+  const [produitsVendus, setProduitsVendus] = useState({})
+  const [saleData, setSaleData] = useState({});
   const [prix, setPrix] = useState(0);
   const [updatedData, setUpdatedData] = useState({});
+
 
   const opencreateModal = () => { setShowCreateModal(true) }
   const closecreateModal = () => { setShowCreateModal(false) }
@@ -60,6 +64,17 @@ function Sales() {
       })
   }, []);
 
+  useEffect(() => {
+    fetch(`${API_URL}/employes/vendeurs`)
+      .then(response => response.json())
+      .then(data => {
+        setVendeurs(data)
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération des employés: ', error)
+      })
+  }, []);
+
   //useEffect(()=>{},[prix])
 
   const handleChangeProduit = (e) => {
@@ -84,36 +99,54 @@ function Sales() {
     });
   }
 
-  // const calculateTotal = () => {
-  //   return listeProduits.reduce((total, produit) => total + produit.prix, 0);
-  // };
+  const registerSale = (e) => {
+    const { name, value } = e.target;
+    setSaleData({
+      ...saleData,
+      [name]: value,
+    });
+  }
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${API_URL}/ventes`, {
+      // First, make a POST request to /ventes
+      const response1 = await fetch(`${API_URL}/ventes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(saleData),
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        createSuccessAlert()
-        navigate(0)
+      if (response1.ok) {
+        const data = await response1.json();
+        const response2 = await fetch(`${API_URL}/produitvente`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ listeProduits }),
+        });
+
+        if (response2.ok) {
+          createSuccessAlert();
+          navigate(0);
+        } else {
+          const errorData = await response2.json();
+          failureAlert(errorData);
+        }
       } else {
-        const errorData = await response.json();
-        failureAlert(errorData)
+        const errorData = await response1.json();
+        failureAlert(errorData);
       }
+    } catch (error) {
+      failureAlert(error);
     }
-    catch (error) {
-      failureAlert(error)
-    }
-  }
+  };
+
 
   const handleUpdateChange = (e) => {
     const { name, value } = e.target;
@@ -135,7 +168,6 @@ function Sales() {
 
   const handleUpdate = async (e, id) => {
     e.preventDefault();
-
     try {
       const response = await fetch(`${API_URL}/ventes/${id}`, {
         method: 'PUT',
@@ -184,25 +216,6 @@ function Sales() {
     }
   }
 
-  // useEffect(() => { getTotal() }, []);
-
-  // const getTotal = () => {
-  //   let total = 0
-  //   let table = document.getElementById("product_list_table")
-
-  //   for (let i = 1; i < table.rows.length; i++) {
-  //     let cellValue = parseFloat(table.rows[i].cells[3].innerHTML);
-  //     total += cellValue;
-  //   }
-
-  //   let totalElement = document.getElementById("bill_button");
-  //   if (totalElement) {
-  //     totalElement.textContent = `Montant total à payer : ${total} FCFA`;
-  //   } else {
-  //     totalElement.textContent = `Montant total à payer : 0 FCFA`;
-  //   }
-  // }
-
   const addProductToList = () => {
     document.getElementById("product_list_table").hidden = false;
     document.getElementById("bill_button").hidden = false;
@@ -211,7 +224,7 @@ function Sales() {
 
     let table = document.getElementById("product_list_table")
     listeProduits.push({
-      id: formData.id,
+      idProduit: formData.id,
       nom: formData.nom,
       prix: formData.prix,
       quantite: formData.quantite,
@@ -252,6 +265,8 @@ function Sales() {
       totalElement.textContent = `Montant total à payer : 0 FCFA`;
     }
   }
+
+
 
 
   return (
@@ -305,7 +320,6 @@ function Sales() {
                     </th>
                     <th className="min-w-150px">Date</th>
                     <th className="min-w-200px">Employe</th>
-                    <th className="min-w-100px">Montant</th>
                     <th className="min-w-100px text-end">Actions</th>
                   </tr>
                 </thead>
@@ -326,18 +340,17 @@ function Sales() {
                           </div>
                         </td>
                         <td>
-                          <a className="text-gray-900 fw-bold text-hover-primary fs-6">{sale.idEmploye}</a>
-                        </td>
-
-                        <td>
-                          <a className="text-gray-900 fw-bold text-hover-primary fs-6"></a>
+                          <a className="text-gray-900 fw-bold text-hover-primary fs-6">{sale.Employe.nom} {sale.Employe.prenom}</a>
                         </td>
                         <td>
                           <div className="d-flex justify-content-end flex-shrink-0">
-                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#kt_modal_edit" onClick={() => openupdateModal(sale.Id_Vente)}>
+                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                              <i className="ki-outline ki-file fs-2"></i>
+                            </a>
+                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#kt_modal_edit" onClick={() => openupdateModal(sale.id)}>
                               <i className="ki-outline ki-pencil fs-2"></i>
                             </a>
-                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={() => handleDelete(sale.Id_Vente)}>
+                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={() => handleDelete(sale.id)}>
                               <i className="ki-outline ki-trash fs-2"></i>
                             </a>
                           </div>
@@ -347,7 +360,7 @@ function Sales() {
                   }
                 </tbody>
               </table>
-              {/* Create Category Modal */}
+              {/* Create Sale Modal */}
               <div className="modal fade" id="kt_modal_share_earn" tabIndex="-1" aria-hidden="true" >
                 <div className="modal-dialog modal-dialog-centered mw-1000px">
                   <div className="modal-content">
@@ -364,14 +377,38 @@ function Sales() {
                           </div>
                         </div>
                         <form id="kt_ecommerce_settings_general_form" className="form">
-                          <div className="fv-row mb-7">
-                            <label className="fs-6 fw-semibold form-label mt-3">
-                              <span className="required">Date</span>
-                              <span className="ms-1" data-bs-toggle="tooltip" title="Entrez la date">
-                                <i className="ki-outline ki-information fs-7"></i>
-                              </span>
-                            </label>
-                            <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="dateVente" id='dateVente' value={formData.dateVente} onChange={handleChange} required />
+                          <div className="row row-cols-1 row-cols-sm-2 rol-cols-md-1 row-cols-lg-2">
+                            <div className="col">
+                              <div className="fv-row mb-7">
+                                <label className="fs-6 fw-semibold form-label mt-3">
+                                  <span className="required">Date</span>
+                                  <span className="ms-1" data-bs-toggle="tooltip" title="Entrez la date">
+                                    <i className="ki-outline ki-information fs-7"></i>
+                                  </span>
+                                </label>
+                                <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="dateVente" id='dateVente' value={formData.dateVente} onChange={registerSale} required />
+                              </div>
+                            </div>
+                            <div className="col">
+                              <div className="fv-row mb-7">
+                                <label className="fs-6 fw-semibold form-label mt-3">
+                                  <span className="required">Vendeur</span>
+                                  <span className="ms-1" data-bs-toggle="tooltip" title="Choisissez un produit">
+                                    <i className="ki-outline ki-information fs-7"></i>
+                                  </span>
+                                </label>
+                                <div className="w-100">
+                                  <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Sélectionnez..." onChange={registerSale} name="idEmploye">
+                                    <option value="">Sélectionnez...</option>
+                                    {
+                                      vendeurs.map((vendeur, index) => (
+                                        <option key={index} value={vendeur.id}>{vendeur.nom} {vendeur.prenom}</option>
+                                      ))
+                                    }
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                           <div className="row row-cols-1 row-cols-sm-2 rol-cols-md-1 row-cols-lg-2">
                             <div className="col">
