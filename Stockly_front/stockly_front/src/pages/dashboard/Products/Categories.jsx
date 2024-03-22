@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { API_URL } from '../../../components/constantes'
 import { Link, useNavigate } from 'react-router-dom'
-import { BiX, BiPencil } from "react-icons/bi";
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../../components/alerts'
 import Swal from 'sweetalert2'
 
@@ -19,8 +18,6 @@ function Categories() {
   const opencreateModal = () => { setShowCreateModal(true) }
   const closecreateModal = () => { setShowCreateModal(false) }
 
-  const openupdateModal = (category) => { setSelectedCategory(category); setShowUpdateModal(true); console.log(showupdateModal); }
-  const closeupdateModal = () => { setShowUpdateModal(false); setSelectedCategory(null) }
 
   useEffect(() => { }, [showupdateModal])
 
