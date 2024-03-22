@@ -4,15 +4,15 @@ export function MontantInputControl() {
     const [montantotal, setMontantotal] = useState(0);
 
     function updateMontantTotal() {
-        const prixuValue = parseInt(document.getElementById('Prix_Vente').value) || 0;
-        const quantiteValue = parseInt(document.getElementsByName('Quantite_Vente')[0].value) || 0;
+        const prixuValue = parseInt(document.getElementById('prix').value) || 0;
+        const quantiteValue = parseInt(document.getElementsByName('quantite')[0].value) || 0;
         const montantotalValue = prixuValue * quantiteValue;
         setMontantotal(montantotalValue.toFixed(2));
     }
 
     useEffect(() => {
-        const prixuInput = document.getElementById('Prix_Vente');
-        const quantiteInput = document.getElementsByName('Quantite_Vente')[0];
+        const prixuInput = document.getElementById('prix');
+        const quantiteInput = document.getElementsByName('quantite')[0];
 
         prixuInput.addEventListener('input', updateMontantTotal);
         quantiteInput.addEventListener('input', updateMontantTotal);

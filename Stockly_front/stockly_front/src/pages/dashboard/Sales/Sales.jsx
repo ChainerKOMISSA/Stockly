@@ -17,6 +17,7 @@ function Sales() {
   const [produits, setProduits] = useState([])
   const [selectedSale, setSelectedSale] = useState(null)
   const [formData, setFormData] = useState({});
+  const [listeProduits, setListeProduits] = useState([]);
   const [prix, setPrix] = useState(0);
   const [updatedData, setUpdatedData] = useState({});
 
@@ -62,11 +63,12 @@ function Sales() {
   //useEffect(()=>{},[prix])
 
   const handleChangeProduit = (e) => {
-    let produitId = e.target.value;
-    let prd = produits.find(produit => produit.id == produitId)
+    let prod = e.target.value;
+    let prd = produits.find(produit => produit.id == prod)
     setFormData(
       {
         ...formData,
+        id: prd.id,
         nom: prd.nom,
         prix: prd.prix
       }
@@ -81,6 +83,10 @@ function Sales() {
       [name]: value,
     });
   }
+
+  // const calculateTotal = () => {
+  //   return listeProduits.reduce((total, produit) => total + produit.prix, 0);
+  // };
 
 
   const handleSubmit = async (e) => {
@@ -178,22 +184,76 @@ function Sales() {
     }
   }
 
-  const addProductToList = () => {
-    // let date = e.target.value("Date_Vente")
-    // let prod = e.target.value("Id_Produit")
-    // let prix = e.target.value("Prix_Vente")
-    // let quantite = e.target.value("Quantite_Vente")
-    // let montant = e.target.value("Montant_Vente")
+  // useEffect(() => { getTotal() }, []);
 
+  // const getTotal = () => {
+  //   let total = 0
+  //   let table = document.getElementById("product_list_table")
+
+  //   for (let i = 1; i < table.rows.length; i++) {
+  //     let cellValue = parseFloat(table.rows[i].cells[3].innerHTML);
+  //     total += cellValue;
+  //   }
+
+  //   let totalElement = document.getElementById("bill_button");
+  //   if (totalElement) {
+  //     totalElement.textContent = `Montant total à payer : ${total} FCFA`;
+  //   } else {
+  //     totalElement.textContent = `Montant total à payer : 0 FCFA`;
+  //   }
+  // }
+
+  const addProductToList = () => {
     document.getElementById("product_list_table").hidden = false;
     document.getElementById("bill_button").hidden = false;
     document.getElementById("CancelBtn").hidden = false;
     document.getElementById("SaveBtn").hidden = false;
 
     let table = document.getElementById("product_list_table")
+    listeProduits.push({
+      id: formData.id,
+      nom: formData.nom,
+      prix: formData.prix,
+      quantite: formData.quantite,
+      montant: formData.montant
+    })
+
+    let row = table.insertRow(
+      table.childNodes.length - 1
+    )
+
+    let cell1 = row.insertCell(0)
+    cell1.innerHTML = listeProduits[listeProduits.length - 1].nom
+
+    let cell2 = row.insertCell(1)
+    cell2.innerHTML = listeProduits[listeProduits.length - 1].prix
+
+    let cell3 = row.insertCell(2)
+    cell3.innerHTML = listeProduits[listeProduits.length - 1].quantite
+
+    let cell2Value = parseFloat(cell2.innerHTML);
+    let cell3Value = parseFloat(cell3.innerHTML);
+
+    let somme = cell2Value * cell3Value
+    let cell4 = row.insertCell(3)
+    cell4.innerHTML = somme
+
+    let total = 0
+
+    for (let i = 1; i < table.rows.length; i++) {
+      let cellValue = parseFloat(table.rows[i].cells[3].innerHTML);
+      total += cellValue;
+    }
+
+    let totalElement = document.getElementById("bill_button");
+    if (totalElement) {
+      totalElement.textContent = `Montant total à payer : ${total} FCFA`;
+    } else {
+      totalElement.textContent = `Montant total à payer : 0 FCFA`;
+    }
   }
 
-  
+
   return (
     <>
       <div id="kt_app_toolbar" className="app-toolbar pt-7 pt-lg-10">
@@ -311,7 +371,7 @@ function Sales() {
                                 <i className="ki-outline ki-information fs-7"></i>
                               </span>
                             </label>
-                            <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="Date_Vente" id='Date_Vente' value={formData.Date_Vente} onChange={handleChange} />
+                            <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="dateVente" id='dateVente' value={formData.dateVente} onChange={handleChange} required />
                           </div>
                           <div className="row row-cols-1 row-cols-sm-2 rol-cols-md-1 row-cols-lg-2">
                             <div className="col">
@@ -323,11 +383,11 @@ function Sales() {
                                   </span>
                                 </label>
                                 <div className="w-100">
-                                  <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Sélectionnez..." onChange={handleChangeProduit} name="Id_Produit">
+                                  <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Sélectionnez..." onChange={handleChangeProduit} name="nom">
                                     <option value="">Sélectionnez...</option>
                                     {
                                       produits.map((produit, index) => (
-                                        <option key={index} value={produit.Id_Produit} data-prix={produit.Prix_Produit}>{produit.Nom_Produit}</option>
+                                        <option key={index} value={produit.id} data-prix={produit.prix}>{produit.nom}</option>
                                       ))
                                     }
                                   </select>
@@ -342,7 +402,7 @@ function Sales() {
                                     <i className="ki-outline ki-information fs-7"></i>
                                   </span>
                                 </label>
-                                <input type="number" className="form-control form-control-solid" id='Prix_Vente' name="Prix_Vente" value={prix} readOnly />
+                                <input type="number" className="form-control form-control-solid" id='prix' name="prix" value={prix} readOnly />
                               </div>
                             </div>
                           </div>
@@ -355,7 +415,7 @@ function Sales() {
                                     <i className="ki-outline ki-information fs-7"></i>
                                   </span>
                                 </label>
-                                <input type="number" min={0} className="form-control form-control-solid" id="Quantite_Vente" name="Quantite_Vente" value={formData.Quantite_Vente} onChange={handleChange} />
+                                <input type="number" min={0} className="form-control form-control-solid" id="quantite" name="quantite" value={formData.quantite} onChange={handleChange} />
                               </div>
                             </div>
                             <div className="col">
@@ -367,7 +427,7 @@ function Sales() {
                                   </span>
                                 </label>
                                 {/* <input type="text" className="form-control form-control-solid" name="Montant_Vente" value={formData.Montant_Vente} onChange={handleChange} readOnly /> */}
-                                <MontantInputControl />
+                                <MontantInputControl name="montant" value={formData.montant} onChange={handleChange} />
                               </div>
                             </div>
                           </div>
@@ -375,28 +435,21 @@ function Sales() {
                             <button className="btn btn-primary" id="BtnAjouter" onClick={addProductToList}>
                               <span className="indicator-label">Ajouter</span>
                             </button>
-                          </div>
-
-                          <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4" id="product_list_table" hidden="true">
+                          </div><br />
+                          <table className="table table-row-dashed table-bordered table-row-gray-300 align-middle gs-0 gy-4" id="product_list_table" hidden="true">
                             <thead>
                               <tr className="fw-bold text-muted">
-                                <th className="min-w-200px" id="nom_produit">Produit</th>
-                                <th className="min-w-200px" id="prix_produit">Prix</th>
-                                <th className="min-w-200px" id="qtte_produit">Quantité</th>
-                                <th className="min-w-200px" id="montant_produit">Montant</th>
+                                <th className="min-w-200px" id="nomProduit">Produit</th>
+                                <th className="min-w-200px" id="prixProduit">Prix</th>
+                                <th className="min-w-200px" id="qtteProduit">Quantité</th>
+                                <th className="min-w-200px" id="montantProduit">Montant</th>
                               </tr>
                             </thead>
                             <tbody>
-                              <tr>
-                                <td>Produit</td>
-                                <td>Produit</td>
-                                <td>Produit</td>
-                                <td>Produit</td>
-                              </tr>
                             </tbody>
                           </table>
-                          <div className="d-flex justify-content-end" id="bill_button">
-                            <span className="btn btn-light me-3 fw-semibold fs-5" hidden="true" id="bill_button"><i className="ki-outline ki-basket fs-3"></i> Montant total à payer : {} FCFA</span>
+                          <div className="d-flex justify-content-end">
+                            <span className="btn btn-light me-3 fw-semibold fs-5" hidden="true" id="bill_button"><i className="ki-outline ki-basket fs-3"></i> </span>
                           </div><br />
                           <div className="separator mb-6"></div>
                           <div className="d-flex justify-content-end">
