@@ -7,7 +7,7 @@ exports.getAllVentes = async (req, res) => {
         const ventes = await Vente.findAll({
             include: {
                 model: Employe,
-                attributes: ['nom']
+                attributes: ['nom', 'prenom']
             }
         });
         res.json(ventes);

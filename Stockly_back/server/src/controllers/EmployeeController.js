@@ -16,6 +16,24 @@ exports.getAllEmployes = async (req, res) => {
     }
 }
 
+exports.getAllEmployesVendeurs = async (req, res) => {
+    try {
+        const employes = await Employe.findAll({
+            include: {
+                model: Role,
+                attributes: ['libelle']
+            },
+            where: {
+                idRole: 2
+            }
+        });
+        res.json(employes);
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
 exports.createEmploye = async (req, res) => {
     const { nom, prenom, adresse, contact, idRole } = req.body;
     try {
