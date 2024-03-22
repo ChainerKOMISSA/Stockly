@@ -396,7 +396,7 @@ function Sales() {
                             </tbody>
                           </table>
                           <div className="d-flex justify-content-end" id="bill_button">
-                            <span className="btn btn-light me-3 fw-semibold fs-5" hidden="true" id="bill_button"><i className="ki-outline ki-basket fs-3"></i> Montant total à payer :  FCFA</span>
+                            <span className="btn btn-light me-3 fw-semibold fs-5" hidden="true" id="bill_button"><i className="ki-outline ki-basket fs-3"></i> Montant total à payer : {} FCFA</span>
                           </div><br />
                           <div className="separator mb-6"></div>
                           <div className="d-flex justify-content-end">

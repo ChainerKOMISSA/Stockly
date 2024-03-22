@@ -305,6 +305,7 @@ function Suppliers() {
                   </div>
                 </div>
               </div>
+              {/* End Create Product Modal */}
             </div>
           </div>
         </div>

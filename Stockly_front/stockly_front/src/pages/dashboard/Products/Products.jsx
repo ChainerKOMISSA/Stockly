@@ -11,10 +11,10 @@ function Products() {
   const [produits, setProduits] = useState([]);
   const [categories, setCategories] = useState([]);
   const [formData, setFormData] = useState({});
+  const [updatedData, setUpdatedData] = useState({});
   const [showcreateModal, setShowCreateModal] = useState(false);
   const [showupdateModal, setShowUpdateModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null)
-  const [updatedData, setUpdatedData] = useState({});
 
   const opencreateModal = () => { setShowCreateModal(true) }
   const closecreateModal = () => { setShowCreateModal(false) }
