@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require('./database')
+const Fournisseur = require('./Supplier')
 
 
 const Commande = sequelize.define('Commande', {
@@ -14,5 +15,9 @@ const Commande = sequelize.define('Commande', {
     }
 });
 
+Commande.belongsTo(Fournisseur, {
+    foreignKey : 'idFournisseur',
+    allowNull : false
+})
 
 module.exports = Commande;

@@ -17,9 +17,9 @@ exports.getAllEmployes = async (req, res) => {
 }
 
 exports.createEmploye = async (req, res) => {
-    const { nom, prenom, adresse, contact } = req.body;
+    const { nom, prenom, adresse, contact, idRole } = req.body;
     try {
-        const employe = await Employe.create({ nom, prenom, adresse, contact });
+        const employe = await Employe.create({ nom, prenom, adresse, contact, idRole });
         res.status(201).json(employe);
     }
     catch (error) {
@@ -46,11 +46,11 @@ exports.getEmployeById = async (req, res) => {
 
 exports.updateEmployeById = async (req, res) => {
     const { id } = req.params;
-    const { nom, prenom, adresse, contact } = req.body;
+    const { nom, prenom, adresse, contact, idRole } = req.body;
     try {
         const employe = await Employe.findByPk(id);
         if (!employe) return res.status(404).json({ message: "L'employé n'existe pas!" })
-        await employe.update({ nom, prenom, adresse, contact })
+        await employe.update({ nom, prenom, adresse, contact, idRole })
         res.status(200).json({ message: 'Employé modifié avec succès!', employe });
     }
     catch (error) {
