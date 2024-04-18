@@ -113,3 +113,19 @@ exports.getRupture = async (req, res) => {
         res.status(500).json({ message: error.message })
     }
 }
+
+exports.getCountRupture = async (req, res) => {
+    try {
+        const nbRupture = await Produit.count({
+            where: {
+                quantiteStock: {
+                    [Op.lt]: 6
+                }
+            }
+        });
+        res.json({ nbRupture })
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}

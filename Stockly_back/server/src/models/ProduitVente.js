@@ -4,10 +4,14 @@ const Produit = require('./Produit');
 const Vente = require('./Sale');
 
 const ProduitVente = sequelize.define('ProduitVente', {
-    id: {
+    idProduit: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
+    },
+    nom: {
+        type: DataTypes.STRING,
+        allowNull: false
     },
     prix: {
         type: DataTypes.INTEGER,
@@ -16,16 +20,15 @@ const ProduitVente = sequelize.define('ProduitVente', {
     quantite: {
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+    codeVente : {
+        type: DataTypes.STRING,
+        allowNull: false
     }
 });
 
 ProduitVente.belongsTo(Produit, {
     foreignKey: 'idProduit',
-    allowNull: false
-});
-
-ProduitVente.belongsTo(Vente, {
-    foreignKey: 'idVente',
     allowNull: false
 });
 

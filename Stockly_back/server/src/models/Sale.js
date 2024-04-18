@@ -8,15 +8,19 @@ const Vente = sequelize.define('Vente', {
         primaryKey: true,
         autoIncrement: true
     },
-    dateVente : {
-        type : DataTypes.DATE,
-        allowNull : false
+    dateVente: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+    codeVente: {
+        type: DataTypes.STRING,
+        allowNull: false
     }
 });
 
 Vente.belongsTo(Employe, {
-    foreignKey : 'idEmploye',
-    allowNull : false
+    foreignKey: 'idEmploye',
+    allowNull: false
 });
 
 module.exports = Vente;

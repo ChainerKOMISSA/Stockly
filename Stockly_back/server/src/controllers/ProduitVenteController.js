@@ -10,9 +10,9 @@ exports.getAllProduitVentes = async (req, res) => {
 }
 
 exports.createProduitVente = async (req, res) => {
-    const { prix, quantite, idProduit, idVente } = req.body;
+    const { nom, prix, quantite, idProduit, codeVente } = req.body;
     try {
-        const produitVente = await ProduitVente.create({ prix, quantite, idProduit, idVente });
+        const produitVente = await ProduitVente.create({ nom, prix, quantite, idProduit, codeVente });
         res.status(201).json(produitVente);
     } catch (error) {
         res.status(400).json({ message: error.message });

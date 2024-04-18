@@ -17,9 +17,9 @@ exports.getAllVentes = async (req, res) => {
 }
 
 exports.createVente = async (req, res) => {
-    const { dateVente, idEmploye } = req.body;
+    const { dateVente, idEmploye, codeVente } = req.body;
     try {
-        const vente = await Vente.create({ dateVente, idEmploye });
+        const vente = await Vente.create({ dateVente, idEmploye, codeVente });
         res.status(201).json(vente);
     } catch (error) {
         res.status(400).json({ message: error.message });
