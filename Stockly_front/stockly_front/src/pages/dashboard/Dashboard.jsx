@@ -4,65 +4,9 @@ import { API_URL } from '../../components/constantes';
 
 
 function Dashboard() {
-  const [nbproducts, setNbproducts] = useState([]);
-  const [nborders, setOrders] = useState([]);
   const [nbrupture, setNbrupture] = useState([]);
-  const [nbfrs, setFrs] = useState([]);
-  const [nbemployes, setNbEmployes] = useState([]);
   const [sumdepenses, setSumdepenses] = useState([]);
   const [sumventes, setSumventes] = useState([]);
-
-
-  //Nombre de produits
-  useEffect(() => {
-    fetch(`${API_URL}/statproduct`)
-      .then(response => response.json())
-      .then(data => {
-        setNbproducts(data)
-      })
-      .catch(error => {
-        console.error('Erreur lors de la récupération des statistiques des produits: ', error)
-      })
-  });
-
-
-  //Nombre de commandes
-  useEffect(() => {
-    fetch(`${API_URL}/statorder`)
-      .then(response => response.json())
-      .then(data => {
-        setOrders(data)
-      })
-      .catch(error => {
-        console.error('Erreur lors de la récupération des statistiques des commandes: ', error)
-      })
-  });
-
-
-  // Somme des ventes
-  useEffect(() => {
-    fetch(`${API_URL}/statsales`)
-      .then(response => response.json())
-      .then(data => {
-        setSumventes(data)
-      })
-      .catch(error => {
-        console.error('Erreur lors de la récupération des statistiques des ventes: ', error)
-      })
-  });
-
-
-  // Nombre de rupture de stock
-  useEffect(() => {
-    fetch(`${API_URL}/statrupture`)
-      .then(response => response.json())
-      .then(data => {
-        setNbrupture(data)
-      })
-      .catch(error => {
-        console.error('Erreur lors de la récupération des statistiques des ruptures de stock: ', error)
-      })
-  });
 
 
   // Somme des dépenses
@@ -74,6 +18,18 @@ function Dashboard() {
       })
       .catch(error => {
         console.error('Erreur lors de la récupération des statistiques des dépenses: ', error)
+      })
+  });
+
+  // Somme des dépenses
+  useEffect(() => {
+    fetch(`${API_URL}/produits/countrupture`)
+      .then(response => response.json())
+      .then(data => {
+        setNbrupture(data)
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération des statistiques du nombre des ruptures: ', error)
       })
   });
 
@@ -137,7 +93,7 @@ function Dashboard() {
               <div className="card-body my-3">
                 <a href="/rupture" className="card-title fw-bold text-danger fs-5 mb-3 d-block">Alerte stock</a>
                 <div className="py-1">
-                  <span className="text-gray-900 fs-1 fw-bold me-2">{nbrupture.map(nbrupt => (nbrupt.NbRupture))}</span>
+                  <span className="text-gray-900 fs-1 fw-bold me-2">{nbrupture.nbRupture}</span>
                   <span className="fw-semibold text-muted fs-7">produit(s)</span>
                 </div>
                 <div className="progress h-7px bg-danger bg-opacity-50 mt-7">

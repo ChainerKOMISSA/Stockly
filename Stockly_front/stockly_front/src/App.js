@@ -15,6 +15,7 @@ import Categories from './pages/dashboard/Products/Categories';
 import Deliveries from './pages/dashboard/Deliveries/Deliveries';
 import Liquidation from './pages/dashboard/Liquidation';
 import Rupture from './pages/dashboard/Rupture';
+import SalesDetails from './pages/dashboard/Sales/SalesDetails';
 
 
 
@@ -28,6 +29,7 @@ function App() {
           <Route path="products" element={<Products />} />
           <Route path="categories" element={<Categories />} />
           <Route path="sales" element={<Sales />} />
+          <Route path='sales/details/:id' element={<SalesDetails />} />
           <Route path="orders" element={<Orders />} />
           <Route path="deliveries" element={<Deliveries />} />
           <Route path="suppliers" element={<Suppliers />} />

@@ -10,8 +10,6 @@ import { formatDate } from '../../../helpers/DateFormat'
 
 function Sales() {
   const navigate = useNavigate()
-  const [showcreateModal, setShowCreateModal] = useState(false);
-  const [showupdateModal, setShowUpdateModal] = useState(false);
   const [sales, setSales] = useState([])
   const [vendeurs, setVendeurs] = useState([])
   const [produitsvente, setProduitsvente] = useState([])
@@ -24,12 +22,6 @@ function Sales() {
   const [prix, setPrix] = useState(0);
   const [updatedData, setUpdatedData] = useState({});
 
-
-  const opencreateModal = () => { setShowCreateModal(true) }
-  const closecreateModal = () => { setShowCreateModal(false) }
-
-  const openupdateModal = (sale) => { setShowUpdateModal(true); setSelectedSale(sale) }
-  const closeupdateModal = () => { setShowUpdateModal(false); setSelectedSale(null) }
 
   useEffect(() => {
     fetch(`${API_URL}/ventes`)
@@ -120,6 +112,7 @@ function Sales() {
         },
         body: JSON.stringify(saleData),
       });
+      console.log('Vente enregistrée');
 
       if (response1.ok) {
         const data = await response1.json();
@@ -148,49 +141,48 @@ function Sales() {
   };
 
 
-  const handleUpdateChange = (e) => {
-    const { name, value } = e.target;
-    setUpdatedData({
-      ...updatedData,
-      [name]: value,
-    });
-  }
+  // const handleUpdateChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setUpdatedData({
+  //     ...updatedData,
+  //     [name]: value,
+  //   });
+  // }
 
-  useEffect(() => {
-    if (selectedSale) {
-      setUpdatedData({
-        id: selectedSale.id,
-        dateVente: selectedSale.dateVente,
-      });
-    }
-  }, [selectedSale]);
+  // useEffect(() => {
+  //   if (selectedSale) {
+  //     setUpdatedData({
+  //       id: selectedSale.id,
+  //       dateVente: selectedSale.dateVente,
+  //     });
+  //   }
+  // }, [selectedSale]);
 
 
-  const handleUpdate = async (e, id) => {
-    e.preventDefault();
-    try {
-      const response = await fetch(`${API_URL}/ventes/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedData),
-      });
+  // const handleUpdate = async (e, id) => {
+  //   e.preventDefault();
+  //   try {
+  //     const response = await fetch(`${API_URL}/ventes/${id}`, {
+  //       method: 'PUT',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(updatedData),
+  //     });
 
-      if (response.ok) {
-        const data = await response.json();
-        updateSuccessAlert()
-        closecreateModal();
-        navigate(0)
-      } else {
-        const errorData = await response.json();
-        failureAlert(errorData)
-      }
-    }
-    catch (error) {
-      failureAlert(error)
-    }
-  }
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       updateSuccessAlert()
+  //       navigate(0)
+  //     } else {
+  //       const errorData = await response.json();
+  //       failureAlert(errorData)
+  //     }
+  //   }
+  //   catch (error) {
+  //     failureAlert(error)
+  //   }
+  // }
 
 
   const handleDelete = (id) => {
@@ -216,7 +208,46 @@ function Sales() {
     }
   }
 
-  const addProductToList = () => {
+  const removeFromList = (id) => {
+    // Recherche la ligne correspondante dans le tableau HTML en fonction de l'identifiant unique
+    let rowToRemove = document.querySelector(`#product_list_table tr[data-id="${id}"]`);
+
+    // Vérifie si la ligne existe
+    if (rowToRemove) {
+      // Supprime la ligne du tableau HTML
+      rowToRemove.remove();
+
+      // Recherche l'indice du produit dans listeProduits en fonction de son idProduit
+      let index = listeProduits.findIndex(produit => produit.idProduit === id);
+
+      // Vérifie si le produit existe dans la liste
+      if (index !== -1) {
+        // Retire le produit de listeProduits
+        listeProduits.splice(index, 1);
+      }
+
+
+      // Recalcul de la somme totale
+      let total = 0;
+      let table = document.getElementById("product_list_table");
+      for (let i = 1; i < table.rows.length; i++) {
+        let cellValue = parseFloat(table.rows[i].cells[3].innerHTML);
+        total += cellValue;
+      }
+
+      // Met à jour le texte du bouton avec la nouvelle somme totale
+      let totalElement = document.getElementById("bill_button");
+      if (totalElement) {
+        totalElement.textContent = `Montant total à payer : ${total} FCFA`;
+      } else {
+        totalElement.textContent = `Montant total à payer : 0 FCFA`;
+      }
+
+    }
+  }
+
+  const addProductToList = (e) => {
+    e.preventDefault();
     document.getElementById("product_list_table").hidden = false;
     document.getElementById("bill_button").hidden = false;
     document.getElementById("CancelBtn").hidden = false;
@@ -228,12 +259,16 @@ function Sales() {
       nom: formData.nom,
       prix: formData.prix,
       quantite: formData.quantite,
-      montant: formData.montant
+      montant: formData.montant,
+      codeVente : formData.codeVente
     })
 
     let row = table.insertRow(
       table.childNodes.length - 1
     )
+
+    // Ajoute un attribut data-id à la ligne avec la valeur de l'identifiant du produit
+    row.setAttribute("data-id", formData.id);
 
     let cell1 = row.insertCell(0)
     cell1.innerHTML = listeProduits[listeProduits.length - 1].nom
@@ -251,6 +286,22 @@ function Sales() {
     let cell4 = row.insertCell(3)
     cell4.innerHTML = somme
 
+    let cell5 = row.insertCell(4)
+
+    let button = document.createElement("button");
+    button.classList.add("btn", "btn-light-danger");
+    let icon = document.createElement("i");
+    icon.classList.add("ki-outline", "ki-trash");
+    button.appendChild(icon);
+    // button.textContent = "Retirer";
+
+    button.addEventListener("click", function () {
+      let id = listeProduits[listeProduits.length - 1].idProduit;
+      removeFromList(id);
+    });
+
+    cell5.appendChild(button);
+
     let total = 0
 
     for (let i = 1; i < table.rows.length; i++) {
@@ -266,6 +317,31 @@ function Sales() {
     }
   }
 
+  const [salesdetails, setSalesDetails] = useState([])
+
+  const getDetails = (saleId) => {
+    console.log('saleId: ', saleId);
+    navigate(`/sales/details/${saleId}`)
+    // fetch(`${API_URL}/ventes/${saleId}`)
+    //   .then(response => response.json())
+    //   .then(data => {
+    //     setSalesDetails(data)
+
+    //   })
+    //   .catch(error => {
+    //     console.error('Erreur lors de la récupération des détails des ventes: ', error)
+    //   })
+  }
+
+  const getVenteCode = () => {
+    const date = getCurrentDate();
+    const nom = saleData.idEmploye;
+
+    // Génère le code en concaténant la date et le nom de l'employé
+    const codeVente = date + '_[Employe' + nom + ']';
+
+    return codeVente;
+  }
 
 
 
@@ -298,7 +374,7 @@ function Sales() {
         <div className="card mb-5 mb-xl-8">
           <div className="card-header border-0 pt-5">
             <div className="card-toolbar align-items-center gap-2 gap-lg-3" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover" title="Click to add a user">
-              <a href="#" className="btn btn-sm btn-light btn-active-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_share_earn" onClick={() => opencreateModal()}>
+              <a href="#" className="btn btn-sm btn-light btn-active-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_share_earn">
                 <i className="ki-outline ki-plus fs-2"></i>
                 Nouvelle vente
               </a>
@@ -319,6 +395,7 @@ function Sales() {
                       </div>
                     </th>
                     <th className="min-w-150px">Date</th>
+                    <th className="min-w-200px">Code vente</th>
                     <th className="min-w-200px">Employe</th>
                     <th className="min-w-100px text-end">Actions</th>
                   </tr>
@@ -340,16 +417,19 @@ function Sales() {
                           </div>
                         </td>
                         <td>
+                          <a className="text-gray-900 fw-bold text-hover-primary fs-6">{sale.codeVente}</a>
+                        </td>
+                        <td>
                           <a className="text-gray-900 fw-bold text-hover-primary fs-6">{sale.Employe.nom} {sale.Employe.prenom}</a>
                         </td>
                         <td>
                           <div className="d-flex justify-content-end flex-shrink-0">
-                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" onClick={() => getDetails(sale.id)}>
                               <i className="ki-outline ki-file fs-2"></i>
                             </a>
-                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#kt_modal_edit" onClick={() => openupdateModal(sale.id)}>
+                            {/* <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#kt_modal_edit">
                               <i className="ki-outline ki-pencil fs-2"></i>
-                            </a>
+                            </a> */}
                             <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={() => handleDelete(sale.id)}>
                               <i className="ki-outline ki-trash fs-2"></i>
                             </a>
@@ -362,7 +442,7 @@ function Sales() {
               </table>
               {/* Create Sale Modal */}
               <div className="modal fade" id="kt_modal_share_earn" tabIndex="-1" aria-hidden="true" >
-                <div className="modal-dialog modal-dialog-centered mw-1000px">
+                <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable mw-1000px">
                   <div className="modal-content">
                     <div className="modal-header pb-0 border-0 justify-content-end">
                       <div className="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
@@ -386,7 +466,7 @@ function Sales() {
                                     <i className="ki-outline ki-information fs-7"></i>
                                   </span>
                                 </label>
-                                <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="dateVente" id='dateVente' value={formData.dateVente} onChange={registerSale} required />
+                                <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="dateVente" id='dateVente' value={getCurrentDate()} onChange={registerSale} required />
                               </div>
                             </div>
                             <div className="col">
@@ -407,6 +487,11 @@ function Sales() {
                                     }
                                   </select>
                                 </div>
+                              </div>
+                            </div>
+                            <div className="col">
+                              <div className="fv-row mb-7">
+                                <input type="hidden" className="form-control form-control-solid" id='codeVente' name="codeVente" value={getVenteCode()} onChange={(e) => {registerSale(); handleChange();}}  readOnly />
                               </div>
                             </div>
                           </div>
@@ -480,6 +565,7 @@ function Sales() {
                                 <th className="min-w-200px" id="prixProduit">Prix</th>
                                 <th className="min-w-200px" id="qtteProduit">Quantité</th>
                                 <th className="min-w-200px" id="montantProduit">Montant</th>
+                                <th className="min-w-200px" id="montantProduit">Actions</th>
                               </tr>
                             </thead>
                             <tbody>

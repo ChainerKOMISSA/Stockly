@@ -191,19 +191,41 @@ function Products() {
       </div>
 
       <div id="kt_app_content" className="app-content">
-        <div class="card card-flush pb-0 bgi-position-y-center bgi-no-repeat mb-10" style={{ backgroundSize: "auto calc(100% + 10rem)", backgroundPositionX: "100%", backgroundImage: "url('assets/media/illustrations/sketchy-1/4.png')" }}>
+        <div class="card card-flush pb-0 bgi-position-y-center bgi-no-repeat mb-10" style={{ backgroundSize: "auto calc(100% + 10rem)", backgroundPositionX: "100%" }}>
           <div class="card-header pt-10">
             <div class="d-flex align-items-center">
               <div class="symbol symbol-circle me-5"></div>
               <div class="d-flex flex-column">
-                <h2 class="mb-1">File Manager</h2>
-                <input type='search'/>
-                <div class="text-muted fw-bold">
-                  <a href="#">Keenthemes</a>
-                  <span class="mx-3">|</span>
-                  <a href="#">File Manager</a>
-                  <span class="mx-3">|</span>2.6 GB
-                  <span class="mx-3">|</span>758 items</div>
+                <h2 class="mb-1">Filtre de recherche de produits</h2>
+                <div class="text-muted">Effectuer une rechercher par ...</div> <br />
+                <div className='row'>
+                  <div className='col'>
+                    <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Catégorie" name='idCategorie'>
+                      <option value="">Catégorie</option>
+                      {
+                        categories.map((categorie, index) => (
+                          <option key={index} value={categorie.id}>{categorie.libelle}</option>
+                        ))
+                      }
+                    </select>
+                  </div>
+                  <div className='col'>
+                    <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Catégorie" name='idCategorie'>
+                      <option value="">Produits</option>
+                      {
+                        produits.map((produit, index) => (
+                          <option key={index} value={produit.id}>{produit.nom}</option>
+                        ))
+                      }
+                    </select>
+                  </div>
+                  <div className='col'>
+                    <a href="#" className="btn btn-sm btn-light-primary">
+                      <i className="ki-outline ki-magnifier fs-2"></i>
+                      Rechercher
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

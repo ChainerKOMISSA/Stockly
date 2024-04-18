@@ -39,7 +39,7 @@ function Orders() {
     fetch(`${API_URL}/suppliers`)
       .then(response => response.json())
       .then(data => {
-        setOrders(data)
+        setSuppliers(data)
       })
       .catch(error => {
         console.error('Erreur lors de la récupération des fournisseurs: ', error)
@@ -256,8 +256,8 @@ function Orders() {
                         <input className="form-check-input" type="checkbox" value="1" data-kt-check="true" data-kt-check-target=".widget-9-check" />
                       </div>
                     </th>
-                    <th className="min-w-150px">Libellé</th>
-                    <th className="min-w-200px">Description</th>
+                    <th className="min-w-150px">Identitdiant de la commande</th>
+                    <th className="min-w-200px">Fournisseur</th>
                     <th className="min-w-100px text-end">Actions</th>
                   </tr>
                 </thead>
@@ -273,12 +273,12 @@ function Orders() {
                         <td>
                           <div className="d-flex align-items-center">
                             <div className="d-flex justify-content-start flex-column">
-                              <a className="text-gray-900 fw-bold text-hover-primary fs-6">{order.dateCommande}</a>
+                              <a className="text-gray-900 fw-bold text-hover-primary fs-6">{formatDate(order.dateCommande)}</a>
                             </div>
                           </div>
                         </td>
                         <td>
-                          <a className="text-gray-900 fw-bold text-hover-primary fs-6">{order.idFournisseur}</a>
+                          <a className="text-gray-900 fw-bold text-hover-primary fs-6">{order.Fournisseur.nom}</a>
                         </td>
                         <td>
                           <div className="d-flex justify-content-end flex-shrink-0">
