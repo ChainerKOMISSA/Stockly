@@ -27,7 +27,7 @@ export function MontantInputControl() {
         <input
             type="text"
             className="form-control form-control-solid"
-            name="Montant_Vente"
+            name="montant"
             value={montantotal}
             onChange={() => { }}
             readOnly

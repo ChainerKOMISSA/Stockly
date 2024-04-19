@@ -63,7 +63,7 @@ function Dashboard() {
           <div className="col-xl-4">
             <div className="card bg-light-success card-xl-stretch mb-xl-8">
               <div className="card-body my-3">
-                <a href="#" className="card-title fw-bold text-success fs-5 mb-3 d-block">Ventes réalisées</a>
+                <a href="/sales" className="card-title fw-bold text-success fs-5 mb-3 d-block">Ventes réalisées</a>
                 <div className="py-1">
                   <span className="text-gray-900 fs-1 fw-bold me-2">{sumventes.map(sumvente => (sumvente.SumVente))}</span>
                   <span className="fw-semibold text-muted fs-7">FCFA</span>

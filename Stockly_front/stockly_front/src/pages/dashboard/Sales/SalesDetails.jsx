@@ -1,25 +1,41 @@
 import React, { useState, useEffect } from 'react'
 import { API_URL } from '../../../components/constantes'
-import { useNavigate } from 'react-router-dom'
+import { useParams, useLocation } from 'react-router-dom'
+import { formatDate } from '../../../helpers/DateFormat'
 
 
 const SalesDetails = () => {
-    const navigate = useNavigate()
-    const idVente = req.params;
     const [salesdetails, setSalesDetails] = useState([])
+    const [listeproduits, setListeProduits] = useState([])
+    const { id } = useParams();
+    const location = useLocation();
 
+    const searchParams = new URLSearchParams(location.search);
+    const code = searchParams.get('code');
 
-    useEffect((id) => {
+    useEffect(() => {
         fetch(`${API_URL}/ventes/${id}`)
             .then(response => response.json())
             .then(data => {
                 setSalesDetails(data)
-                console.log(salesdetails);
+                // console.log(salesdetails);
             })
             .catch(error => {
                 console.error('Erreur lors de la récupération des détails des ventes: ', error)
             })
-    }, []);
+
+        fetch(`${API_URL}/produitvente/${code}`)
+            .then(response => response.json())
+            .then(data => {
+                setListeProduits(data)
+                console.log(listeproduits);
+            })
+            .catch(error => {
+                console.error('Erreur lors de la récupération des détails des produits vendus: ', error)
+            })
+    }, [location.search]);
+
+
 
     return (
         <>
@@ -65,10 +81,12 @@ const SalesDetails = () => {
                                     <div className="py-5 fs-6">
                                         {/* <div className="badge badge-light-info d-inline">Premium user</div> */}
                                         <div className="fw-bold mt-5">Date</div>
-                                        <div className="text-gray-600">date</div>
-                                        <div className="fw-bold mt-5">Vendeur</div>
-                                        <div className="text-gray-600">John Doe</div>
-                                        
+                                        <div className="text-gray-600">{formatDate(salesdetails.dateVente)}</div>
+                                        <div className="fw-bold mt-5">Code vente </div>
+                                        <div className="text-gray-600">{salesdetails.codeVente}</div>
+                                        {/* <div className="fw-bold mt-5">Vendeur</div>
+                                        <div className="text-gray-600">{salesdetails.Employe.nom}</div> */}
+
                                     </div>
                                 </div>
                             </div>
@@ -84,26 +102,30 @@ const SalesDetails = () => {
                                         </div>
                                         <div className="card-toolbar">
                                             <button type="button" className="btn btn-sm btn-flex btn-light-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_add_payment">
-                                                <i className="ki-outline ki-plus-square fs-3"></i>Add payment</button>
+                                                <i className="ki-outline ki-printer fs-3"></i>Imprimer la facture</button>
                                         </div>
                                     </div>
                                     <div className="card-body pt-0 pb-5">
                                         <table className="table align-middle table-row-dashed gy-5" id="kt_table_customers_payment">
                                             <thead className="border-bottom border-gray-200 fs-7 fw-bold">
                                                 <tr className="text-start text-muted text-uppercase gs-0">
-                                                    <th className="min-w-100px">Invoice No.</th>
-                                                    <th>Amount</th>
-                                                    <th className="min-w-100px">Date</th>
+                                                    <th className="min-w-100px">#</th>
+                                                    <th>Produit</th>
+                                                    <th className="min-w-100px">Prix</th>
+                                                    <th className="min-w-100px">Quantité</th>
                                                 </tr>
                                             </thead>
                                             <tbody className="fs-6 fw-semibold text-gray-600">
-                                                <tr>
-                                                    <td>
-                                                        <a href="#" class="text-gray-600 text-hover-primary mb-1">8355-6572</a>
-                                                    </td>
-                                                    <td>$1,200.00</td>
-                                                    <td>14 Dec 2020, 8:43 pm</td>
-                                                </tr>
+                                                {
+                                                    listeproduits.map((produit, index) => (
+                                                        <tr key={index}>
+                                                            <td>{index + 1}</td>
+                                                            <td>{produit.nom}</td>
+                                                            <td>{produit.prix}</td>
+                                                            <td>{produit.quantite}</td>
+                                                        </tr>
+                                                    ))
+                                                }
                                             </tbody>
                                         </table>
                                     </div>

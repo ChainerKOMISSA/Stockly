@@ -12,15 +12,11 @@ function Sales() {
   const navigate = useNavigate()
   const [sales, setSales] = useState([])
   const [vendeurs, setVendeurs] = useState([])
-  const [produitsvente, setProduitsvente] = useState([])
   const [produits, setProduits] = useState([])
-  const [selectedSale, setSelectedSale] = useState(null)
   const [formData, setFormData] = useState({});
   const [listeProduits, setListeProduits] = useState([]);
-  const [produitsVendus, setProduitsVendus] = useState({})
   const [saleData, setSaleData] = useState({});
   const [prix, setPrix] = useState(0);
-  const [updatedData, setUpdatedData] = useState({});
 
 
   useEffect(() => {
@@ -31,17 +27,6 @@ function Sales() {
       })
       .catch(error => {
         console.error('Erreur lors de la récupération des ventes: ', error)
-      })
-  }, []);
-
-  useEffect(() => {
-    fetch(`${API_URL}/produitvente`)
-      .then(response => response.json())
-      .then(data => {
-        setProduitsvente(data)
-      })
-      .catch(error => {
-        console.error('Erreur lors de la récupération des produits vendus: ', error)
       })
   }, []);
 
@@ -98,47 +83,6 @@ function Sales() {
       [name]: value,
     });
   }
-
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      // First, make a POST request to /ventes
-      const response1 = await fetch(`${API_URL}/ventes`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(saleData),
-      });
-      console.log('Vente enregistrée');
-
-      if (response1.ok) {
-        const data = await response1.json();
-        const response2 = await fetch(`${API_URL}/produitvente`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ listeProduits }),
-        });
-
-        if (response2.ok) {
-          createSuccessAlert();
-          navigate(0);
-        } else {
-          const errorData = await response2.json();
-          failureAlert(errorData);
-        }
-      } else {
-        const errorData = await response1.json();
-        failureAlert(errorData);
-      }
-    } catch (error) {
-      failureAlert(error);
-    }
-  };
 
 
   // const handleUpdateChange = (e) => {
@@ -208,7 +152,80 @@ function Sales() {
     }
   }
 
-  const removeFromList = (id) => {
+
+  const addProductToList = (e) => {
+    e.preventDefault();
+    document.getElementById("product_list_table").hidden = false;
+    document.getElementById("bill_button").hidden = false;
+    document.getElementById("CancelBtn").hidden = false;
+    document.getElementById("SaveBtn").hidden = false;
+
+    let table = document.getElementById("product_list_table")
+    listeProduits.push({
+      idProduit: formData.id,
+      nom: formData.nom,
+      prix: formData.prix,
+      quantite: formData.quantite,
+      codeVente: saleData.codeVente,
+    })
+
+
+    let row = table.insertRow(
+      table.childNodes.length - 1
+    )
+
+    // Ajoute un attribut data-id à la ligne avec la valeur de l'identifiant du produit
+    row.setAttribute("data-id", formData.id);
+
+    let cell1 = row.insertCell(0)
+    cell1.innerHTML = listeProduits[listeProduits.length - 1].nom
+
+    let cell2 = row.insertCell(1)
+    cell2.innerHTML = listeProduits[listeProduits.length - 1].prix
+
+    let cell3 = row.insertCell(2)
+    cell3.innerHTML = listeProduits[listeProduits.length - 1].quantite
+
+    let cell2Value = parseFloat(cell2.innerHTML);
+    let cell3Value = parseFloat(cell3.innerHTML);
+
+    let somme = cell2Value * cell3Value
+    let cell4 = row.insertCell(3)
+    cell4.innerHTML = somme
+
+    let cell5 = row.insertCell(4)
+
+    let button = document.createElement("button");
+    button.classList.add("btn", "btn-light-danger");
+    let icon = document.createElement("i");
+    icon.classList.add("ki-outline", "ki-trash");
+    button.appendChild(icon);
+    // button.textContent = "Retirer";
+
+    button.addEventListener("click", function () {
+      let id = listeProduits[listeProduits.length - 1].idProduit;
+      removeFromList(id, e);
+    });
+
+    cell5.appendChild(button);
+
+    let total = 0
+
+    for (let i = 1; i < table.rows.length; i++) {
+      let cellValue = parseFloat(table.rows[i].cells[3].innerHTML);
+      total += cellValue;
+    }
+
+    let totalElement = document.getElementById("bill_button");
+    if (totalElement) {
+      totalElement.textContent = `Montant total à payer : ${total} FCFA`;
+    } else {
+      totalElement.textContent = `Montant total à payer : 0 FCFA`;
+    }
+  }
+
+  const removeFromList = (id, e) => {
+    e.preventDefault();
     // Recherche la ligne correspondante dans le tableau HTML en fonction de l'identifiant unique
     let rowToRemove = document.querySelector(`#product_list_table tr[data-id="${id}"]`);
 
@@ -246,91 +263,12 @@ function Sales() {
     }
   }
 
-  const addProductToList = (e) => {
-    e.preventDefault();
-    document.getElementById("product_list_table").hidden = false;
-    document.getElementById("bill_button").hidden = false;
-    document.getElementById("CancelBtn").hidden = false;
-    document.getElementById("SaveBtn").hidden = false;
-
-    let table = document.getElementById("product_list_table")
-    listeProduits.push({
-      idProduit: formData.id,
-      nom: formData.nom,
-      prix: formData.prix,
-      quantite: formData.quantite,
-      montant: formData.montant,
-      codeVente : formData.codeVente
-    })
-
-    let row = table.insertRow(
-      table.childNodes.length - 1
-    )
-
-    // Ajoute un attribut data-id à la ligne avec la valeur de l'identifiant du produit
-    row.setAttribute("data-id", formData.id);
-
-    let cell1 = row.insertCell(0)
-    cell1.innerHTML = listeProduits[listeProduits.length - 1].nom
-
-    let cell2 = row.insertCell(1)
-    cell2.innerHTML = listeProduits[listeProduits.length - 1].prix
-
-    let cell3 = row.insertCell(2)
-    cell3.innerHTML = listeProduits[listeProduits.length - 1].quantite
-
-    let cell2Value = parseFloat(cell2.innerHTML);
-    let cell3Value = parseFloat(cell3.innerHTML);
-
-    let somme = cell2Value * cell3Value
-    let cell4 = row.insertCell(3)
-    cell4.innerHTML = somme
-
-    let cell5 = row.insertCell(4)
-
-    let button = document.createElement("button");
-    button.classList.add("btn", "btn-light-danger");
-    let icon = document.createElement("i");
-    icon.classList.add("ki-outline", "ki-trash");
-    button.appendChild(icon);
-    // button.textContent = "Retirer";
-
-    button.addEventListener("click", function () {
-      let id = listeProduits[listeProduits.length - 1].idProduit;
-      removeFromList(id);
-    });
-
-    cell5.appendChild(button);
-
-    let total = 0
-
-    for (let i = 1; i < table.rows.length; i++) {
-      let cellValue = parseFloat(table.rows[i].cells[3].innerHTML);
-      total += cellValue;
-    }
-
-    let totalElement = document.getElementById("bill_button");
-    if (totalElement) {
-      totalElement.textContent = `Montant total à payer : ${total} FCFA`;
-    } else {
-      totalElement.textContent = `Montant total à payer : 0 FCFA`;
-    }
-  }
-
   const [salesdetails, setSalesDetails] = useState([])
 
   const getDetails = (saleId) => {
-    console.log('saleId: ', saleId);
-    navigate(`/sales/details/${saleId}`)
-    // fetch(`${API_URL}/ventes/${saleId}`)
-    //   .then(response => response.json())
-    //   .then(data => {
-    //     setSalesDetails(data)
-
-    //   })
-    //   .catch(error => {
-    //     console.error('Erreur lors de la récupération des détails des ventes: ', error)
-    //   })
+    const codeElement = document.getElementById('code');
+    const code = codeElement.textContent;
+    navigate(`/sales/details/${saleId}?code=${code}`)
   }
 
   const getVenteCode = () => {
@@ -339,9 +277,51 @@ function Sales() {
 
     // Génère le code en concaténant la date et le nom de l'employé
     const codeVente = date + '_[Employe' + nom + ']';
-
     return codeVente;
   }
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log('saleData: ', saleData);
+    console.log('listeProduits: ', listeProduits);
+
+    try {
+      // First, make a POST request to /ventes
+      const response1 = await fetch(`${API_URL}/ventes`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(saleData),
+      });
+
+      if (response1.ok) {
+        console.log('Vente enregistrée');
+        const data = await response1.json();
+        const response2 = await fetch(`${API_URL}/produitvente`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(listeProduits),
+        });
+
+        if (response2.ok) {
+          createSuccessAlert();
+          navigate(0);
+        } else {
+          const errorData = await response2.json();
+          failureAlert(errorData);
+        }
+      } else {
+        const errorData = await response1.json();
+        failureAlert(errorData);
+      }
+    } catch (error) {
+      failureAlert(error);
+    }
+  };
 
 
 
@@ -416,7 +396,7 @@ function Sales() {
                             </div>
                           </div>
                         </td>
-                        <td>
+                        <td id='code'>
                           <a className="text-gray-900 fw-bold text-hover-primary fs-6">{sale.codeVente}</a>
                         </td>
                         <td>
@@ -466,7 +446,7 @@ function Sales() {
                                     <i className="ki-outline ki-information fs-7"></i>
                                   </span>
                                 </label>
-                                <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="dateVente" id='dateVente' value={getCurrentDate()} onChange={registerSale} required />
+                                <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="dateVente" value={getCurrentDate()} onChange={registerSale} required />
                               </div>
                             </div>
                             <div className="col">
@@ -491,7 +471,7 @@ function Sales() {
                             </div>
                             <div className="col">
                               <div className="fv-row mb-7">
-                                <input type="hidden" className="form-control form-control-solid" id='codeVente' name="codeVente" value={getVenteCode()} onChange={(e) => {registerSale(); handleChange();}}  readOnly />
+                                <input type="text" className="form-control form-control-solid" name="codeVente" value={getVenteCode()} onChange={(e) => { registerSale(); handleChange(); }} readOnly />
                               </div>
                             </div>
                           </div>
@@ -549,7 +529,8 @@ function Sales() {
                                   </span>
                                 </label>
                                 {/* <input type="text" className="form-control form-control-solid" name="Montant_Vente" value={formData.Montant_Vente} onChange={handleChange} readOnly /> */}
-                                <MontantInputControl name="montant" value={formData.montant} onChange={handleChange} />
+                                {/* <MontantInputControl name="montant" value={formData.montant} onChange={handleChange} /> */}
+                                <MontantInputControl />
                               </div>
                             </div>
                           </div>
@@ -558,7 +539,7 @@ function Sales() {
                               <span className="indicator-label">Ajouter</span>
                             </button>
                           </div><br />
-                          <table className="table table-row-dashed table-bordered table-row-gray-300 align-middle gs-0 gy-4" id="product_list_table" hidden="true">
+                          <table className="table table-row-dashed table-bordered table-row-gray-300 align-middle gs-0 gy-4" id="product_list_table" hidden={true}>
                             <thead>
                               <tr className="fw-bold text-muted">
                                 <th className="min-w-200px" id="nomProduit">Produit</th>
@@ -572,12 +553,12 @@ function Sales() {
                             </tbody>
                           </table>
                           <div className="d-flex justify-content-end">
-                            <span className="btn btn-light me-3 fw-semibold fs-5" hidden="true" id="bill_button"><i className="ki-outline ki-basket fs-3"></i> </span>
+                            <span className="btn btn-light me-3 fw-semibold fs-5" hidden={true} id="bill_button"><i className="ki-outline ki-basket fs-3"></i> </span>
                           </div><br />
                           <div className="separator mb-6"></div>
                           <div className="d-flex justify-content-end">
-                            <button type="reset" data-kt-contacts-type="cancel" className="btn btn-light me-3" hidden="true" id="CancelBtn">Annuler</button>
-                            <button className="btn btn-primary" hidden="true" id="SaveBtn">
+                            <button type="reset" data-kt-contacts-type="cancel" className="btn btn-light me-3" hidden={true} id="CancelBtn">Annuler</button>
+                            <button className="btn btn-primary" hidden={true} id="SaveBtn">
                               <span className="indicator-label" onClick={handleSubmit}>Enregistrer</span>
                             </button>
                           </div>
