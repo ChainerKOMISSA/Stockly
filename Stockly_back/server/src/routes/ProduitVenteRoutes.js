@@ -3,7 +3,7 @@ const produitVenteController = require('../controllers/ProduitVenteController');
 
 router.get('/', produitVenteController.getAllProduitVentes);
 router.post('/', produitVenteController.createProduitVente);
-router.get('/:id', produitVenteController.getProduitVenteById);
+router.get('/:code', produitVenteController.getProduitVenteById);
 router.put('/:id', produitVenteController.updateProduitVenteById);
 router.delete('/:id', produitVenteController.deleteProduitVenteById);
 

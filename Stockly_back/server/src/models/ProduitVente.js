@@ -1,14 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('./database');
 const Produit = require('./Produit');
-const Vente = require('./Sale');
 
 const ProduitVente = sequelize.define('ProduitVente', {
-    idProduit: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-    },
     nom: {
         type: DataTypes.STRING,
         allowNull: false

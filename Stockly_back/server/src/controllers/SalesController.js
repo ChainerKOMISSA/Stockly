@@ -32,7 +32,7 @@ exports.getVenteById = async (req, res) => {
         const vente = await Vente.findByPk(id, {
             include: {
                 model: Employe,
-                attributes: ['nom']
+                attributes: ['nom','prenom']
             }
         });
         if (!vente) return res.status(404).json({ message: "La vente n'existe pas!" });

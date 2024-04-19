@@ -1,4 +1,5 @@
 const ProduitVente = require('../models/ProduitVente');
+const Produit = require('../models/Produit');
 
 exports.getAllProduitVentes = async (req, res) => {
     try {
@@ -10,9 +11,9 @@ exports.getAllProduitVentes = async (req, res) => {
 }
 
 exports.createProduitVente = async (req, res) => {
-    const { nom, prix, quantite, idProduit, codeVente } = req.body;
+    const { nom, prix, quantite, codeVente, idProduit } = req.body;
     try {
-        const produitVente = await ProduitVente.create({ nom, prix, quantite, idProduit, codeVente });
+        const produitVente = await ProduitVente.create({ nom, prix, quantite, codeVente, idProduit });
         res.status(201).json(produitVente);
     } catch (error) {
         res.status(400).json({ message: error.message });
@@ -20,9 +21,17 @@ exports.createProduitVente = async (req, res) => {
 }
 
 exports.getProduitVenteById = async (req, res) => {
-    const { id } = req.params;
+    const { code } = req.params;
     try {
-        const produitVente = await ProduitVente.findByPk(id);
+        const produitVente = await ProduitVente.findAll({
+            include :  {
+                model : Produit,
+                attributes : ['nom']
+            },
+            where : {
+                codeVente : code
+            }
+        });
         if (!produitVente) return res.status(404).json({ message: "La vente de produit n'existe pas!" });
         res.status(200).json(produitVente);
     } catch (error) {
