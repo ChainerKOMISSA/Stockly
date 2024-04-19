@@ -5,6 +5,8 @@ import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAler
 import { getCurrentDate } from '../../../helpers/CalendarControl'
 import { formatDate } from '../../../helpers/DateFormat'
 import Swal from 'sweetalert2'
+import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
+import ListeProduitsGenerator from './ListeProduitsGenerator'
 
 function Products() {
   const navigate = useNavigate();
@@ -165,6 +167,11 @@ function Products() {
   }, []);
 
 
+  const handlePDFDownload = () => {
+    const pdfData = ListeProduitsGenerator(produits);
+    console.log(pdfData);
+  };
+
   return (
     <>
       <div id="kt_app_toolbar" className="app-toolbar pt-7 pt-lg-10">
@@ -242,10 +249,9 @@ function Products() {
                 <i className="ki-outline ki-plus fs-2"></i>
                 Nouveau produit
               </a>
-
-              <a href="#" className="btn btn-sm btn-light-primary">
+              <a className="btn btn-sm btn-light-primary" href='/products/liste'>
                 <i className="ki-outline ki-printer fs-2"></i>
-                Exporter
+                Générer la liste des produits
               </a>
             </div>
           </div>
@@ -254,11 +260,7 @@ function Products() {
               <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
                 <thead>
                   <tr className="fw-bold text-muted">
-                    <th className="w-25px">
-                      <div className="form-check form-check-sm form-check-custom form-check-solid">
-                        <input className="form-check-input" type="checkbox" value="1" data-kt-check="true" data-kt-check-target=".widget-9-check" />
-                      </div>
-                    </th>
+                    <th className="w-25px">#</th>
                     <th className="min-w-200px">Catégorie</th>
                     <th className="min-w-300px">Produit</th>
                     <th className="min-w-100px">Prix</th>
@@ -271,11 +273,7 @@ function Products() {
                   {
                     produits.map((produit, index) => (
                       <tr key={index}>
-                        <td>
-                          <div className="form-check form-check-sm form-check-custom form-check-solid">
-                            <input className="form-check-input widget-9-check" type="checkbox" value="1" />
-                          </div>
-                        </td>
+                        <td>{index + 1}</td>
                         <td>
                           <div className="d-flex align-items-center">
                             <div className="d-flex justify-content-start flex-column">

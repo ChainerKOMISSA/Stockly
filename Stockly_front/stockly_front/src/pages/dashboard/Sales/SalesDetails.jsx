@@ -101,7 +101,7 @@ const SalesDetails = () => {
                                             <h3>Liste des produits</h3>
                                         </div>
                                         <div className="card-toolbar">
-                                            <button type="button" className="btn btn-sm btn-flex btn-light-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_add_payment">
+                                            <button type="button" className="btn btn-sm btn-flex btn-light-primary">
                                                 <i className="ki-outline ki-printer fs-3"></i>Imprimer la facture</button>
                                         </div>
                                     </div>

@@ -16,7 +16,7 @@ import Deliveries from './pages/dashboard/Deliveries/Deliveries';
 import Liquidation from './pages/dashboard/Liquidation';
 import Rupture from './pages/dashboard/Rupture';
 import SalesDetails from './pages/dashboard/Sales/SalesDetails';
-
+import ListeProduitsGenerator from './pages/dashboard/Products/ListeProduitsGenerator';
 
 
 function App() {
@@ -25,6 +25,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="products/liste" element={<ListeProduitsGenerator />} />
         <Route path="/" element={<Home />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="products" element={<Products />} />
