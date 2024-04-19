@@ -172,6 +172,43 @@ function Products() {
     console.log(pdfData);
   };
 
+  const Search = () => {
+    let idCategorie = document.getElementById("searchCategorie");
+    let idProduit = document.getElementById("searchProduit");
+    console.log(idCategorie, idProduit);
+    return produits.filter((item) => item.Categorie.id === idCategorie && item.id === idProduit);
+  }
+
+  function updateProduitsByCategorie() {
+    // Récupération des éléments DOM
+    const selectCategorie = document.getElementById('kt_ecommerce_select2_country');
+    const selectProduit = document.getElementById('kt_ecommerce_select2_country2');
+
+    // Écouteur d'événements pour le changement de sélection de catégorie
+    selectCategorie.addEventListener('change', function () {
+      const selectedCategorieId = this.value; // Récupérer l'ID de la catégorie sélectionnée
+
+      // Filtrer les produits en fonction de la catégorie sélectionnée
+      const filteredProduits = produits.filter(produit => {
+        return produit.categorieId === selectedCategorieId;
+      });
+
+      // Mettre à jour les options du select des produits
+      selectProduit.innerHTML = '<option value="">Produits</option>'; // Réinitialiser les options du select
+
+      filteredProduits.forEach(produit => {
+        const option = document.createElement('option');
+        option.value = produit.id;
+        option.textContent = produit.nom;
+        selectProduit.appendChild(option);
+      });
+    });
+  }
+  useEffect(() => {
+    updateProduitsByCategorie();
+  }, []);
+
+
   return (
     <>
       <div id="kt_app_toolbar" className="app-toolbar pt-7 pt-lg-10">
@@ -207,7 +244,7 @@ function Products() {
                 <div class="text-muted">Effectuer une rechercher par ...</div> <br />
                 <div className='row'>
                   <div className='col'>
-                    <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Catégorie" name='idCategorie'>
+                    <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Catégorie" name='searchCategorie'>
                       <option value="">Catégorie</option>
                       {
                         categories.map((categorie, index) => (
@@ -217,7 +254,7 @@ function Products() {
                     </select>
                   </div>
                   <div className='col'>
-                    <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Catégorie" name='idCategorie'>
+                    <select id="kt_ecommerce_select2_country2" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Catégorie" name='searchProduit'>
                       <option value="">Produits</option>
                       {
                         produits.map((produit, index) => (
@@ -227,7 +264,7 @@ function Products() {
                     </select>
                   </div>
                   <div className='col'>
-                    <a href="#" className="btn btn-sm btn-light-primary">
+                    <a className="btn btn-sm btn-light-primary">
                       <i className="ki-outline ki-magnifier fs-2"></i>
                       Rechercher
                     </a>
