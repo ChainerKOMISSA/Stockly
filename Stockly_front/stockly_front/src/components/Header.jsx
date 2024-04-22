@@ -92,7 +92,7 @@ const Header = () => {
                                 {/*begin::User menu*/}
                                 <div className="app-navbar-item ms-2 ms-md-5" id="kt_header_user_menu_toggle">
                                     {/*begin::Menu wrapper*/}
-                                    <div className="cursor-pointer symbol symbol-35px symbol-md-40px" data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">
+                                    <div onClick={() => navigation("login")} className="cursor-pointer symbol symbol-35px symbol-md-40px" data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">
                                         <img className="symbol symbol-35px symbol-md-40px" src={avatar} alt="user" />
                                     </div>
                                     {/* <!--begin::User account menu--> */}
