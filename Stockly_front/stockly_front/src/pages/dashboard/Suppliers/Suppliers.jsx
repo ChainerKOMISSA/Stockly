@@ -1,21 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { API_URL } from '../../../components/constantes'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../../components/alerts'
 import Swal from 'sweetalert2'
 
 
 function Suppliers() {
-  const navigate = useNavigate()
-  const [showcreateModal, setShowCreateModal] = useState(false);
-  const [showupdateModal, setShowUpdateModal] = useState(false);
+  const navigate = useNavigate();
   const [suppliers, setSuppliers] = useState([]);
-  const [selectedSupplier, setSelectedSupplier] = useState(null)
+  const [selectedSupplier, setSelectedSupplier] = useState({})
   const [formData, setFormData] = useState({});
   const [updatedData, setUpdatedData] = useState({});
-
-  const opencreateModal = () => { setShowCreateModal(true) }
-  const closecreateModal = () => { setShowCreateModal(false) }
 
 
   useEffect(() => {
@@ -63,6 +58,22 @@ function Suppliers() {
     }
   }
 
+  const handleSupplierSelection = (supplierId) => {
+    fetch(`${API_URL}/suppliers/${supplierId}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('La requête a échoué');
+        }
+        return response.json();
+      })
+      .then(supplierDetails => {
+        setSelectedSupplier(supplierDetails);
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération des détails du forunisseur:', error);
+      });
+  };
+
 
   const handleUpdateChange = (e) => {
     const { name, value } = e.target;
@@ -75,6 +86,7 @@ function Suppliers() {
   useEffect(() => {
     if (selectedSupplier) {
       setUpdatedData({
+        id: selectedSupplier.id,
         nom: selectedSupplier.nom,
         adresse: selectedSupplier.adresse,
         contact: selectedSupplier.contact,
@@ -97,7 +109,6 @@ function Suppliers() {
       if (response.ok) {
         const data = await response.json();
         updateSuccessAlert()
-        closecreateModal();
         navigate(0)
       } else {
         const errorData = await response.json();
@@ -229,7 +240,11 @@ function Suppliers() {
                         </td>
                         <td>
                           <div className="d-flex justify-content-end flex-shrink-0">
-                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#kt_modal_edit" data-category-id={supplier.id}>
+                            <a href="#"
+                              className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                              data-bs-toggle="modal"
+                              data-bs-target="#kt_modal_edit"
+                              onClick={() => handleSupplierSelection(supplier.id)}>
                               <i className="ki-outline ki-pencil fs-2"></i>
                             </a>
                             <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={(e) => confirmDelete(supplier.id)}>
@@ -297,6 +312,71 @@ function Suppliers() {
                             <button type="reset" data-kt-contacts-type="cancel" class="btn btn-light me-3">Annuler</button>
                             <button class="btn btn-primary" onClick={handleSubmit}>
                               <span class="indicator-label">Enregistrer</span>
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* End Create Product Modal */}
+
+              {/* Edit Category Modal */}
+              <div className="modal fade" id="kt_modal_edit" tabIndex="-1" aria-hidden="true" >
+                <div className="modal-dialog modal-dialog-centered mw-800px">
+                  <div className="modal-content">
+                    <div className="modal-header pb-0 border-0 justify-content-end">
+                      <div className="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                        <i className="ki-outline ki-cross fs-1"></i>
+                      </div>
+                    </div>
+                    <div className="modal-body scroll-y pt-0 pb-15">
+                      <div className="mw-lg-600px mx-auto">
+                        <div className="mb-13 text-center">
+                          <h1 className="mb-3">Modifier ce fournisseur</h1>
+                          <div className="text-muted fw-semibold fs-5">Entrez les informations pour modifier le fournisseur.
+                          </div>
+                        </div>
+                        <form id="kt_ecommerce_settings_general_form" className="form">
+                          <div className="fv-row mb-7">
+                            <label className="fs-6 fw-semibold form-label mt-3">
+                              <span className="required">Nom du fournisseur</span>
+                              <span className="ms-1" data-bs-toggle="tooltip" title="Entrez le nom du fournisseur">
+                                <i className="ki-outline ki-information fs-7"></i>
+                              </span>
+                            </label>
+                            <input type="text" className="form-control form-control-solid" name="nom" value={updatedData.nom} onChange={handleUpdateChange} />
+                          </div>
+                          <div className="row row-cols-1 row-cols-sm-2 rol-cols-md-1 row-cols-lg-2">
+                            <div className="col">
+                              <div className="fv-row mb-7">
+                                <label className="fs-6 fw-semibold form-label mt-3">
+                                  <span className="required">Adresse du fournisseur</span>
+                                  <span className="ms-1" data-bs-toggle="tooltip" title="Entrez l'adresse du fournisseur">
+                                    <i className="ki-outline ki-information fs-7"></i>
+                                  </span>
+                                </label>
+                                <input type="text" className="form-control form-control-solid" name="adresse" value={updatedData.adresse} onChange={handleUpdateChange} />
+                              </div>
+                            </div>
+                            <div className="col">
+                              <div className="fv-row mb-7">
+                                <label className="fs-6 fw-semibold form-label mt-3">
+                                  <span className="required">Contact du fournisseur</span>
+                                  <span className="ms-1" data-bs-toggle="tooltip" title="Entrez le contact du fournisseur">
+                                    <i className="ki-outline ki-information fs-7"></i>
+                                  </span>
+                                </label>
+                                <input type="text" className="form-control form-control-solid" name="contact" value={updatedData.contact} onChange={handleUpdateChange} />
+                              </div>
+                            </div>
+                          </div>
+                          <div class="separator mb-6"></div>
+                          <div class="d-flex justify-content-end">
+                            <button type="reset" data-kt-contacts-type="cancel" class="btn btn-light me-3">Annuler</button>
+                            <button class="btn btn-primary" onClick={(e) => handleUpdate(e, selectedSupplier.id)}>
+                              <span class="indicator-label">Enregistrer les modifications</span>
                             </button>
                           </div>
                         </form>

@@ -346,8 +346,8 @@ function Categories() {
                               <div class="separator mb-6"></div>
                               <div class="d-flex justify-content-end">
                                 <button type="reset" data-kt-contacts-type="cancel" class="btn btn-light me-3">Annuler</button>
-                                <button class="btn btn-primary">
-                                  <span class="indicator-label" onClick={(e) => handleUpdate(e, selectedCategory.id)}>Enregistrer les modifications</span>
+                                <button class="btn btn-primary" onClick={(e) => handleUpdate(e, selectedCategory.id)}>
+                                  <span class="indicator-label">Enregistrer les modifications</span>
                                 </button>
                               </div>
                             </form>
