@@ -11,7 +11,7 @@ function Categories() {
   const [showcreateModal, setShowCreateModal] = useState(false);
   const [showupdateModal, setShowUpdateModal] = useState(false);
   const [categories, setCategories] = useState([])
-  const [selectedCategory, setSelectedCategory] = useState(null)
+  const [selectedCategory, setSelectedCategory] = useState({})
   const [formData, setFormData] = useState({});
   const [updatedData, setUpdatedData] = useState({});
 
@@ -19,7 +19,7 @@ function Categories() {
   const closecreateModal = () => { setShowCreateModal(false) }
 
 
-  useEffect(() => { }, [showupdateModal])
+  // useEffect(() => { }, [showupdateModal])
 
   useEffect(() => {
     fetch(`${API_URL}/categories`)
@@ -76,6 +76,23 @@ function Categories() {
     });
   }
 
+  const handleCategorySelection = (categoryId) => {
+    fetch(`${API_URL}/categories/${categoryId}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('La requête a échoué');
+        }
+        return response.json();
+      })
+      .then(categoryDetails => {
+        setSelectedCategory(categoryDetails);
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération des détails de la catégorie:', error);
+      });
+  };
+
+
   useEffect(() => {
     if (selectedCategory) {
       setUpdatedData({
@@ -88,7 +105,6 @@ function Categories() {
 
   const handleUpdate = async (e, id) => {
     e.preventDefault();
-
     try {
       const response = await fetch(`${API_URL}/categories/${id}`, {
         method: 'PUT',
@@ -139,7 +155,7 @@ function Categories() {
           'Content-Type': 'application/json',
         },
       });
-      
+
       if (response.ok) {
         deleteSuccessAlert()
         navigate(0)
@@ -228,7 +244,12 @@ function Categories() {
                         </td>
                         <td>
                           <div className="d-flex justify-content-end flex-shrink-0">
-                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#kt_modal_edit" data-category-id={categorie.id}>
+                            <a href="#"
+                              className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                              data-bs-toggle="modal"
+                              data-bs-target="#kt_modal_edit"
+                              data-category-id={categorie.id}
+                              onClick={() => handleCategorySelection(categorie.id)}>
                               <i className="ki-outline ki-pencil fs-2"></i>
                             </a>
                             <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={(e) => confirmDelete(categorie.id)}>
@@ -291,55 +312,59 @@ function Categories() {
                 </div>
               </div>
               {/* End Create Modal */}
-              {/* Create Category Modal */}
-              <div className="modal fade" id="kt_modal_edit" tabIndex="-1" aria-hidden="true">
-                <div className="modal-dialog modal-dialog-centered mw-800px">
-                  <div className="modal-content">
-                    <div className="modal-header pb-0 border-0 justify-content-end">
-                      <div className="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
-                        <i className="ki-outline ki-cross fs-1"></i>
-                      </div>
-                    </div>
-                    <div className="modal-body scroll-y pt-0 pb-15">
-                      <div className="mw-lg-600px mx-auto">
-                        <div className="mb-13 text-center">
-                          <h1 className="mb-3">Modifier la catégorie</h1>
-                          <div className="text-muted fw-semibold fs-5">Entrez les informations pour modifier la catégorie.
+              {/* Update Category Modal */}
+              {
+                selectedCategory && (
+                  <div className="modal fade" id="kt_modal_edit" tabIndex="-1" aria-hidden="true">
+                    <div className="modal-dialog modal-dialog-centered mw-800px">
+                      <div className="modal-content">
+                        <div className="modal-header pb-0 border-0 justify-content-end">
+                          <div className="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                            <i className="ki-outline ki-cross fs-1"></i>
                           </div>
                         </div>
-                        <form id="kt_ecommerce_settings_general_form" className="form">
-                          <div className="fv-row mb-7">
-                            <label className="fs-6 fw-semibold form-label mt-3">
-                              <span className="required">Libellé de la catégorie</span>
-                              <span className="ms-1" data-bs-toggle="tooltip" title="Entrez le libellé de la catégorie">
-                                <i className="ki-outline ki-information fs-7"></i>
-                              </span>
-                            </label>
-                            <input type="text" className="form-control form-control-solid" name="libelle" value={updatedData.libelle} onChange={handleUpdateChange} />
+                        <div className="modal-body scroll-y pt-0 pb-15">
+                          <div className="mw-lg-600px mx-auto">
+                            <div className="mb-13 text-center">
+                              <h1 className="mb-3">Modifier la catégorie</h1>
+                              <div className="text-muted fw-semibold fs-5">Entrez les informations pour modifier la catégorie.
+                              </div>
+                            </div>
+                            <form id="kt_ecommerce_settings_general_form" className="form">
+                              <div className="fv-row mb-7">
+                                <label className="fs-6 fw-semibold form-label mt-3">
+                                  <span className="required">Libellé de la catégorie</span>
+                                  <span className="ms-1" data-bs-toggle="tooltip" title="Entrez le libellé de la catégorie">
+                                    <i className="ki-outline ki-information fs-7"></i>
+                                  </span>
+                                </label>
+                                <input type="text" className="form-control form-control-solid" name="libelle" value={updatedData.libelle} onChange={handleUpdateChange} />
+                              </div>
+                              <div className="fv-row mb-7">
+                                <label className="fs-6 fw-semibold form-label mt-3">
+                                  <span className="required">Description de la catégorie</span>
+                                  <span className="ms-1" data-bs-toggle="tooltip" title="Entrez la description">
+                                    <i className="ki-outline ki-information fs-7"></i>
+                                  </span>
+                                </label>
+                                <input type="text" className="form-control form-control-solid" name="description" value={updatedData.description} onChange={handleUpdateChange} />
+                              </div>
+                              <div class="separator mb-6"></div>
+                              <div class="d-flex justify-content-end">
+                                <button type="reset" data-kt-contacts-type="cancel" class="btn btn-light me-3">Annuler</button>
+                                <button class="btn btn-primary">
+                                  <span class="indicator-label" onClick={(e) => handleUpdate(e, selectedCategory.id)}>Enregistrer les modifications</span>
+                                </button>
+                              </div>
+                            </form>
                           </div>
-                          <div className="fv-row mb-7">
-                            <label className="fs-6 fw-semibold form-label mt-3">
-                              <span className="required">Description de la catégorie</span>
-                              <span className="ms-1" data-bs-toggle="tooltip" title="Entrez la description">
-                                <i className="ki-outline ki-information fs-7"></i>
-                              </span>
-                            </label>
-                            <input type="text" className="form-control form-control-solid" name="description" value={updatedData.description} onChange={handleUpdateChange} />
-                          </div>
-                          <div class="separator mb-6"></div>
-                          <div class="d-flex justify-content-end">
-                            <button type="reset" data-kt-contacts-type="cancel" class="btn btn-light me-3">Annuler</button>
-                            <button class="btn btn-primary">
-                              <span class="indicator-label" onClick={(e) => handleUpdate(e, selectedCategory.Id_Categorie)}>Enregistrer les modifications</span>
-                            </button>
-                          </div>
-                        </form>
+                        </div>
+
                       </div>
                     </div>
-
                   </div>
-                </div>
-              </div>
+                )
+              }
               {/* End Create Modal */}
             </div>
           </div>

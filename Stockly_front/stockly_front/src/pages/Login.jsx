@@ -23,13 +23,10 @@ const Login = () => {
                 <form class="form w-100" novalidate="novalidate" id="kt_sign_up_form">
                   <div class="text-center mb-11">
                     <h1 class="text-gray-900 fw-bolder mb-3">Se connecter</h1>
-                    <div class="text-gray-500 fw-semibold fs-6">Entrer les informations pour se connecter</div>
+                    <div class="text-gray-500 fw-semibold fs-6">Entrez les informations pour vous connecter</div>
                   </div>
                   <div class="fv-row mb-8">
-                    <input type="text" placeholder="Nom" name="nom" autocomplete="off" class="form-control bg-transparent" />
-                  </div>
-                  <div class="fv-row mb-8">
-                    <input type="text" placeholder="Prénom(s)" name="prenom" autocomplete="off" class="form-control bg-transparent" />
+                    <input type="text" placeholder="Nom d'utilisateur" name="username" autocomplete="off" class="form-control bg-transparent" />
                   </div>
                   <div class="fv-row mb-8" data-kt-password-meter="true">
                     <div class="position-relative mb-3">

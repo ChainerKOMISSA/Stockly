@@ -10,7 +10,7 @@ function Employees() {
   const [showupdateModal, setShowUpdateModal] = useState(false);
   const [employees, setEmployees] = useState([])
   const [roles, setRoles] = useState([])
-  const [selectedEmployee, setSelectedEmployee] = useState(null)
+  const [selectedEmployee, setSelectedEmployee] = useState({})
   const [formData, setFormData] = useState({});
   const [updatedData, setUpdatedData] = useState({});
 
@@ -87,11 +87,31 @@ function Employees() {
     });
   }
 
+  const handleEmployeeSelection = (employeeId) => {
+    fetch(`${API_URL}/employes/${employeeId}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('La requête a échoué');
+        }
+        return response.json();
+      })
+      .then(employeeDetails => {
+        setSelectedEmployee(employeeDetails);
+      })
+      .catch(error => {
+        console.error("Erreur lors de la récupération des détails de l'employé:", error);
+      });
+  };
+
+
   useEffect(() => {
     if (selectedEmployee) {
       setUpdatedData({
-        libelle: selectedEmployee.libelle,
-        description: selectedEmployee.description,
+        idRole : selectedEmployee.idRole,
+        nom: selectedEmployee.nom,
+        prenom : selectedEmployee.prenom,
+        adresse: selectedEmployee.adresse,
+        contact: selectedEmployee.contact
       });
     }
   }, [selectedEmployee]);
