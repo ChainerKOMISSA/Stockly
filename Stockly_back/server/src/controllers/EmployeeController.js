@@ -76,6 +76,20 @@ exports.updateEmployeById = async (req, res) => {
     }
 }
 
+exports.updateEmployeLoginById = async (req, res) => {
+    const { id } = req.params;
+    const { username, motdepasse } = req.body;
+    try {
+        const employe = await Employe.findByPk(id);
+        if (!employe) return res.status(404).json({ message: "L'employé n'existe pas!" })
+        await employe.update({ username, motdepasse })
+        res.status(200).json({ message: 'Employé modifié avec succès!', employe });
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
 exports.deleteEmployeById = async (req, res) => {
     const { id } = req.params;
     try {

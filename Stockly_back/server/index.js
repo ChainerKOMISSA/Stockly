@@ -19,6 +19,7 @@ const { livraisonRouter } = require('./src/routes/DeliveryRoutes');
 const { venteRouter } = require('./src/routes/SalesRoutes');
 const { produitVenteRouter } = require('./src/routes/ProduitVenteRoutes')
 const { produitCommandeRouter } = require('./src/routes/ProduitCommandeRoutes')
+const { logRouter } = require('./src/routes/LogRoutes');
 
 
 // MySQL connection
@@ -46,6 +47,7 @@ const dbConnection = async () => {
         app.use('/livraisons', livraisonRouter)
         app.use('/produitvente', produitVenteRouter)
         app.use('/produitcommande', produitCommandeRouter)
+        app.use('/logs', logRouter)
 
     } catch (error) {
         console.error('Unable to connect to the database:', error);

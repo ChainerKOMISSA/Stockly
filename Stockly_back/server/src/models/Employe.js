@@ -26,8 +26,12 @@ const Employe = sequelize.define('Employe', {
     },
     motdepasse: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
+    username : {
+        type : DataTypes.STRING,
+        allowNull : true
+    }
 });
 
 Employe.belongsTo(Role, {

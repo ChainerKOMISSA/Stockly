@@ -8,8 +8,11 @@ exports.getAllProducts = async (req, res) => {
         const produits = await Produit.findAll({
             include: {
                 model: Categorie,
-                attributes: ['id','libelle']
-            }
+                attributes: ['id', 'libelle']
+            },
+            // order: [
+            //     ['libelle', 'DESC']
+            // ]
         });
         res.json(produits)
     }
