@@ -8,7 +8,7 @@ exports.getAllProducts = async (req, res) => {
         const produits = await Produit.findAll({
             include: {
                 model: Categorie,
-                attributes: ['libelle']
+                attributes: ['id','libelle']
             }
         });
         res.json(produits)
