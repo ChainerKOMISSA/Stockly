@@ -3,6 +3,8 @@ import { API_URL } from '../../../components/constantes'
 import { useNavigate } from 'react-router-dom'
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../../components/alerts'
 import Swal from 'sweetalert2'
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 
 function Suppliers() {
@@ -257,7 +259,7 @@ function Suppliers() {
                   }
                 </tbody>
               </table>
-              {/* Create Category Modal */}
+              {/* Create Supplier Modal */}
               <div className="modal fade" id="kt_modal_share_earn" tabIndex="-1" aria-hidden="true" >
                 <div className="modal-dialog modal-dialog-centered mw-800px">
                   <div className="modal-content">
@@ -303,6 +305,12 @@ function Suppliers() {
                                     <i className="ki-outline ki-information fs-7"></i>
                                   </span>
                                 </label>
+                                {/* <PhoneInput
+                                  className="number"
+                                  country={"us"}
+                                  value={formData.contact}
+                                  onChange={handleChange}
+                                /> */}
                                 <input type="text" className="form-control form-control-solid" name="contact" value={formData.contact} onChange={handleChange} />
                               </div>
                             </div>

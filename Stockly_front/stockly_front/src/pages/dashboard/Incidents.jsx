@@ -1,27 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import { API_URL } from '../../components/constantes'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../components/alerts'
 import Swal from 'sweetalert2'
 import { getCurrentDate } from '../../helpers/CalendarControl'
-import {formatDate} from '../../helpers/DateFormat'
+import { formatDate } from '../../helpers/DateFormat'
 
 
 
 function Incidents() {
   const navigate = useNavigate()
-  const [showcreateModal, setShowCreateModal] = useState(false);
-  const [showupdateModal, setShowUpdateModal] = useState(false);
   const [incidents, setIncidents] = useState([]);
-  const [selectedIncident, setSelectedIncident] = useState(null)
+  const [selectedIncident, setSelectedIncident] = useState({})
   const [formData, setFormData] = useState({});
   const [updatedData, setUpdatedData] = useState({});
 
-  const opencreateModal = () => { setShowCreateModal(true) }
-  const closecreateModal = () => { setShowCreateModal(false) }
-
-  const openupdateModal = (incident) => { setShowUpdateModal(true); setSelectedIncident(incident) }
-  const closeupdateModal = () => { setShowUpdateModal(false); setSelectedIncident(null) }
 
   useEffect(() => {
     fetch(`${API_URL}/incidents`)
@@ -69,6 +62,7 @@ function Incidents() {
     }
   }
 
+
   const handleUpdateChange = (e) => {
     const { name, value } = e.target;
     setUpdatedData({
@@ -77,14 +71,31 @@ function Incidents() {
     });
   }
 
+  const handleIncidentSelection = (incidentId) => {
+    fetch(`${API_URL}/incidents/${incidentId}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('La requête a échoué');
+        }
+        return response.json();
+      })
+      .then(incidentDetails => {
+        setSelectedIncident(incidentDetails);
+      })
+      .catch(error => {
+        console.error("Erreur lors de la récupération des détails de l'incident:", error);
+      });
+  };
+
   useEffect(() => {
     if (selectedIncident) {
       setUpdatedData({
-        libelle: selectedIncident.incident,
+        libelle: selectedIncident.libelle,
         date: selectedIncident.date,
       });
     }
   }, [selectedIncident]);
+
 
   const handleUpdate = async (e, id) => {
     e.preventDefault();
@@ -225,7 +236,11 @@ function Incidents() {
                         </td>
                         <td>
                           <div className="d-flex justify-content-end flex-shrink-0">
-                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#kt_modal_edit">
+                            <a href="#"
+                              className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                              data-bs-toggle="modal"
+                              data-bs-target="#kt_modal_edit"
+                              onClick={() => handleIncidentSelection(incident.id)}>
                               <i className="ki-outline ki-pencil fs-2"></i>
                             </a>
                             <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={(e) => confirmDelete(incident.id)}>
@@ -251,7 +266,7 @@ function Incidents() {
                       <div className="mw-lg-600px mx-auto">
                         <div className="mb-13 text-center">
                           <h1 className="mb-3">Enregister un incident</h1>
-                          <div className="text-muted fw-semibold fs-5">Entrez les informations pour enregistrer l' catégorie.
+                          <div className="text-muted fw-semibold fs-5">Entrez les informations pour enregistrer l'incident.
                           </div>
                         </div>
                         <form id="kt_ecommerce_settings_general_form" className="form">
@@ -287,6 +302,61 @@ function Incidents() {
                   </div>
                 </div>
               </div>
+              {/* End Create Modal */}
+
+              {/* Uodate Icident Modal */}
+              {
+                selectedIncident && (
+                  <div className="modal fade" id="kt_modal_edit" tabIndex="-1" aria-hidden="true" >
+                    <div className="modal-dialog modal-dialog-centered mw-800px">
+                      <div className="modal-content">
+                        <div className="modal-header pb-0 border-0 justify-content-end">
+                          <div className="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                            <i className="ki-outline ki-cross fs-1"></i>
+                          </div>
+                        </div>
+                        <div className="modal-body scroll-y pt-0 pb-15">
+                          <div className="mw-lg-600px mx-auto">
+                            <div className="mb-13 text-center">
+                              <h1 className="mb-3">Modifier cet incident</h1>
+                              <div className="text-muted fw-semibold fs-5">Entrez les informations pour modifier l'incident.
+                              </div>
+                            </div>
+                            <form id="kt_ecommerce_settings_general_form" className="form">
+                              <div className="fv-row mb-7">
+                                <label className="fs-6 fw-semibold form-label mt-3">
+                                  <span className="required">Date</span>
+                                  <span className="ms-1" data-bs-toggle="tooltip" title="Entrez la date de l'incident">
+                                    <i className="ki-outline ki-information fs-7"></i>
+                                  </span>
+                                </label>
+                                <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="date" value={updatedData.date} onChange={handleUpdateChange} />
+                              </div>
+                              <div className="fv-row mb-7">
+                                <label className="fs-6 fw-semibold form-label mt-3">
+                                  <span className="required">Libellé de l'incident</span>
+                                  <span className="ms-1" data-bs-toggle="tooltip" title="Entrez le libellé de l'incident">
+                                    <i className="ki-outline ki-information fs-7"></i>
+                                  </span>
+                                </label>
+                                <input type="text" className="form-control form-control-solid" name="libelle" value={updatedData.libelle} onChange={handleUpdateChange} />
+                              </div>
+                              <div class="separator mb-6"></div>
+                              <div class="d-flex justify-content-end">
+                                <button type="reset" data-kt-contacts-type="cancel" class="btn btn-light me-3">Annuler</button>
+                                <button class="btn btn-primary" onClick={(e) => handleUpdate(e, selectedIncident.id)}>
+                                  <span class="indicator-label">Enregistrer les modifications</span>
+                                </button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                )
+              }
               {/* End Create Modal */}
             </div>
           </div>
