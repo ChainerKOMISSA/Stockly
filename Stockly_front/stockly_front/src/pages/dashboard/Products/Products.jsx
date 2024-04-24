@@ -14,15 +14,8 @@ function Products() {
   const [categories, setCategories] = useState([]);
   const [formData, setFormData] = useState({});
   const [updatedData, setUpdatedData] = useState({});
-  const [showcreateModal, setShowCreateModal] = useState(false);
-  const [showupdateModal, setShowUpdateModal] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null)
+  const [selectedProduct, setSelectedProduct] = useState({})
 
-  const opencreateModal = () => { setShowCreateModal(true) }
-  const closecreateModal = () => { setShowCreateModal(false) }
-
-  const openupdateModal = (product) => { setShowUpdateModal(true); setSelectedProduct(product) }
-  const closeupdateModal = () => { setShowUpdateModal(false); setSelectedProduct(null) }
 
 
   useEffect(() => {
@@ -108,6 +101,22 @@ function Products() {
     }
   }
 
+  const handleProductSelection = (productId) => {
+    fetch(`${API_URL}/produits/${productId}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('La requête a échoué');
+        }
+        return response.json();
+      })
+      .then(produCtDetails => {
+        setSelectedProduct(produCtDetails);
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération des détails du produit:', error);
+      });
+  };
+
 
   const handleUpdateChange = (e) => {
     const { name, value } = e.target;
@@ -120,6 +129,8 @@ function Products() {
   useEffect(() => {
     if (selectedProduct) {
       setUpdatedData({
+        id: selectedProduct.id,
+        idCategorie: selectedProduct.idCategorie,
         nom: selectedProduct.nom,
         prix: selectedProduct.prix,
         quantiteStock: selectedProduct.quantiteStock,
@@ -179,7 +190,7 @@ function Products() {
     return produits.filter((item) => item.Categorie.id === idCategorie && item.id === idProduit);
   }
 
-  function updateProduitsByCategorie() {
+  function searchProduitsByCategorie() {
     // Récupération des éléments DOM
     const selectCategorie = document.getElementById('kt_ecommerce_select2_country');
     const selectProduit = document.getElementById('kt_ecommerce_select2_country2');
@@ -205,7 +216,7 @@ function Products() {
     });
   }
   useEffect(() => {
-    updateProduitsByCategorie();
+    searchProduitsByCategorie();
   }, []);
 
 
@@ -282,7 +293,7 @@ function Products() {
               <span className="text-muted mt-1 fw-semibold fs-7">Over 500 members</span>
             </h3> */}
             <div className="card-toolbar align-items-center gap-2 gap-lg-3" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover" title="Click to add a user">
-              <a href="#" className="btn btn-sm btn-light btn-active-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_share_earn" onClick={() => opencreateModal()}>
+              <a href="#" className="btn btn-sm btn-light btn-active-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_share_earn">
                 <i className="ki-outline ki-plus fs-2"></i>
                 Nouveau produit
               </a>
@@ -350,7 +361,11 @@ function Products() {
                             {/* <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                           <i className="ki-outline ki-file fs-2"></i>
                         </a> */}
-                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#kt_modal_edit" onClick={() => openupdateModal(produit.id)}>
+                            <a href="#"
+                              className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                              data-bs-toggle="modal"
+                              data-bs-target="#kt_modal_edit"
+                              onClick={() => handleProductSelection(produit.id)}>
                               <i className="ki-outline ki-pencil fs-2"></i>
                             </a>
                             <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={(e) => confirmDelete(produit.id)}>
@@ -551,7 +566,7 @@ function Products() {
                               <div class="d-flex justify-content-end">
                                 <button type="reset" data-kt-contacts-type="cancel" class="btn btn-light me-3">Annuler</button>
                                 <button class="btn btn-primary">
-                                  <span class="indicator-label" onClick={handleUpdate}>Enregistrer les modifications</span>
+                                  <span class="indicator-label" onClick={(e) => handleUpdate(e, selectedProduct.id)}>Enregistrer les modifications</span>
                                 </button>
                               </div>
                             </form>

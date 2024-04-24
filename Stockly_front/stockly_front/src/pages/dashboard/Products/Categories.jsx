@@ -8,15 +8,10 @@ import Swal from 'sweetalert2'
 
 function Categories() {
   const navigate = useNavigate()
-  const [showcreateModal, setShowCreateModal] = useState(false);
-  const [showupdateModal, setShowUpdateModal] = useState(false);
   const [categories, setCategories] = useState([])
   const [selectedCategory, setSelectedCategory] = useState({})
   const [formData, setFormData] = useState({});
   const [updatedData, setUpdatedData] = useState({});
-
-  const opencreateModal = () => { setShowCreateModal(true) }
-  const closecreateModal = () => { setShowCreateModal(false) }
 
 
   // useEffect(() => { }, [showupdateModal])
