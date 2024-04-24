@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { API_URL } from '../../../components/constantes'
-import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../../components/alerts'
+import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert, infoAlert } from '../../../components/alerts'
 import { getCurrentDate } from '../../../helpers/CalendarControl'
-import { formatDate } from '../../../helpers/DateFormat'
+import { formatDate, formatDate2 } from '../../../helpers/DateFormat'
 import Swal from 'sweetalert2'
 import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
 import ListeProduitsGenerator from './ListeProduitsGenerator'
@@ -171,6 +171,15 @@ function Products() {
       .then(response => response.json())
       .then(data => {
         setProduits(data)
+        let liste = [];
+        data.forEach(element => {
+          liste.push({
+            "id": element.id,
+            "idCategorie": element.idCategorie,
+            "nom": element.nom
+          });
+        });
+        searchProduitsByCategorie(liste);
       })
       .catch(error => {
         console.error('Erreur lors de la récupération des produits: ', error)
@@ -184,25 +193,246 @@ function Products() {
   };
 
   const Search = () => {
-    let idCategorie = document.getElementById("searchCategorie");
-    let idProduit = document.getElementById("searchProduit");
-    console.log(idCategorie, idProduit);
-    return produits.filter((item) => item.Categorie.id === idCategorie && item.id === idProduit);
+    const selectCategorie = document.getElementById('selectCategorie').value;
+    const selectProduit = document.getElementById('selectProduit').value;
+    const table = document.getElementById('tableProduits');
+
+    // Nettoyer la table avant d'ajouter de nouvelles lignes
+    table.innerHTML = '';
+    const titles = document.createElement('tr');
+    titles.className = "fw-bold text-muted";
+
+    const thNum = document.createElement('th');
+    thNum.textContent = "#";
+    thNum.className = 'w-25px'
+    titles.appendChild(thNum);
+
+    const thCategorie = document.createElement('th');
+    thCategorie.textContent = "Catégorie";
+    thCategorie.className = 'min-w-200px'
+    titles.appendChild(thCategorie);
+
+    const thProduit = document.createElement('th');
+    thProduit.textContent = "Produit";
+    thProduit.className = 'min-w-300px'
+    titles.appendChild(thProduit);
+
+    const thPrix = document.createElement('th');
+    thPrix.textContent = "Prix (CFA)";
+    thPrix.className = 'min-w-100px'
+    titles.appendChild(thPrix);
+
+    const thQuantité = document.createElement('th');
+    thQuantité.textContent = "Quantité";
+    thQuantité.className = 'min-w-100px'
+    titles.appendChild(thQuantité);
+
+    const thPéremption = document.createElement('th');
+    thPéremption.textContent = "Péremption";
+    thPéremption.className = 'min-w-100px'
+    titles.appendChild(thPéremption);
+
+    const thActions = document.createElement('th');
+    thActions.textContent = "Actions";
+    thActions.className = 'min-w-100px text-end'
+    titles.appendChild(thActions);
+
+
+    table.appendChild(titles);
+
+    // Vérifiez qu'un produit a été choisi
+    if (selectCategorie && selectProduit) {
+      // Filtrer les produits en fonction des sélections de catégorie et de produit
+      let result = produits.filter((item) => item.Categorie.id == selectCategorie && item.id == selectProduit);
+      // Ajouter une ligne pour chaque produit filtré
+      let index = 0;
+      result.forEach(produit => {
+        const ligne = document.createElement('tr');
+
+        // Ajouter une cellule pour chaque propriété du produit
+        const cellNum = document.createElement('td');
+        cellNum.textContent = index += 1;
+        ligne.appendChild(cellNum);
+
+        const cellCategorie = document.createElement('td');
+        cellCategorie.textContent = produit.Categorie.libelle;
+        cellCategorie.className = 'text-gray-900 fw-bold text-hover-primary fs-6'; // Ajout de la classe Bootstrap
+        ligne.appendChild(cellCategorie);
+
+        const cellNom = document.createElement('td');
+        cellNom.textContent = produit.nom;
+        cellNom.className = 'text-gray-900 fw-bold text-hover-primary fs-6'; // Ajout de la classe Bootstrap
+        ligne.appendChild(cellNom);
+
+        const cellPrix = document.createElement('td');
+        cellPrix.textContent = produit.prix;
+        cellPrix.className = 'text-gray-700 fw-bold text-hover-primary fs-6'; // Ajout de la classe Bootstrap
+        ligne.appendChild(cellPrix);
+
+        const cellQuantiteStock = document.createElement('td');
+        cellQuantiteStock.textContent = produit.quantiteStock;
+        cellQuantiteStock.className = 'text-gray-700 fw-bold text-hover-primary fs-6'; // Ajout de la classe Bootstrap
+        ligne.appendChild(cellQuantiteStock);
+
+        const cellDatePeremption = document.createElement('td');
+        cellDatePeremption.textContent = formatDate(produit.datePeremption);
+        cellDatePeremption.className = 'text-gray-700 fw-bold text-hover-primary fs-6'; // Ajout de la classe Bootstrap
+        ligne.appendChild(cellDatePeremption);
+
+        const cellBoutons = document.createElement('td');
+        cellBoutons.className = 'text-end';
+        cellBoutons.innerHTML = `
+        <div class="d-flex justify-content-end flex-shrink-0">
+          <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+            data-bs-toggle="modal" data-bs-target="#kt_modal_edit"
+            onClick={() => handleProductSelection(produit.id)}>
+            <i class="ki-outline ki-pencil fs-2"></i>
+          </a>
+          <a href="#" class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm"
+            onClick={(e) => confirmDelete(produit.id)}>
+            <i class="ki-outline ki-trash fs-2"></i>
+          </a>
+        </div>
+      `;
+        ligne.appendChild(cellBoutons);
+
+
+        // Ajouter la ligne à la table
+        table.appendChild(ligne);
+      });
+    } else if (selectCategorie) {
+      // Filtrer les produits en fonction des sélections de catégorie et de produit
+      let result = produits.filter((item) => item.Categorie.id == selectCategorie);
+      // Ajouter une ligne pour chaque produit filtré
+      let index = 0;
+      result.forEach(produit => {
+        const ligne = document.createElement('tr');
+
+        // Ajouter une cellule pour chaque propriété du produit
+        const cellNum = document.createElement('td');
+        cellNum.textContent = index += 1;
+        ligne.appendChild(cellNum);
+
+        const cellCategorie = document.createElement('td');
+        cellCategorie.textContent = produit.Categorie.libelle;
+        cellCategorie.className = 'text-gray-900 fw-bold text-hover-primary fs-6'; // Ajout de la classe Bootstrap
+        ligne.appendChild(cellCategorie);
+
+        const cellNom = document.createElement('td');
+        cellNom.textContent = produit.nom;
+        cellNom.className = 'text-gray-900 fw-bold text-hover-primary fs-6'; // Ajout de la classe Bootstrap
+        ligne.appendChild(cellNom);
+
+        const cellPrix = document.createElement('td');
+        cellPrix.textContent = produit.prix;
+        cellPrix.className = 'text-gray-700 fw-bold text-hover-primary fs-6'; // Ajout de la classe Bootstrap
+        ligne.appendChild(cellPrix);
+
+        const cellQuantiteStock = document.createElement('td');
+        cellQuantiteStock.textContent = produit.quantiteStock;
+        cellQuantiteStock.className = 'text-gray-700 fw-bold text-hover-primary fs-6'; // Ajout de la classe Bootstrap
+        ligne.appendChild(cellQuantiteStock);
+
+        const cellDatePeremption = document.createElement('td');
+        cellDatePeremption.textContent = formatDate(produit.datePeremption);
+        cellDatePeremption.className = 'text-gray-700 fw-bold text-hover-primary fs-6'; // Ajout de la classe Bootstrap
+        ligne.appendChild(cellDatePeremption);
+
+        const cellBoutons = document.createElement('td');
+        cellBoutons.className = 'text-end';
+        cellBoutons.innerHTML = `
+        <div class="d-flex justify-content-end flex-shrink-0">
+          <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+            data-bs-toggle="modal" data-bs-target="#kt_modal_edit"
+            onClick={() => handleProductSelection(produit.id)}>
+            <i class="ki-outline ki-pencil fs-2"></i>
+          </a>
+          <a href="#" class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm"
+            onClick={(e) => confirmDelete(produit.id)}>
+            <i class="ki-outline ki-trash fs-2"></i>
+          </a>
+        </div>
+      `;
+        ligne.appendChild(cellBoutons);
+
+
+        // Ajouter la ligne à la table
+        table.appendChild(ligne);
+      });
+    } else if (selectProduit) {
+      // Filtrer les produits en fonction des sélections de catégorie et de produit
+      let result = produits.filter((item) => item.id == selectProduit);
+      // Ajouter une ligne pour chaque produit filtré
+      let index = 0;
+      result.forEach(produit => {
+        const ligne = document.createElement('tr');
+
+        // Ajouter une cellule pour chaque propriété du produit
+        const cellNum = document.createElement('td');
+        cellNum.textContent = index += 1;
+        ligne.appendChild(cellNum);
+
+        const cellCategorie = document.createElement('td');
+        cellCategorie.textContent = produit.Categorie.libelle;
+        cellCategorie.className = 'text-gray-900 fw-bold text-hover-primary fs-6'; // Ajout de la classe Bootstrap
+        ligne.appendChild(cellCategorie);
+
+        const cellNom = document.createElement('td');
+        cellNom.textContent = produit.nom;
+        cellNom.className = 'text-gray-900 fw-bold text-hover-primary fs-6'; // Ajout de la classe Bootstrap
+        ligne.appendChild(cellNom);
+
+        const cellPrix = document.createElement('td');
+        cellPrix.textContent = produit.prix;
+        cellPrix.className = 'text-gray-700 fw-bold text-hover-primary fs-6'; // Ajout de la classe Bootstrap
+        ligne.appendChild(cellPrix);
+
+        const cellQuantiteStock = document.createElement('td');
+        cellQuantiteStock.textContent = produit.quantiteStock;
+        cellQuantiteStock.className = 'text-gray-700 fw-bold text-hover-primary fs-6'; // Ajout de la classe Bootstrap
+        ligne.appendChild(cellQuantiteStock);
+
+        const cellDatePeremption = document.createElement('td');
+        cellDatePeremption.textContent = formatDate(produit.datePeremption);
+        cellDatePeremption.className = 'text-gray-700 fw-bold text-hover-primary fs-6'; // Ajout de la classe Bootstrap
+        ligne.appendChild(cellDatePeremption);
+
+        const cellBoutons = document.createElement('td');
+        cellBoutons.className = 'text-end';
+        cellBoutons.innerHTML = `
+  <div class="d-flex justify-content-end flex-shrink-0">
+    <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+      data-bs-toggle="modal" data-bs-target="#kt_modal_edit"
+      onClick={() => handleProductSelection(produit.id)}>
+      <i class="ki-outline ki-pencil fs-2"></i>
+    </a>
+    <a href="#" class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm"
+      onClick={(e) => confirmDelete(produit.id)}>
+      <i class="ki-outline ki-trash fs-2"></i>
+    </a>
+  </div>
+`;
+        ligne.appendChild(cellBoutons);
+
+        // Ajouter la ligne à la table
+        table.appendChild(ligne);
+      });
+    } else {
+      infoAlert("Vous devez sélectionner une catégorie ou un produit!");
+    }
   }
 
-  function searchProduitsByCategorie() {
+  function searchProduitsByCategorie(produits) {
     // Récupération des éléments DOM
-    const selectCategorie = document.getElementById('kt_ecommerce_select2_country');
-    const selectProduit = document.getElementById('kt_ecommerce_select2_country2');
+    const selectCategorie = document.getElementById('selectCategorie');
+    const selectProduit = document.getElementById('selectProduit');
 
     // Écouteur d'événements pour le changement de sélection de catégorie
     selectCategorie.addEventListener('change', function () {
       const selectedCategorieId = this.value; // Récupérer l'ID de la catégorie sélectionnée
 
       // Filtrer les produits en fonction de la catégorie sélectionnée
-      const filteredProduits = produits.filter(produit => {
-        return produit.categorieId === selectedCategorieId;
-      });
+      let filteredProduits = produits.filter(element => element.idCategorie == selectedCategorieId);
 
       // Mettre à jour les options du select des produits
       selectProduit.innerHTML = '<option value="">Produits</option>'; // Réinitialiser les options du select
@@ -215,9 +445,6 @@ function Products() {
       });
     });
   }
-  useEffect(() => {
-    searchProduitsByCategorie();
-  }, []);
 
 
   return (
@@ -246,16 +473,16 @@ function Products() {
       </div>
 
       <div id="kt_app_content" className="app-content">
-        <div class="card card-flush pb-0 bgi-position-y-center bgi-no-repeat mb-10" style={{ backgroundSize: "auto calc(100% + 10rem)", backgroundPositionX: "100%" }}>
-          <div class="card-header pt-10">
-            <div class="d-flex align-items-center">
-              <div class="symbol symbol-circle me-5"></div>
-              <div class="d-flex flex-column">
-                <h2 class="mb-1">Filtre de recherche de produits</h2>
-                <div class="text-muted">Effectuer une rechercher par ...</div> <br />
+        <div className="card card-flush pb-0 bgi-position-y-center bgi-no-repeat mb-10" style={{ backgroundSize: "auto calc(100% + 10rem)", backgroundPositionX: "100%" }}>
+          <div className="card-header pt-10">
+            <div className="d-flex align-items-center">
+              <div className="symbol symbol-circle me-5"></div>
+              <div className="d-flex flex-column">
+                <h2 className="mb-1">Filtre de recherche de produits</h2>
+                <div className="text-muted">Effectuer une rechercher par ...</div> <br />
                 <div className='row'>
                   <div className='col'>
-                    <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Catégorie" name='searchCategorie'>
+                    <select id="selectCategorie" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Catégorie" name='searchCategorie'>
                       <option value="">Catégorie</option>
                       {
                         categories.map((categorie, index) => (
@@ -265,7 +492,7 @@ function Products() {
                     </select>
                   </div>
                   <div className='col'>
-                    <select id="kt_ecommerce_select2_country2" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Catégorie" name='searchProduit'>
+                    <select id="selectProduit" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Catégorie" name='searchProduit'>
                       <option value="">Produits</option>
                       {
                         produits.map((produit, index) => (
@@ -275,7 +502,7 @@ function Products() {
                     </select>
                   </div>
                   <div className='col'>
-                    <a className="btn btn-sm btn-light-primary">
+                    <a className="btn btn-sm btn-light-primary" onClick={Search}>
                       <i className="ki-outline ki-magnifier fs-2"></i>
                       Rechercher
                     </a>
@@ -284,7 +511,7 @@ function Products() {
               </div>
             </div>
           </div>
-          <div class="card-body pb-0"></div>
+          <div className="card-body pb-0"></div>
         </div>
         <div className="card mb-5 mb-xl-8">
           <div className="card-header border-0 pt-5">
@@ -305,13 +532,13 @@ function Products() {
           </div>
           <div className="card-body py-3">
             <div className="table-responsive">
-              <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+              <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4" id='tableProduits'>
                 <thead>
                   <tr className="fw-bold text-muted">
                     <th className="w-25px">#</th>
                     <th className="min-w-200px">Catégorie</th>
                     <th className="min-w-300px">Produit</th>
-                    <th className="min-w-100px">Prix</th>
+                    <th className="min-w-100px">Prix (CFA)</th>
                     <th className="min-w-100px">Quantité</th>
                     <th className="min-w-100px">Péremption</th>
                     <th className="min-w-100px text-end">Actions</th>
@@ -358,9 +585,6 @@ function Products() {
                         </td>
                         <td>
                           <div className="d-flex justify-content-end flex-shrink-0">
-                            {/* <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
-                          <i className="ki-outline ki-file fs-2"></i>
-                        </a> */}
                             <a href="#"
                               className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
                               data-bs-toggle="modal"
@@ -461,11 +685,11 @@ function Products() {
                             </label>
                             <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="datePeremption" value={formData.datePeremption} onChange={handleChange} />
                           </div>
-                          <div class="separator mb-6"></div>
-                          <div class="d-flex justify-content-end">
-                            <button type="reset" data-kt-contacts-type="cancel" class="btn btn-light me-3">Annuler</button>
-                            <button class="btn btn-primary" onClick={handleSubmit}>
-                              <span class="indicator-label">Enregistrer</span>
+                          <div className="separator mb-6"></div>
+                          <div className="d-flex justify-content-end">
+                            <button type="reset" data-kt-contacts-type="cancel" className="btn btn-light me-3">Annuler</button>
+                            <button className="btn btn-primary" onClick={handleSubmit}>
+                              <span className="indicator-label">Enregistrer</span>
                             </button>
                           </div>
                         </form>
@@ -560,13 +784,13 @@ function Products() {
                                     <i className="ki-outline ki-information fs-7"></i>
                                   </span>
                                 </label>
-                                <input type="date" className="form-control form-control-solid" name="datePeremption" value={updatedData.datePeremption} onChange={handleUpdateChange} />
+                                <input type="date" className="form-control form-control-solid" name="datePeremption" value={formatDate2(updatedData.datePeremption)} onChange={handleUpdateChange} />
                               </div>
-                              <div class="separator mb-6"></div>
-                              <div class="d-flex justify-content-end">
-                                <button type="reset" data-kt-contacts-type="cancel" class="btn btn-light me-3">Annuler</button>
-                                <button class="btn btn-primary">
-                                  <span class="indicator-label" onClick={(e) => handleUpdate(e, selectedProduct.id)}>Enregistrer les modifications</span>
+                              <div className="separator mb-6"></div>
+                              <div className="d-flex justify-content-end">
+                                <button type="reset" data-kt-contacts-type="cancel" className="btn btn-light me-3">Annuler</button>
+                                <button className="btn btn-primary" onClick={(e) => handleUpdate(e, selectedProduct.id)}>
+                                  <span className="indicator-label">Enregistrer les modifications</span>
                                 </button>
                               </div>
                             </form>

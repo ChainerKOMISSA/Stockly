@@ -222,6 +222,10 @@ function Sales() {
     } else {
       totalElement.textContent = `Montant total à payer : 0 FCFA`;
     }
+
+    // Reset the form
+    document.getElementById("kt_ecommerce_settings_general_form").reset();
+
   }
 
   const removeFromList = (id, e) => {

@@ -15,14 +15,11 @@ function Orders() {
   const [suppliers, setSuppliers] = useState([]);
   const [produits, setProduits] = useState([]);
   const [prix, setPrix] = useState(0);
-  const [showcreateModal, setShowCreateModal] = useState(false);
-  const [showupdateModal, setShowUpdateModal] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState(null)
+  const [selectedOrder, setSelectedOrder] = useState({})
   const [formData, setFormData] = useState({});
   const [updatedData, setUpdatedData] = useState({});
 
-  const opencreateModal = () => { setShowCreateModal(true) }
-  const closecreateModal = () => { setShowCreateModal(false) }
+
 
   useEffect(() => {
     fetch(`${API_URL}/commandes`)
@@ -57,7 +54,7 @@ function Orders() {
       })
   }, []);
 
-  useEffect(()=>{},[prix])
+  useEffect(() => { }, [prix])
 
 
   const handleChangeProduit = (e) => {
@@ -140,7 +137,6 @@ function Orders() {
       if (response.ok) {
         const data = await response.json();
         updateSuccessAlert()
-        closecreateModal();
         navigate(0)
       } else {
         const errorData = await response.json();
@@ -193,12 +189,6 @@ function Orders() {
   }
 
   const addProductToList = () => {
-    // let date = e.target.value("Date_Vente")
-    // let prod = e.target.value("Id_Produit")
-    // let prix = e.target.value("Prix_Vente")
-    // let quantite = e.target.value("Quantite_Vente")
-    // let montant = e.target.value("Montant_Vente")
-
     document.getElementById("product_list_table").hidden = false;
     document.getElementById("bill_button").hidden = false;
     document.getElementById("CancelBtn").hidden = false;
@@ -256,7 +246,7 @@ function Orders() {
                         <input className="form-check-input" type="checkbox" value="1" data-kt-check="true" data-kt-check-target=".widget-9-check" />
                       </div>
                     </th>
-                    <th className="min-w-150px">Identitdiant de la commande</th>
+                    <th className="min-w-150px">Date de la commande</th>
                     <th className="min-w-200px">Fournisseur</th>
                     <th className="min-w-100px text-end">Actions</th>
                   </tr>
@@ -282,9 +272,12 @@ function Orders() {
                         </td>
                         <td>
                           <div className="d-flex justify-content-end flex-shrink-0">
-                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#kt_modal_edit" data-category-id={order.id}>
-                              <i className="ki-outline ki-pencil fs-2"></i>
+                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
+                              <i className="ki-outline ki-file fs-2"></i>
                             </a>
+                            {/* <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#kt_modal_edit" data-category-id={order.id}>
+                              <i className="ki-outline ki-pencil fs-2"></i>
+                            </a> */}
                             <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={(e) => confirmDelete(order.id)}>
                               <i className="ki-outline ki-trash fs-2"></i>
                             </a>

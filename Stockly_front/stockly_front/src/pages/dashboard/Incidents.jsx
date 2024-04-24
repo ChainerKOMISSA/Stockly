@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../components/alerts'
 import Swal from 'sweetalert2'
 import { getCurrentDate } from '../../helpers/CalendarControl'
-import { formatDate } from '../../helpers/DateFormat'
+import { formatDate, formatDate2 } from '../../helpers/DateFormat'
 
 
 
@@ -330,7 +330,7 @@ function Incidents() {
                                     <i className="ki-outline ki-information fs-7"></i>
                                   </span>
                                 </label>
-                                <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="date" value={updatedData.date} onChange={handleUpdateChange} />
+                                <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="date" value={formatDate2(updatedData.date)} onChange={handleUpdateChange} />
                               </div>
                               <div className="fv-row mb-7">
                                 <label className="fs-6 fw-semibold form-label mt-3">

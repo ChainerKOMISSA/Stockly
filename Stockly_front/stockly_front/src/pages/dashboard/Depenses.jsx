@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { API_URL } from '../../components/constantes';
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../components/alerts'
 import { getCurrentDate } from '../../helpers/CalendarControl';
 import { formatDate } from '../../helpers/DateFormat';
@@ -8,18 +8,10 @@ import { formatDate } from '../../helpers/DateFormat';
 
 function Depenses() {
   const navigate = useNavigate()
-  const [showcreateModal, setShowCreateModal] = useState(false);
-  const [showupdateModal, setShowUpdateModal] = useState(false);
   const [depenses, setDepenses] = useState([]);
-  const [selectedDepense, setSelectedDepense] = useState(null)
+  const [selectedDepense, setSelectedDepense] = useState({})
   const [formData, setFormData] = useState({});
   const [updatedData, setUpdatedData] = useState({});
-
-  const opencreateModal = () => { setShowCreateModal(true) }
-  const closecreateModal = () => { setShowCreateModal(false) }
-
-  const openupdateModal = (depense) => { setShowUpdateModal(true); setSelectedDepense(depense) }
-  const closeupdateModal = () => { setShowUpdateModal(false); setSelectedDepense(null) }
 
 
   useEffect(() => {
@@ -76,6 +68,22 @@ function Depenses() {
     });
   }
 
+  const handleDepenseSelection = (depenseId) => {
+    fetch(`${API_URL}/depenses/${depenseId}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('La requête a échoué');
+        }
+        return response.json();
+      })
+      .then(depenseDetails => {
+        setSelectedDepense(depenseDetails);
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération des détails de la dépense:', error);
+      });
+  };
+
   useEffect(() => {
     if (selectedDepense) {
       setUpdatedData({
@@ -101,7 +109,6 @@ function Depenses() {
       if (response.ok) {
         const data = await response.json();
         updateSuccessAlert()
-        closecreateModal();
         navigate(0)
       } else {
         const errorData = await response.json();
@@ -187,7 +194,7 @@ function Depenses() {
                     </th>
                     <th className="min-w-200px">Date</th>
                     <th className="min-w-400px">Libellé</th>
-                    <th className="min-w-100px">Montant</th>
+                    <th className="min-w-100px">Montant (FCFA)</th>
                   </tr>
                 </thead>
                 <tbody>

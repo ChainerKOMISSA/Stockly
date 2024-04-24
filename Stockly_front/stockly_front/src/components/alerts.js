@@ -66,10 +66,11 @@ export const failureAlert = (texte) => {
     })
 }
 
-export const infoAlert = (title) => {
+export const infoAlert = (titre) => {
     Swal.fire({
         icon: "info",
-        showConfirmButton: false,
+        title : titre,
+        showConfirmButton: true,
         timer: 2000
     })
 }
