@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { API_URL } from '../../../components/constantes'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../../components/alerts'
 import Swal from 'sweetalert2'
 
@@ -117,7 +117,6 @@ function Categories() {
       if (response.ok) {
         const data = await response.json();
         updateSuccessAlert()
-        closecreateModal();
         navigate(0)
       } else {
         const errorData = await response.json();

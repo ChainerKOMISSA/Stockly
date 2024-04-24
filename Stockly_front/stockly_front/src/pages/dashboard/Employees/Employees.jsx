@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { API_URL } from '../../../components/constantes'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../../components/alerts'
 import Swal from 'sweetalert2'
 
@@ -14,12 +14,7 @@ function Employees() {
   const [formData, setFormData] = useState({});
   const [updatedData, setUpdatedData] = useState({});
 
-  const opencreateModal = () => { setShowCreateModal(true) }
-  const closecreateModal = () => { setShowCreateModal(false) }
-
-  const openupdateModal = (employee) => { setSelectedEmployee(employee); setShowUpdateModal(true); console.log(showupdateModal); }
-  const closeupdateModal = () => { setShowUpdateModal(false); setSelectedEmployee(null) }
-
+  
 
   useEffect(() => {
     fetch(`${API_URL}/roles`)
@@ -97,6 +92,7 @@ function Employees() {
       })
       .then(employeeDetails => {
         setSelectedEmployee(employeeDetails);
+        console.log('here: ', employeeDetails);
       })
       .catch(error => {
         console.error("Erreur lors de la récupération des détails de l'employé:", error);
@@ -107,9 +103,9 @@ function Employees() {
   useEffect(() => {
     if (selectedEmployee) {
       setUpdatedData({
-        idRole : selectedEmployee.idRole,
+        idRole: selectedEmployee.idRole,
         nom: selectedEmployee.nom,
-        prenom : selectedEmployee.prenom,
+        prenom: selectedEmployee.prenom,
         adresse: selectedEmployee.adresse,
         contact: selectedEmployee.contact
       });
@@ -132,7 +128,6 @@ function Employees() {
       if (response.ok) {
         const data = await response.json();
         updateSuccessAlert()
-        closecreateModal();
         navigate(0)
       } else {
         const errorData = await response.json();
@@ -182,6 +177,27 @@ function Employees() {
     catch (error) {
       failureAlert(error)
     }
+  }
+
+  const handleGenerate = async (id) => {
+    
+  }
+
+  function confirmGenerate(id) {
+    Swal.fire({
+      title: "Voulez-vous générer des identifiants pour cet utilisateur?",
+      text: "Ce utilisateur pourra désormais utiliser ces identifiants pour se connecter",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "Annuler",
+      confirmButtonText: "Oui, générer"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleGenerate(id);
+      }
+    });
   }
 
 
@@ -269,7 +285,12 @@ function Employees() {
                         </td>
                         <td>
                           <div className="d-flex justify-content-end flex-shrink-0">
-                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#kt_modal_edit" data-category-id={employee.id}>
+                            <a href="#"
+                              className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                              data-bs-toggle="modal"
+                              data-bs-target="#kt_modal_edit"
+                              data-employe-id={employee.id}
+                              onClick={() => handleEmployeeSelection(employee.id)}>
                               <i className="ki-outline ki-pencil fs-2"></i>
                             </a>
                             <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={(e) => confirmDelete(employee.id)}>
@@ -378,10 +399,113 @@ function Employees() {
                   </div>
                 </div>
               </div>
+              {/* End Create Category Modal */}
+              {/* Edit Category Modal */}
+              {
+                selectedEmployee && (
+                  < div className="modal fade" id="kt_modal_edit" tabIndex="-1" aria-hidden="true" >
+                    <div className="modal-dialog modal-dialog-centered mw-900px">
+                      <div className="modal-content">
+                        <div className="modal-header pb-0 border-0 justify-content-end">
+                          <div className="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                            <i className="ki-outline ki-cross fs-1"></i>
+                          </div>
+                        </div>
+                        <div className="modal-body scroll-y pt-0 pb-15">
+                          <div className="mw-lg-700px mx-auto">
+                            <div className="mb-13 text-center">
+                              <h1 className="mb-3">Modifier cet employé</h1>
+                              <div className="text-muted fw-semibold fs-5">Entrez les informations pour modifier l'employé.
+                              </div>
+                            </div>
+                            <form id="kt_ecommerce_settings_general_form" className="form">
+                              <div className="fv-row mb-7">
+                                <label className="fs-6 fw-semibold form-label mt-3">
+                                  <span className="required">Rôle de l'employé</span>
+                                  <span className="ms-1" data-bs-toggle="tooltip" title="Entrez le rôle de l'employé">
+                                    <i className="ki-outline ki-information fs-7"></i>
+                                  </span>
+                                </label>
+                                <div className="w-100">
+                                  <select id="kt_ecommerce_select2_country" value={updatedData.idRole} className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Sélectionnez..." onChange={handleUpdateChange} name='idRole'>
+                                    <option value="">Sélectionnez...</option>
+                                    {
+                                      roles.map((role, index) => (
+                                        <option key={index} value={role.id}>{role.libelle}</option>
+                                      ))
+                                    }
+                                  </select>
+                                </div>
+                              </div>
+                              <div className="row row-cols-1 row-cols-sm-2 rol-cols-md-1 row-cols-lg-2">
+                                <div className="col">
+                                  <div className="fv-row mb-7">
+                                    <label className="fs-6 fw-semibold form-label mt-3">
+                                      <span className="required">Nom de l'employé</span>
+                                      <span className="ms-1" data-bs-toggle="tooltip" title="Entrez le nom de l'employé">
+                                        <i className="ki-outline ki-information fs-7"></i>
+                                      </span>
+                                    </label>
+                                    <input type="text" className="form-control form-control-solid" name="nom" value={updatedData.nom} onChange={handleUpdateChange} />
+                                  </div>
+                                </div>
+                                <div className="col">
+                                  <div className="fv-row mb-7">
+                                    <label className="fs-6 fw-semibold form-label mt-3">
+                                      <span className="required">Prénom de l'employé</span>
+                                      <span className="ms-1" data-bs-toggle="tooltip" title="Entrez le prénom de l'employé">
+                                        <i className="ki-outline ki-information fs-7"></i>
+                                      </span>
+                                    </label>
+                                    <input type="text" className="form-control form-control-solid" name="prenom" value={updatedData.prenom} onChange={handleUpdateChange} />
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="row row-cols-1 row-cols-sm-2 rol-cols-md-1 row-cols-lg-2">
+                                <div className="col">
+                                  <div className="fv-row mb-7">
+                                    <label className="fs-6 fw-semibold form-label mt-3">
+                                      <span className="required">Adresse de l'employé</span>
+                                      <span className="ms-1" data-bs-toggle="tooltip" title="Entrez l'adresse de l'employé">
+                                        <i className="ki-outline ki-information fs-7"></i>
+                                      </span>
+                                    </label>
+                                    <input type="text" className="form-control form-control-solid" name="adresse" value={updatedData.adresse} onChange={handleUpdateChange} />
+                                  </div>
+                                </div>
+                                <div className="col">
+                                  <div className="fv-row mb-7">
+                                    <label className="fs-6 fw-semibold form-label mt-3">
+                                      <span className="required">Contact de l'employé</span>
+                                      <span className="ms-1" data-bs-toggle="tooltip" title="Entrez le contact de l'employé">
+                                        <i className="ki-outline ki-information fs-7"></i>
+                                      </span>
+                                    </label>
+                                    <input type="text" className="form-control form-control-solid" name="contact" value={updatedData.contact} onChange={handleUpdateChange} />
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="separator mb-6"></div>
+                              <div class="d-flex justify-content-center">
+                                <button type="button" class="btn btn-info me-3">Générer des indentifiants de connexion</button>
+                                <button type="reset" data-kt-contacts-type="cancel" class="btn btn-light me-3">Annuler</button>
+                                <button class="btn btn-primary" onClick={(e) => handleUpdate(e, selectedEmployee.id)}>
+                                  <span class="indicator-label">Enregistrer les modificaitons</span>
+                                </button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )
+              }
+              {/* End Edit Modal */}
             </div>
           </div>
         </div>
-      </div>
+      </div >
     </>
   )
 }
