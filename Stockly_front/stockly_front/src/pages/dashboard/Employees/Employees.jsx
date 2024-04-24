@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { API_URL } from '../../../components/constantes'
 import { useNavigate } from 'react-router-dom'
-import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../../components/alerts'
+import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert, saveLoginSuccessAlert } from '../../../components/alerts'
 import Swal from 'sweetalert2'
 
 function Employees() {
   const navigate = useNavigate()
-  const [showcreateModal, setShowCreateModal] = useState(false);
-  const [showupdateModal, setShowUpdateModal] = useState(false);
   const [employees, setEmployees] = useState([])
   const [roles, setRoles] = useState([])
   const [selectedEmployee, setSelectedEmployee] = useState({})
   const [formData, setFormData] = useState({});
   const [updatedData, setUpdatedData] = useState({});
 
-  
 
   useEffect(() => {
     fetch(`${API_URL}/roles`)
@@ -92,7 +89,6 @@ function Employees() {
       })
       .then(employeeDetails => {
         setSelectedEmployee(employeeDetails);
-        console.log('here: ', employeeDetails);
       })
       .catch(error => {
         console.error("Erreur lors de la récupération des détails de l'employé:", error);
@@ -103,6 +99,7 @@ function Employees() {
   useEffect(() => {
     if (selectedEmployee) {
       setUpdatedData({
+        id: selectedEmployee.id,
         idRole: selectedEmployee.idRole,
         nom: selectedEmployee.nom,
         prenom: selectedEmployee.prenom,
@@ -179,27 +176,96 @@ function Employees() {
     }
   }
 
-  const handleGenerate = async (id) => {
-    
-  }
 
-  function confirmGenerate(id) {
+  const setVisible = () => {
+    document.getElementById("generator").hidden = false;
+    document.getElementById("btn_generer").hidden = true;
+  }
+  // Variables de génération de mot de passe
+  const [password, setPassword] = useState("");
+  const [passwordLength, setPasswordLength] = useState(6);
+  const [useSymbols, setUseSymbols] = useState(true);
+  const [useNumbers, setUseNumbers] = useState(true);
+  const [useLowerCase, setUseLowerCase] = useState(true);
+  const [useUpperCase, setUseUpperCase] = useState(true);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const copyToClipboard = () => {
+    const el = document.createElement("textarea");
+    el.value = password;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand("copy");
+    document.body.removeChild(el);
+    setSuccessMessage("Vous avez copié le mot de passe");
+    setTimeout(() => setSuccessMessage(""), 5000);
+  };
+
+  const generatePassword = () => {
+    let charset = "";
+    let newPassword = "";
+
+    if (useSymbols) charset += "!@#$%^&*()";
+    if (useNumbers) charset += "0123456789";
+    if (useLowerCase) charset += "abcdefghijklmnopqrstuvwxyz";
+    if (useUpperCase) charset += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    for (let i = 0; i < passwordLength; i++) {
+      newPassword += charset.charAt(Math.floor(Math.random() * charset.length));
+    }
+
+    setPassword(newPassword);
+  };
+
+
+  function confirmSaveLogins(id) {
     Swal.fire({
-      title: "Voulez-vous générer des identifiants pour cet utilisateur?",
-      text: "Ce utilisateur pourra désormais utiliser ces identifiants pour se connecter",
+      title: "Voulez-vous enregistrer ces identifiants pour cet utilisateur?",
+      text: `Ce utilisateur ${id} pourra désormais utiliser ces identifiants pour se connecter`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       cancelButtonText: "Annuler",
-      confirmButtonText: "Oui, générer"
+      confirmButtonText: "Oui, enregistrer"
     }).then((result) => {
       if (result.isConfirmed) {
-        handleGenerate(id);
+        handleSaveLogins(id);
       }
     });
   }
 
+  const handleSaveLogins = async (id) => {
+    let username = document.getElementById("username").value;
+    let password = document.getElementById("generated_pass").value;
+    let logindata = {
+      "id": id,
+      "username": username,
+      "motdepasse": password
+    };
+
+    try {
+      const response = await fetch(`${API_URL}/employes/identifiants/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(logindata),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        saveLoginSuccessAlert()
+        navigate(0)
+      } else {
+        const errorData = await response.json();
+        failureAlert(errorData)
+      }
+
+    } catch (error) {
+      failureAlert(error)
+    }
+
+  }
 
 
   return (
@@ -386,11 +452,11 @@ function Employees() {
                               </div>
                             </div>
                           </div>
-                          <div class="separator mb-6"></div>
-                          <div class="d-flex justify-content-end">
-                            <button type="reset" data-kt-contacts-type="cancel" class="btn btn-light me-3">Annuler</button>
-                            <button class="btn btn-primary" onClick={handleSubmit}>
-                              <span class="indicator-label">Enregistrer</span>
+                          <div className="separator mb-6"></div>
+                          <div className="d-flex justify-content-end">
+                            <button type="reset" data-kt-contacts-type="cancel" className="btn btn-light me-3">Annuler</button>
+                            <button className="btn btn-primary" onClick={handleSubmit}>
+                              <span className="indicator-label">Enregistrer</span>
                             </button>
                           </div>
                         </form>
@@ -485,12 +551,114 @@ function Employees() {
                                   </div>
                                 </div>
                               </div>
-                              <div class="separator mb-6"></div>
-                              <div class="d-flex justify-content-center">
-                                <button type="button" class="btn btn-info me-3">Générer des indentifiants de connexion</button>
-                                <button type="reset" data-kt-contacts-type="cancel" class="btn btn-light me-3">Annuler</button>
-                                <button class="btn btn-primary" onClick={(e) => handleUpdate(e, selectedEmployee.id)}>
-                                  <span class="indicator-label">Enregistrer les modificaitons</span>
+                              <div id='generator' hidden>
+                                <div className="separator mb-6" id='line'></div>
+                                <div className="mb-13 text-center">
+                                  <h1 className="mb-3">Générateur d'identifiants de connexion</h1>
+                                </div>
+                                <div className="row row-cols-1 row-cols-sm-2 rol-cols-md-1 row-cols-lg-2">
+                                  <div className='col'>
+                                    <label className="fs-6 fw-semibold form-label mt-3">
+                                      <span className="required">Nom d'utilisateur</span>
+                                      <span className="ms-1" data-bs-toggle="tooltip" title="Le nom d'utilisateur est par défaut le prénom de l'employé">
+                                        <i className="ki-outline ki-information fs-7"></i>
+                                      </span>
+                                    </label>
+                                  </div>
+                                  <div className='col'>
+                                    <input
+                                      className="form-control form-control-solid"
+                                      type="text"
+                                      value={updatedData.prenom}
+                                      id='username'
+                                    />
+                                  </div>
+                                </div><br />
+                                <div className="mb-13 text-center">
+                                  <div className="text-muted fw-semibold fs-5" id='generator_title'>Générateur de mots de passe</div>
+                                </div>
+                                <div className="row row-cols-1 row-cols-sm-2 rol-cols-md-1 row-cols-lg-2">
+                                  <div className='col'>
+                                    <label className="fs-6 fw-semibold form-label mt-3">
+                                      <span className="required">Longueur du mot de passe</span>
+                                      <span className="ms-1" data-bs-toggle="tooltip" title="Le mot de passe doit avoir entre 6 et 8 caractères">
+                                        <i className="ki-outline ki-information fs-7"></i>
+                                      </span>
+                                    </label>
+                                  </div>
+                                  <div className='col'>
+                                    <input
+                                      className="form-control form-control-solid"
+                                      type="number"
+                                      min="6"
+                                      max="8"
+                                      value={passwordLength}
+                                      onChange={(e) => setPasswordLength(e.target.value)}
+                                    />
+                                  </div>
+                                </div> <br />
+                                <div className="row row-cols-1 row-cols-sm-2 rol-cols-md-1 row-cols-lg-4">
+                                  <div className='col'><label className="form-check form-check-custom form-check-inline form-check-solid me-5">
+                                    <input className="form-check-input" checked={useSymbols} onChange={() => setUseSymbols(!useSymbols)} type="checkbox" />
+                                    <span className="fw-semibold ps-2 fs-6">Symboles</span>
+                                  </label></div>
+                                  <div className='col'><label className="form-check form-check-custom form-check-inline form-check-solid me-5">
+                                    <input className="form-check-input" checked={useNumbers} onChange={() => setUseNumbers(!useNumbers)} type="checkbox" />
+                                    <span className="fw-semibold ps-2 fs-6">Nombres</span>
+                                  </label></div>
+                                  <div className='col'><label className="form-check form-check-custom form-check-inline form-check-solid me-5">
+                                    <input className="form-check-input" checked={useLowerCase} onChange={() => setUseLowerCase(!useLowerCase)} type="checkbox" />
+                                    <span className="fw-semibold ps-2 fs-6">Minuscules</span>
+                                  </label></div>
+                                  <div className='col'><label className="form-check form-check-custom form-check-inline form-check-solid me-5">
+                                    <input className="form-check-input" checked={useUpperCase} onChange={() => setUseUpperCase(!useUpperCase)} type="checkbox" />
+                                    <span className="fw-semibold ps-2 fs-6">Majuscules</span>
+                                  </label></div>
+                                </div> <br />
+
+                                <button type="button" className="btn btn-primary me-3" onClick={generatePassword}>Générer le mot de passe</button>
+                                {password && (
+                                  <div className="row row-cols-1 row-cols-sm-2 rol-cols-md-1 row-cols-lg-4">
+                                    <div className='col'>
+                                      <label className="fs-6 fw-semibold form-label mt-3">
+                                        <span>Mot de passe généré</span>
+                                      </label>
+                                    </div>
+                                    <div className='col'>
+                                      <input
+                                        className="form-control form-control-solid"
+                                        value={password}
+                                        readOnly
+                                        id='generated_pass'
+                                      />
+                                    </div>
+                                    {/* <div className='col'>
+                                      <button type="button" className="btn btn-light me-3" onClick={copyToClipboard}>Copier</button>
+                                    </div> */}
+                                    <div className='col'>
+                                      <button type="button" id='save_logins' className="btn btn-info me-3" onClick={() => confirmSaveLogins(updatedData.id)}>Enregistrer</button>
+                                    </div>
+                                  </div>
+                                )}
+                                {/* {successMessage && (
+                                  <p
+                                    style={{
+                                      color: "green",
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    {successMessage}
+                                  </p>
+                                )} */}
+
+                              </div> <br /><br />
+
+                              <div className="separator mb-6"></div>
+                              <div className="d-flex justify-content-center">
+                                <button type="button" id='btn_generer' className="btn btn-info me-3" onClick={() => setVisible()}>Générer des indentifiants de connexion</button>
+                                <button type="reset" data-kt-contacts-type="cancel" className="btn btn-light me-3">Annuler</button>
+                                <button className="btn btn-primary" onClick={(e) => handleUpdate(e, selectedEmployee.id)}>
+                                  <span className="indicator-label">Enregistrer les modificaitons</span>
                                 </button>
                               </div>
                             </form>

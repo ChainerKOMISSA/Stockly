@@ -18,6 +18,16 @@ export const updateSuccessAlert = () => {
     })
 }
 
+
+export const saveLoginSuccessAlert = () => {
+    Swal.fire({
+        icon: "success",
+        title: "Identifiants créés avec succès !",
+        showConfirmButton: false,
+        timer: 2000
+    })
+}
+
 export const confirmDeleteAlert = () => {
     Swal.fire({
         title: "Etes-vous sûr de supprimer?",
