@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { API_URL } from '../../../components/constantes'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../../components/alerts'
-import { MontantInputControl } from '../../../helpers/InputControls'
 import { getCurrentDate } from '../../../helpers/CalendarControl'
 import { formatDate } from '../../../helpers/DateFormat'
 
@@ -54,7 +53,6 @@ function Sales() {
       })
   }, []);
 
-  //useEffect(()=>{},[prix])
 
   const handleChangeProduit = (e) => {
     let prod = e.target.value;
@@ -67,15 +65,6 @@ function Sales() {
         prix: prd.prix
       }
     )
-    //setPrix(prd.prix)
-  }
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
   }
 
   const registerSale = (e) => {
@@ -171,7 +160,6 @@ function Sales() {
       let icon = document.createElement("i");
       icon.classList.add("ki-outline", "ki-trash");
       button.appendChild(icon);
-      // button.textContent = "Retirer";
 
       button.addEventListener("click", function () {
         let id = listeProduits[listeProduits.length - 1].idProduit;
@@ -266,8 +254,6 @@ function Sales() {
   const getVenteCode = (nom) => {
     if (nom) {
       const date = getCurrentDate();
-      //const nom = saleData.idEmploye;
-
       // Génère le code en concaténant la date et le nom de l'employé
       const codeVente = date + '_[Employe' + nom + ']';
       return codeVente;
@@ -288,7 +274,6 @@ function Sales() {
       });
 
       if (response1.ok) {
-        console.log('Vente enregistrée');
         const data = await response1.json();
         const response2 = await fetch(`${API_URL}/produitvente`, {
           method: 'POST',

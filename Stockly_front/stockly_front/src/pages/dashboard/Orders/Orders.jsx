@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { API_URL } from '../../../components/constantes'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../../components/alerts'
 import Swal from 'sweetalert2'
 import { getCurrentDate } from '../../../helpers/CalendarControl'
 import { formatDate } from '../../../helpers/DateFormat'
-import { MontantInputControl } from '../../../helpers/InputControls'
 
 
 
@@ -14,10 +13,12 @@ function Orders() {
   const [orders, setOrders] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
   const [produits, setProduits] = useState([]);
-  const [prix, setPrix] = useState(0);
-  const [selectedOrder, setSelectedOrder] = useState({})
-  const [formData, setFormData] = useState({});
-  const [updatedData, setUpdatedData] = useState({});
+  const [formData, setFormData] = useState({ quantite: 0, prixAchat: 0, Montant_Commande: 0, nom: "", });
+  const [listeProduits, setListeProduits] = useState([]);
+  const [orderData, setOrderData] = useState({
+    dateCommande: getCurrentDate(),
+    codeCommande: "",
+  });
 
 
 
@@ -54,100 +55,38 @@ function Orders() {
       })
   }, []);
 
-  useEffect(() => { }, [prix])
-
 
   const handleChangeProduit = (e) => {
-    let produitId = e.target.value;
-    let prd = produits.find(produit => produit.id == produitId)
+    let prod = e.target.value;
+    let prd = produits.find(produit => produit.id == prod)
     setFormData(
       {
         ...formData,
+        id: prd.id,
         nom: prd.nom,
-        prix: prd.prix
       }
     )
-    setPrix(prd.prix)
   }
 
-  const handleChange = (e) => {
+  const registerOrder = (e) => {
     const { name, value } = e.target;
+    setOrderData({
+      ...orderData,
+      [name]: value,
+    });
+  }
+
+  const handleSupplierChange = (e) => {
+    setOrderData({
+      ...orderData,
+      'idFournisseur': e.target.value,
+      'codeCommande': getCommandeCode(e.target.value)
+    })
     setFormData({
       ...formData,
-      [name]: value,
+      'codeCommande': getCommandeCode(e.target.value),
     });
   }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const response = await fetch(`${API_URL}/commandes`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        createSuccessAlert()
-        navigate(0)
-      } else {
-        const errorData = await response.json();
-        failureAlert(errorData)
-      }
-    }
-    catch (error) {
-      failureAlert(error)
-    }
-  }
-
-  const handleUpdateChange = (e) => {
-    const { name, value } = e.target;
-    setUpdatedData({
-      ...updatedData,
-      [name]: value,
-    });
-  }
-
-  useEffect(() => {
-    if (selectedOrder) {
-      setUpdatedData({
-        dateCommande: selectedOrder.dateCommande,
-        idFournisseur: selectedOrder.idFournisseur,
-      });
-    }
-  }, [selectedOrder]);
-
-
-  const handleUpdate = async (e, id) => {
-    e.preventDefault();
-
-    try {
-      const response = await fetch(`${API_URL}/commandes/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedData),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        updateSuccessAlert()
-        navigate(0)
-      } else {
-        const errorData = await response.json();
-        failureAlert(errorData)
-      }
-    }
-    catch (error) {
-      failureAlert(error)
-    }
-  }
-
 
   function confirmDelete(id) {
     Swal.fire({
@@ -188,14 +127,193 @@ function Orders() {
     }
   }
 
-  const addProductToList = () => {
-    document.getElementById("product_list_table").hidden = false;
-    document.getElementById("bill_button").hidden = false;
-    document.getElementById("CancelBtn").hidden = false;
-    document.getElementById("SaveBtn").hidden = false;
-
-    let table = document.getElementById("product_list_table")
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   }
+
+
+  const addProductToList = (e) => {
+    if (formData.nom) {
+      e.preventDefault();
+      document.getElementById("product_list_table").hidden = false;
+      document.getElementById("bill_button").hidden = false;
+      document.getElementById("CancelBtn").hidden = false;
+      document.getElementById("SaveBtn").hidden = false;
+
+      let table = document.getElementById("product_list_table")
+      listeProduits.push({
+        idProduit: formData.id,
+        nom: formData.nom,
+        prixAchat: formData.prixAchat,
+        quantite: formData.quantite,
+        codeCommande: orderData.codeCommande,
+      })
+
+
+      let row = table.insertRow(
+        table.childNodes.length - 1
+      )
+
+      // Ajoute un attribut data-id à la ligne avec la valeur de l'identifiant du produit
+      row.setAttribute("data-id", formData.id);
+
+      let cell1 = row.insertCell(0)
+      cell1.innerHTML = listeProduits[listeProduits.length - 1].nom
+
+      let cell2 = row.insertCell(1)
+      cell2.innerHTML = listeProduits[listeProduits.length - 1].prixAchat
+
+      let cell3 = row.insertCell(2)
+      cell3.innerHTML = listeProduits[listeProduits.length - 1].quantite
+
+      let cell2Value = parseFloat(cell2.innerHTML);
+      let cell3Value = parseFloat(cell3.innerHTML);
+
+      let somme = cell2Value * cell3Value
+      let cell4 = row.insertCell(3)
+      cell4.innerHTML = somme
+
+      let cell5 = row.insertCell(4)
+
+      let button = document.createElement("button");
+      button.classList.add("btn", "btn-light-danger");
+      let icon = document.createElement("i");
+      icon.classList.add("ki-outline", "ki-trash");
+      button.appendChild(icon);
+
+      button.addEventListener("click", function () {
+        let id = listeProduits[listeProduits.length - 1].idProduit;
+        removeFromList(id, e);
+      });
+
+      cell5.appendChild(button);
+
+      let total = 0
+
+      for (let i = 1; i < table.rows.length; i++) {
+        let cellValue = parseFloat(table.rows[i].cells[3].innerHTML);
+        total += cellValue;
+      }
+
+      let totalElement = document.getElementById("bill_button");
+      if (totalElement) {
+        totalElement.textContent = `Montant total à payer : ${total} FCFA`;
+      } else {
+        totalElement.textContent = `Montant total à payer : 0 FCFA`;
+      }
+      setFormData({
+        ...formData,
+        quantite: 0,
+        prixAchat: 0,
+        Montant_Commande: 0,
+        nom: "",
+      })
+      let select = document.querySelector(".produit_select")
+      select.selectedIndex = 0;
+    } else {
+      //afficher qu'on a pas selectionner de produit
+    }
+  }
+
+  const handleQuantityChange = (e) => {
+    setFormData({
+      ...formData,
+      quantite: e.target.value,
+      Montant_Commande: formData.prixAchat * e.target.value
+    })
+  }
+
+  const removeFromList = (id, e) => {
+    e.preventDefault();
+    // Recherche la ligne correspondante dans le tableau HTML en fonction de l'identifiant unique
+    let rowToRemove = document.querySelector(`#product_list_table tr[data-id="${id}"]`);
+
+    // Vérifie si la ligne existe
+    if (rowToRemove) {
+      // Supprime la ligne du tableau HTML
+      rowToRemove.remove();
+
+      // Recherche l'indice du produit dans listeProduits en fonction de son idProduit
+      let index = listeProduits.findIndex(produit => produit.idProduit === id);
+
+      // Vérifie si le produit existe dans la liste
+      if (index !== -1) {
+        // Retire le produit de listeProduits
+        listeProduits.splice(index, 1);
+      }
+
+      // Recalcul de la somme totale
+      let total = 0;
+      let table = document.getElementById("product_list_table");
+      for (let i = 1; i < table.rows.length; i++) {
+        let cellValue = parseFloat(table.rows[i].cells[3].innerHTML);
+        total += cellValue;
+      }
+
+      // Met à jour le texte du bouton avec la nouvelle somme totale
+      let totalElement = document.getElementById("bill_button");
+      if (totalElement) {
+        totalElement.textContent = `Montant total à payer : ${total} FCFA`;
+      } else {
+        totalElement.textContent = `Montant total à payer : 0 FCFA`;
+      }
+
+    }
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log('orderData', orderData);
+    console.log('formData', formData);
+    try {
+      const response1 = await fetch(`${API_URL}/commandes`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      if (response1.ok) {
+        const data = await response1.json();
+        const response2 = await fetch(`${API_URL}/produitcommande`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(listeProduits),
+        });
+        if (response2.ok) {
+          createSuccessAlert();
+          navigate(0);
+        } else {
+          const errorData = await response2.json();
+          failureAlert(errorData);
+        }
+      } else {
+        const errorData = await response1.json();
+        failureAlert(errorData)
+      }
+    }
+    catch (error) {
+      failureAlert(error)
+    }
+  }
+
+
+  const getCommandeCode = (nom) => {
+    if (nom) {
+      const date = getCurrentDate();
+      // Génère le code en concaténant la date et le nom de l'employé
+      const codeCommande = date + '_[Fournisseur' + nom + ']';
+      return codeCommande;
+    } else return ""
+  }
+
 
   return (
     <>
@@ -247,6 +365,7 @@ function Orders() {
                       </div>
                     </th>
                     <th className="min-w-150px">Date de la commande</th>
+                    <th className="min-w-200px">Code de la commande</th>
                     <th className="min-w-200px">Fournisseur</th>
                     <th className="min-w-100px text-end">Actions</th>
                   </tr>
@@ -268,6 +387,9 @@ function Orders() {
                           </div>
                         </td>
                         <td>
+                          <a className="text-gray-900 fw-bold text-hover-primary fs-6">{order.codeCommande}</a>
+                        </td>
+                        <td>
                           <a className="text-gray-900 fw-bold text-hover-primary fs-6">{order.Fournisseur.nom}</a>
                         </td>
                         <td>
@@ -275,9 +397,6 @@ function Orders() {
                             <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1">
                               <i className="ki-outline ki-file fs-2"></i>
                             </a>
-                            {/* <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#kt_modal_edit" data-category-id={order.id}>
-                              <i className="ki-outline ki-pencil fs-2"></i>
-                            </a> */}
                             <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={(e) => confirmDelete(order.id)}>
                               <i className="ki-outline ki-trash fs-2"></i>
                             </a>
@@ -290,7 +409,7 @@ function Orders() {
               </table>
               {/* Create Category Modal */}
               <div className="modal fade" id="kt_modal_share_earn" tabIndex="-1" aria-hidden="true" >
-                <div className="modal-dialog modal-dialog-centered mw-800px">
+                <div className="modal-dialog modal-dialog-centered mw-1000px">
                   <div className="modal-content">
                     <div className="modal-header pb-0 border-0 justify-content-end">
                       <div className="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
@@ -305,15 +424,45 @@ function Orders() {
                           </div>
                         </div>
                         <form id="kt_ecommerce_settings_general_form" className="form">
-                          <div className="fv-row mb-7">
-                            <label className="fs-6 fw-semibold form-label mt-3">
-                              <span className="required">Date</span>
-                              <span className="ms-1" data-bs-toggle="tooltip" title="Entrez la date">
-                                <i className="ki-outline ki-information fs-7"></i>
-                              </span>
-                            </label>
-                            <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="dateCommande" id='dateCommande' value={formData.dateCommande} onChange={handleChange} />
+                          <div className="row row-cols-1 row-cols-sm-2 rol-cols-md-1 row-cols-lg-2">
+                            <div className="col">
+                              <div className="fv-row mb-7">
+                                <label className="fs-6 fw-semibold form-label mt-3">
+                                  <span className="required">Date</span>
+                                  <span className="ms-1" data-bs-toggle="tooltip" title="Entrez la date">
+                                    <i className="ki-outline ki-information fs-7"></i>
+                                  </span>
+                                </label>
+                                <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="dateCommande" id='dateCommande' value={orderData.dateCommande} onChange={registerOrder} required />
+                              </div>
+                            </div>
+                            <div className="col">
+                              <div className="fv-row mb-7">
+                                <label className="fs-6 fw-semibold form-label mt-3">
+                                  <span className="required">Vendeur</span>
+                                  <span className="ms-1" data-bs-toggle="tooltip" title="Choisissez un produit">
+                                    <i className="ki-outline ki-information fs-7"></i>
+                                  </span>
+                                </label>
+                                <div className="w-100">
+                                  <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Sélectionnez..." onChange={handleSupplierChange} name="idFournisseur">
+                                    <option value="">Sélectionnez...</option>
+                                    {
+                                      suppliers.map((supplier, index) => (
+                                        <option key={index} value={supplier.id}>{supplier.nom}</option>
+                                      ))
+                                    }
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="col">
+                              <div className="fv-row mb-7">
+                                <input type="hidden" className="form-control form-control-solid" name="codeCommande" value={orderData.codeCommande} readOnly />
+                              </div>
+                            </div>
                           </div>
+
                           <div className="row row-cols-1 row-cols-sm-2 rol-cols-md-1 row-cols-lg-2">
                             <div className="col">
                               <div className="fv-row mb-7">
@@ -324,11 +473,11 @@ function Orders() {
                                   </span>
                                 </label>
                                 <div className="w-100">
-                                  <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Sélectionnez..." onChange={handleChangeProduit} name="Id_Produit">
+                                  <select id="kt_ecommerce_select2_country" className="form-select form-select-solid produit_select" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Sélectionnez..." onChange={handleChangeProduit} name="nom">
                                     <option value="">Sélectionnez...</option>
                                     {
                                       produits.map((produit, index) => (
-                                        <option key={index} value={produit.id} data-prix={produit.prix}>{produit.nom}</option>
+                                        <option key={index} value={produit.id}>{produit.nom}</option>
                                       ))
                                     }
                                   </select>
@@ -343,7 +492,7 @@ function Orders() {
                                     <i className="ki-outline ki-information fs-7"></i>
                                   </span>
                                 </label>
-                                <input type="number" className="form-control form-control-solid" id='prix' name="prix" value={prix} readOnly />
+                                <input type="number" className="form-control form-control-solid" id='prixAchat' name="prixAchat" value={formData.prixAchat} onChange={handleChange} />
                               </div>
                             </div>
                           </div>
@@ -351,12 +500,12 @@ function Orders() {
                             <div className="col">
                               <div className="fv-row mb-7">
                                 <label className="fs-6 fw-semibold form-label mt-3">
-                                  <span className="required">Quantité vendue</span>
+                                  <span className="required">Quantité commandée</span>
                                   <span className="ms-1" data-bs-toggle="tooltip" title="Entrez la quantité vendue">
                                     <i className="ki-outline ki-information fs-7"></i>
                                   </span>
                                 </label>
-                                <input type="number" min={0} className="form-control form-control-solid" id="Quantite_Vente" name="Quantite_Vente" value={formData.Quantite_Vente} onChange={handleChange} />
+                                <input type="number" min={0} className="form-control form-control-solid" id="quantite" name="quantite" value={formData.quantite} onChange={e => handleQuantityChange(e)} />
                               </div>
                             </div>
                             <div className="col">
@@ -367,7 +516,7 @@ function Orders() {
                                     <i className="ki-outline ki-information fs-7"></i>
                                   </span>
                                 </label>
-                                {/* <MontantInputControl /> */}
+                                <input type="text" className="form-control form-control-solid" name="Montant_Commande" value={formData.Montant_Commande} readOnly />
                               </div>
                             </div>
                           </div>
@@ -376,32 +525,27 @@ function Orders() {
                               <span className="indicator-label">Ajouter</span>
                             </button>
                           </div>
-                          <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4" id="product_list_table" hidden="true">
+                          <table className="table table-row-dashed table-bordered table-row-gray-300 align-middle gs-0 gy-4" id="product_list_table" hidden={true}>
                             <thead>
                               <tr className="fw-bold text-muted">
-                                <th className="min-w-200px" id="nom_produit">Produit</th>
-                                <th className="min-w-200px" id="prix_produit">Prix</th>
-                                <th className="min-w-200px" id="qtte_produit">Quantité</th>
-                                <th className="min-w-200px" id="montant_produit">Montant</th>
+                                <th className="min-w-200px" id="nomProduit">Produit</th>
+                                <th className="min-w-200px" id="prixProduit">Prix</th>
+                                <th className="min-w-200px" id="qtteProduit">Quantité</th>
+                                <th className="min-w-200px" id="montantProduit">Montant</th>
+                                <th className="min-w-200px" id="montantProduit">Actions</th>
                               </tr>
                             </thead>
                             <tbody>
-                              <tr>
-                                <td>Produit</td>
-                                <td>Produit</td>
-                                <td>Produit</td>
-                                <td>Produit</td>
-                              </tr>
                             </tbody>
                           </table>
                           <div className="d-flex justify-content-end" id="bill_button">
-                            <span className="btn btn-light me-3 fw-semibold fs-5" hidden="true" id="bill_button"><i className="ki-outline ki-basket fs-3"></i> Montant total de la commande : { } FCFA</span>
+                            <span className="btn btn-light me-3 fw-semibold fs-5" hidden={true} id="bill_button"><i className="ki-outline ki-basket fs-3"></i> Montant total de la commande : { } FCFA</span>
                           </div><br />
                           <div className="separator mb-6"></div>
                           <div className="d-flex justify-content-end">
-                            <button type="reset" data-kt-contacts-type="cancel" className="btn btn-light me-3" hidden="true" id="CancelBtn">Annuler</button>
-                            <button className="btn btn-primary" hidden="true" id="SaveBtn">
-                              <span className="indicator-label" onClick={handleSubmit}>Enregistrer</span>
+                            <button type="reset" data-kt-contacts-type="cancel" className="btn btn-light me-3" hidden={true} id="CancelBtn">Annuler</button>
+                            <button className="btn btn-primary" hidden={true} id="SaveBtn" onClick={handleSubmit}>
+                              <span className="indicator-label">Enregistrer</span>
                             </button>
                           </div>
                         </form>
