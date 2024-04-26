@@ -1,9 +1,7 @@
 const { Sequelize } = require('sequelize');
 
-console.log('process.env.DATABASE',process.env.DATABASE);
-
-const sequelize = new Sequelize(process.env.DATABASE, process.env.USER, null, {
-    host: process.env.HOST,
+const sequelize = new Sequelize("dbstocklynew", "root", "Gwladystone@11", {
+    host: "localhost",
     port : 3306,
     dialect: 'mysql',
     logging: false

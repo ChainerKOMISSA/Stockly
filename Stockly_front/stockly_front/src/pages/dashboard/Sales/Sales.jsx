@@ -13,10 +13,13 @@ function Sales() {
   const [sales, setSales] = useState([])
   const [vendeurs, setVendeurs] = useState([])
   const [produits, setProduits] = useState([])
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({quantite:0,Montant_Vente:0,prix:0,nom:""});
   const [listeProduits, setListeProduits] = useState([]);
-  const [saleData, setSaleData] = useState({});
-  const [prix, setPrix] = useState(0);
+  const [saleData, setSaleData] = useState({
+    dateVente:getCurrentDate(),
+    codeVente:"",
+  });
+  //const [prix, setPrix] = useState(0);
 
 
   useEffect(() => {
@@ -65,7 +68,7 @@ function Sales() {
         prix: prd.prix
       }
     )
-    setPrix(prd.prix)
+    //setPrix(prd.prix)
   }
 
   const handleChange = (e) => {
@@ -81,6 +84,18 @@ function Sales() {
     setSaleData({
       ...saleData,
       [name]: value,
+    });
+  }
+
+  const handleEmployeeChange=(e)=>{
+    setSaleData({
+      ...saleData,
+      'idEmploye':e.target.value,
+      'codeVente':getVenteCode(e.target.value)
+    })
+    setFormData({
+      ...formData,
+      'codeVente': getVenteCode(e.target.value),
     });
   }
 
@@ -154,7 +169,8 @@ function Sales() {
 
 
   const addProductToList = (e) => {
-    e.preventDefault();
+    if(formData.nom){
+      e.preventDefault();
     document.getElementById("product_list_table").hidden = false;
     document.getElementById("bill_button").hidden = false;
     document.getElementById("CancelBtn").hidden = false;
@@ -222,8 +238,28 @@ function Sales() {
     } else {
       totalElement.textContent = `Montant total à payer : 0 FCFA`;
     }
+    setFormData({
+      ...formData,
+      quantite:0,
+      prix:0,
+      Montant_Vente:0,
+      nom: "",
+    })
+    let select = document.querySelector(".produit_select")
+    select.selectedIndex = 0;
+    }else{
+      //afficher qu'on a pas selectionner de produit
+    }
+    
   }
 
+  const handleQuantityChange = (e)=>{
+    setFormData({
+      ...formData,
+      quantite : e.target.value,
+      Montant_Vente : formData.prix * e.target.value
+    })
+  }
   const removeFromList = (id, e) => {
     e.preventDefault();
     // Recherche la ligne correspondante dans le tableau HTML en fonction de l'identifiant unique
@@ -271,20 +307,20 @@ function Sales() {
     navigate(`/sales/details/${saleId}?code=${code}`)
   }
 
-  const getVenteCode = () => {
-    const date = getCurrentDate();
-    const nom = saleData.idEmploye;
+  const getVenteCode = (nom) => {
+    if(nom){
+      const date = getCurrentDate();
+    //const nom = saleData.idEmploye;
 
     // Génère le code en concaténant la date et le nom de l'employé
     const codeVente = date + '_[Employe' + nom + ']';
     return codeVente;
+    }else return ""
   }
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('saleData: ', saleData);
-    console.log('listeProduits: ', listeProduits);
 
     try {
       // First, make a POST request to /ventes
@@ -446,7 +482,7 @@ function Sales() {
                                     <i className="ki-outline ki-information fs-7"></i>
                                   </span>
                                 </label>
-                                <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="dateVente" value={getCurrentDate()} onChange={registerSale} required />
+                                <input type="date" min={getCurrentDate()} className="form-control form-control-solid" name="dateVente" value={saleData.dateVente} onChange={registerSale} required />
                               </div>
                             </div>
                             <div className="col">
@@ -458,7 +494,7 @@ function Sales() {
                                   </span>
                                 </label>
                                 <div className="w-100">
-                                  <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Sélectionnez..." onChange={registerSale} name="idEmploye">
+                                  <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Sélectionnez..." onChange={handleEmployeeChange} name="idEmploye">
                                     <option value="">Sélectionnez...</option>
                                     {
                                       vendeurs.map((vendeur, index) => (
@@ -471,7 +507,7 @@ function Sales() {
                             </div>
                             <div className="col">
                               <div className="fv-row mb-7">
-                                <input type="text" className="form-control form-control-solid" name="codeVente" value={getVenteCode()} onChange={(e) => { registerSale(); handleChange(); }} readOnly />
+                                <input type="text" className="form-control form-control-solid" name="codeVente" value={saleData.codeVente} readOnly />
                               </div>
                             </div>
                           </div>
@@ -485,7 +521,7 @@ function Sales() {
                                   </span>
                                 </label>
                                 <div className="w-100">
-                                  <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Sélectionnez..." onChange={handleChangeProduit} name="nom">
+                                  <select id="kt_ecommerce_select2_country" className="form-select form-select-solid produit_select" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Sélectionnez..."  onChange={handleChangeProduit} name="nom">
                                     <option value="">Sélectionnez...</option>
                                     {
                                       produits.map((produit, index) => (
@@ -504,7 +540,7 @@ function Sales() {
                                     <i className="ki-outline ki-information fs-7"></i>
                                   </span>
                                 </label>
-                                <input type="number" className="form-control form-control-solid" id='prix' name="prix" value={prix} readOnly />
+                                <input type="number" className="form-control form-control-solid" id='prix' name="prix" value={formData.prix} readOnly />
                               </div>
                             </div>
                           </div>
@@ -517,7 +553,7 @@ function Sales() {
                                     <i className="ki-outline ki-information fs-7"></i>
                                   </span>
                                 </label>
-                                <input type="number" min={0} className="form-control form-control-solid" id="quantite" name="quantite" value={formData.quantite} onChange={handleChange} />
+                                <input type="number" min={0} className="form-control form-control-solid" id="quantite" name="quantite" value={formData.quantite} onChange={e=>handleQuantityChange(e)} />
                               </div>
                             </div>
                             <div className="col">
@@ -528,9 +564,9 @@ function Sales() {
                                     <i className="ki-outline ki-information fs-7"></i>
                                   </span>
                                 </label>
-                                {/* <input type="text" className="form-control form-control-solid" name="Montant_Vente" value={formData.Montant_Vente} onChange={handleChange} readOnly /> */}
+                                <input type="text" className="form-control form-control-solid" name="Montant_Vente" value={formData.Montant_Vente} readOnly />
                                 {/* <MontantInputControl name="montant" value={formData.montant} onChange={handleChange} /> */}
-                                <MontantInputControl />
+                                {/*<MontantInputControl />*/}
                               </div>
                             </div>
                           </div>

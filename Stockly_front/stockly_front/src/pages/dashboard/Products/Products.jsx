@@ -86,7 +86,6 @@ function Products() {
     });
   }
 
-
   const handleDelete = async (id) => {
     try {
       const response = await fetch(`${API_URL}/produits/${id}`, {
@@ -107,7 +106,6 @@ function Products() {
       failureAlert(error);
     }
   }
-
 
   const handleUpdateChange = (e) => {
     const { name, value } = e.target;
@@ -153,7 +151,6 @@ function Products() {
       failureAlert(error)
     }
   }
-
 
   useEffect(() => {
     fetch(`${API_URL}/produits`)

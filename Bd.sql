@@ -1,85 +1,75 @@
-CREATE DATABASE dbstockly
+CREATE DATABASE IF NOT EXISTS dbstockly;
 
-CREATE TABLE Categorie (
-Id_Categorie int not null primary key AUTO_INCREMENT,
-Libelle_Categorie varchar(25) not null,
-Description_Categorie varchar(300) not null)
+USE dbstockly;
 
+CREATE TABLE IF NOT EXISTS Categorie (
+  Id_Categorie INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  Libelle_Categorie VARCHAR(25) NOT NULL,
+  Description_Categorie VARCHAR(300) NOT NULL
+);
 
-CREATE TABLE Produit (
-Id_Produit int not null primary key AUTO_INCREMENT,
-Nom_Produit varchar(100) not null,
-Prix_Produit int not null,
-Quantite_stock int not null,
-Id_Categorie int)
+CREATE TABLE IF NOT EXISTS Produit (
+  Id_Produit INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  Nom_Produit VARCHAR(100) NOT NULL,
+  Prix_Produit INT NOT NULL,
+  Quantite_Stock INT NOT NULL,
+  Id_Categorie INT,
+  FOREIGN KEY (Id_Categorie) REFERENCES Categorie(Id_Categorie)
+);
 
-ALTER TABLE Produit
-ADD CONSTRAINT FK_CATEGORIE foreign key(Id_Categorie) references Categorie(Id_Categorie)
+CREATE TABLE IF NOT EXISTS Depense (
+  Id_Depense INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  Libelle_Depense VARCHAR(250) NOT NULL,
+  Montant_Depense INT NOT NULL,
+  Date_Depense DATETIME NOT NULL
+);
 
-CREATE TABLE Depense (
-Id_Depense int not null primary key AUTO_INCREMENT,
-Libelle_Depense varchar(250) not null,
-Montant_Depense int not null,
-Date_Depense Datetime not null)
+CREATE TABLE IF NOT EXISTS Role (
+  Id_Role INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  Libelle_Role VARCHAR(25) NOT NULL,
+  Mot_de_passe VARCHAR(50) NOT NULL
+);
 
+CREATE TABLE IF NOT EXISTS Utilisateur (
+  Id_User INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  Nom_User VARCHAR(100) NOT NULL,
+  Mot_de_passe VARCHAR(250) NOT NULL,
+  Id_Role INT NOT NULL,
+  FOREIGN KEY (Id_Role) REFERENCES Role(Id_Role)
+);
 
-CREATE TABLE Role ( 
-Id_Role int not null primary key AUTO_INCREMENT, 
-Libelle_Role varchar(25) not null, 
-Mot_de_passe varchar(50) not null);
+CREATE TABLE IF NOT EXISTS Fournisseur (
+  Id_Frs INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  Nom_Frs VARCHAR(250) NOT NULL,
+  Contact_Frs VARCHAR(25),
+  Adresse_Frs VARCHAR(250)
+);
 
+CREATE TABLE IF NOT EXISTS Commande (
+  Id_Commande INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  Id_Produit INT,
+  Id_Frs INT NOT NULL,
+  Prix_Achat INT NOT NULL,
+  Quantite_Cmd INT NOT NULL,
+  Montant_Cmd INT NOT NULL,
+  Date_Cmd DATETIME NOT NULL,
+  FOREIGN KEY (Id_Produit) REFERENCES Produit(Id_Produit),
+  FOREIGN KEY (Id_Frs) REFERENCES Fournisseur(Id_Frs)
+);
 
-CREATE TABLE Utilisateur (
-Id_User int not null primary key AUTO_INCREMENT,
-Nom_User varchar(100) not null,
-Mot_de_passe varchar(250) not null,
-Id_Role int not null);
+CREATE TABLE IF NOT EXISTS Livraison (
+  Id_Livraison INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  Id_Commande INT NOT NULL,
+  Date_Livraison DATETIME NOT NULL,
+  FOREIGN KEY (Id_Commande) REFERENCES Commande(Id_Commande)
+);
 
-ALTER TABLE Utilisateur 
-ADD CONSTRAINT FK_ROLE FOREIGN KEY (Id_Role) REFERENCES Role(Id_Role)
-
-
-CREATE TABLE Incident (
-Id_Incid int not null primary key AUTO_INCREMENT,
-Libelle_Incid varchar(250) not null,
-Date_Incid Datetime not null)
-
-
-CREATE TABLE Fournisseur (
-Id_Frs int not null primary key AUTO_INCREMENT,
-Nom_Frs varchar(250) not null,
-Contact_Frs varchar(25) not null,
-Adresse_Frs varchar(250) not null);
-
-
-CREATE TABLE Commande (
-Id_Commande int not null primary key AUTO_INCREMENT,
-Id_Produit int null,
-Id_Frs int not null,
-Prix_Achat int not null,
-Quantite_Cmd int not null,
-Montant_Cmd int not null,
-Date_Cmd Datetime not null);
-
-ALTER TABLE Commande
-ADD CONSTRAINT FK_PRODUIT FOREIGN KEY (Id_Produit) REFERENCES produit(Id_Produit),
-
-ALTER TABLE Commande
-ADD CONSTRAINT FK_PRODUIT FOREIGN KEY (Id_Frs) REFERENCES fournisseur(Id_Frs)
-
-CREATE TABLE Livraison (
-Id_Livraison int not null primary key AUTO_INCREMENT,
-Id_Commande int not null,
-Date_Livraison Datetime not null)
-
-
-CREATE TABLE Vente (
-Id_Vente int not null primary key AUTO_INCREMENT,
-Id_Produit int not null,
-Prix_Vente int not null,
-Quantite_Vente int not null,
-Montant_Vente nvarchar(250) not null,
-Date_Vente Datetime not null)
-
-ALTER TABLE Vente
-ADD CONSTRAINT FK_PRODUIT FOREIGN KEY (Id_Produit) REFERENCES produit(Id_Produit)
+CREATE TABLE IF NOT EXISTS Vente (
+  Id_Vente INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  Id_Produit INT NOT NULL,
+  Prix_Vente INT,
+  Quantite_Vente INT,
+  Montant_Vente INT,
+  Date_Vente DATETIME NOT NULL,
+  FOREIGN KEY (Id_Produit) REFERENCES Produit(Id_Produit)
+);

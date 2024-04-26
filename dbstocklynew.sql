@@ -66,7 +66,7 @@ CREATE TABLE `commandes` (
 -- Dumping data for table `commandes`
 --
 
-INSERT INTO `commandes` (`id`, `dateCommande`, `createdAt`, `updatedAt`, `idFournisseur`) VALUES
+INSERT INTO `Commandes` (`id`, `dateCommande`, `createdAt`, `updatedAt`, `idFournisseur`) VALUES
 (1, '2024-03-26 10:59:55', '2024-03-26 10:59:55', '2024-03-26 10:59:55', 1);
 
 -- --------------------------------------------------------
@@ -113,7 +113,7 @@ CREATE TABLE `employes` (
 -- Dumping data for table `employes`
 --
 
-INSERT INTO `employes` (`id`, `nom`, `prenom`, `motdepasse`, `adresse`, `contact`, `createdAt`, `updatedAt`, `idRole`) VALUES
+INSERT INTO `Employes` (`id`, `nom`, `prenom`, `motdepasse`, `adresse`, `contact`, `createdAt`, `updatedAt`, `idRole`) VALUES
 (1, 'Dupont', 'Jean', '', '123 Rue de la République', '0123456789', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 1),
 (2, 'Tremblay', 'Sophie', '', '456 Avenue des Fleurs', '9876543210', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 2),
 (3, 'Garcia', 'Luis', '', '789 Boulevard de la Liberté', '5551234567', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 3),
@@ -139,7 +139,7 @@ CREATE TABLE `fournisseurs` (
 -- Dumping data for table `fournisseurs`
 --
 
-INSERT INTO `fournisseurs` (`id`, `nom`, `adresse`, `contact`, `createdAt`, `updatedAt`) VALUES
+INSERT INTO `Fournisseurs` (`id`, `nom`, `adresse`, `contact`, `createdAt`, `updatedAt`) VALUES
 (1, 'ETS MON PANIER', 'Tokoin-Wuiti', '99646049', '2024-03-22 11:19:01', '2024-03-22 11:19:01'),
 (2, 'ETS LA MAIN DE DIEU', 'Avénou, Lomé', '22303405', '2024-03-22 10:32:39', '2024-03-22 10:32:39');
 
@@ -161,7 +161,7 @@ CREATE TABLE `incidents` (
 -- Dumping data for table `incidents`
 --
 
-INSERT INTO `incidents` (`id`, `libelle`, `createdAt`, `updatedAt`, `date`) VALUES
+INSERT INTO `Incidents` (`id`, `libelle`, `createdAt`, `updatedAt`, `date`) VALUES
 (4, 'Cassure de deux boîtes de mayonnaise de 800 fr chacun lorsqu\'une étagère était déplacée pendant l\'entretien', '2024-03-21 16:25:18', '2024-03-21 16:25:18', '2024-03-21 00:00:00');
 
 -- --------------------------------------------------------
@@ -215,7 +215,7 @@ CREATE TABLE `produits` (
 -- Dumping data for table `produits`
 --
 
-INSERT INTO `produits` (`id`, `nom`, `prix`, `quantiteStock`, `datePeremption`, `createdAt`, `updatedAt`, `idCategorie`) VALUES
+INSERT INTO `Produits` (`id`, `nom`, `prix`, `quantiteStock`, `datePeremption`, `createdAt`, `updatedAt`, `idCategorie`) VALUES
 (1, 'Rare Lawson Paris', 50000, 20, NULL, '2024-03-21 16:14:42', '2024-03-21 16:14:42', 5),
 (4, 'Machine à laver Sony XR320', 125000, 2, NULL, '2024-03-21 17:10:08', '2024-03-21 17:10:08', 1),
 (5, 'iPhone 13', 900000, 50, '2024-12-31 00:00:00', '0000-00-00 00:00:00', '0000-00-00 00:00:00', 1),
@@ -271,7 +271,7 @@ CREATE TABLE `roles` (
 -- Dumping data for table `roles`
 --
 
-INSERT INTO `roles` (`id`, `libelle`, `description`, `createdAt`, `updatedAt`) VALUES
+INSERT INTO `Roles` (`id`, `libelle`, `description`, `createdAt`, `updatedAt`) VALUES
 (1, 'Gérant de magasin', 'Responsable de la gestion globale du magasin, y compris les opérations quotidiennes, la gestion du personnel, etc.', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
 (2, 'Vendeur', 'Personne en charge de l\'assistance aux clients, de la vente de produits et du maintien de l\'ordre dans le magasin.', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
 (3, 'Caissier', 'Responsable de l\'enregistrement des transactions, de la gestion de la caisse et du traitement des paiements des clients.', '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
@@ -296,7 +296,7 @@ CREATE TABLE `ventes` (
 -- Dumping data for table `ventes`
 --
 
-INSERT INTO `ventes` (`id`, `dateVente`, `createdAt`, `updatedAt`, `idEmploye`, `codeVente`) VALUES
+INSERT INTO `Ventes` (`id`, `dateVente`, `createdAt`, `updatedAt`, `idEmploye`, `codeVente`) VALUES
 (1, '2024-03-22 21:40:29', '2024-03-22 21:40:29', '2024-03-22 21:40:29', 2, '2024-03-22_[Employe2]'),
 (2, '2024-04-06 00:00:00', '2024-03-22 20:46:22', '2024-03-22 20:46:22', 4, '2024-04-06_[Employe4]'),
 (4, '2024-03-30 00:00:00', '2024-03-22 20:48:29', '2024-03-22 20:48:29', 6, '2024-03-30_[Employe6]'),
