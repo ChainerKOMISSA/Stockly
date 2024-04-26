@@ -21,6 +21,18 @@ function Dashboard() {
       })
   });
 
+  // Somme des ventes
+  useEffect(() => {
+    fetch(`${API_URL}/produitvente/total`)
+      .then(response => response.json())
+      .then(data => {
+        setSumventes(data)
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération des statistiques des ventes: ', error)
+      })
+  });
+
   // Somme des dépenses
   useEffect(() => {
     fetch(`${API_URL}/produits/countrupture`)
@@ -65,7 +77,7 @@ function Dashboard() {
               <div className="card-body my-3">
                 <a href="/sales" className="card-title fw-bold text-success fs-5 mb-3 d-block">Ventes réalisées</a>
                 <div className="py-1">
-                  <span className="text-gray-900 fs-1 fw-bold me-2">{sumventes.map(sumvente => (sumvente.SumVente))}</span>
+                  <span className="text-gray-900 fs-1 fw-bold me-2">{sumventes.somme}</span>
                   <span className="fw-semibold text-muted fs-7">FCFA</span>
                 </div>
                 <div className="progress h-7px bg-success bg-opacity-50 mt-7">
