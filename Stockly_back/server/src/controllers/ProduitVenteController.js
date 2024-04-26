@@ -1,5 +1,7 @@
 const ProduitVente = require('../models/ProduitVente');
 const Produit = require('../models/Produit');
+const { QueryTypes } = require('sequelize');
+const sequelize = require('../models/database')
 
 exports.getAllProduitVentes = async (req, res) => {
     try {
@@ -60,6 +62,18 @@ exports.deleteProduitVenteById = async (req, res) => {
         if (!produitVente) return res.status(404).json({ message: "La vente de produit n'existe pas!" });
         await produitVente.destroy();
         res.status(200).json({ message: "Vente de produit supprimée avec succès!" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+exports.getTotalProduitVente = async (req, res) => {
+    try {
+        const somme = await sequelize.query('SELECT sum(prix * quantite) AS total FROM produitventes', {
+            type: QueryTypes.SELECT
+        });
+
+        res.json({ somme: somme[0].total });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
