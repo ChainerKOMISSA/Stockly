@@ -365,7 +365,7 @@ function Orders() {
                       </div>
                     </th>
                     <th className="min-w-150px">Date de la commande</th>
-                    <th className="min-w-200px">Code de la commande</th>
+                    {/* <th className="min-w-200px">Code de la commande</th> */}
                     <th className="min-w-200px">Fournisseur</th>
                     <th className="min-w-100px text-end">Actions</th>
                   </tr>
@@ -386,9 +386,9 @@ function Orders() {
                             </div>
                           </div>
                         </td>
-                        <td>
+                        {/* <td>
                           <a className="text-gray-900 fw-bold text-hover-primary fs-6">{order.codeCommande}</a>
-                        </td>
+                        </td> */}
                         <td>
                           <a className="text-gray-900 fw-bold text-hover-primary fs-6">{order.Fournisseur.nom}</a>
                         </td>

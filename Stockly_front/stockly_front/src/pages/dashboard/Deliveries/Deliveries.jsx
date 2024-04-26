@@ -15,14 +15,6 @@ function Deliveries() {
   const [selectedDelivery, setSelectedDelivery] = useState(null);
   const [formData, setFormData] = useState({});
   const [updatedData, setUpdatedData] = useState({});
-  const [showcreateModal, setShowCreateModal] = useState(false);
-  const [showupdateModal, setShowUpdateModal] = useState(false);
-
-  const opencreateModal = () => { setShowCreateModal(true) }
-  const closecreateModal = () => { setShowCreateModal(false) }
-
-  const openupdateModal = (delivery) => { setShowUpdateModal(true); setSelectedDelivery(delivery) }
-  const closeupdateModal = () => { setShowUpdateModal(false); setSelectedDelivery(null) }
 
   useEffect(() => {
     fetch(`${API_URL}/commandes`)
@@ -191,7 +183,7 @@ function Deliveries() {
         <div className="card mb-5 mb-xl-8">
           <div className="card-header border-0 pt-5">
             <div className="card-toolbar align-items-center gap-2 gap-lg-3" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover" title="Click to add a user">
-              <a href="#" className="btn btn-sm btn-light btn-active-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_share_earn" onClick={() => opencreateModal()}>
+              <a href="#" className="btn btn-sm btn-light btn-active-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_share_earn">
                 <i className="ki-outline ki-plus fs-2"></i>
                 Nouvelle livraison
               </a>
@@ -212,7 +204,7 @@ function Deliveries() {
                       </div>
                     </th>
                     <th className="min-w-150px">Date de livraison</th>
-                    <th className="min-w-200px">Identifiant de la commande</th>
+                    <th className="min-w-200px">Code de la commande</th>
                     <th className="min-w-100px text-end">Actions</th>
                   </tr>
                 </thead>
@@ -233,7 +225,7 @@ function Deliveries() {
                           </div>
                         </td>
                         <td>
-                          <a className="text-gray-900 fw-bold text-hover-primary fs-6">{delivery.idCommande}</a>
+                          <a className="text-gray-900 fw-bold text-hover-primary fs-6">{delivery.Commande.codeCommande}</a>
                         </td>
                         <td>
                           <div className="d-flex justify-content-end flex-shrink-0">
@@ -282,7 +274,7 @@ function Deliveries() {
                             <div className="col">
                               <div className="fv-row mb-7">
                                 <label className="fs-6 fw-semibold form-label mt-3">
-                                  <span className="required">Identifiant de la commande</span>
+                                  <span className="required">Code de la commande</span>
                                   <span className="ms-1" data-bs-toggle="tooltip" title="Entrez l'identifiant de la commande">
                                     <i className="ki-outline ki-information fs-7"></i>
                                   </span>
@@ -292,7 +284,7 @@ function Deliveries() {
                                     <option value="">Sélectionnez...</option>
                                     {
                                       orders.map((order, index) => (
-                                        <option key={index} value={order.id}>{order.id}</option>
+                                        <option key={index} value={order.id}>{order.codeCommande}</option>
                                       ))
                                     }
                                   </select>

@@ -350,7 +350,7 @@ function Sales() {
                       </div>
                     </th>
                     <th className="min-w-150px">Date</th>
-                    <th className="min-w-200px">Code vente</th>
+                    {/* <th className="min-w-200px">Code vente</th> */}
                     <th className="min-w-200px">Employe</th>
                     <th className="min-w-100px text-end">Actions</th>
                   </tr>
@@ -371,9 +371,9 @@ function Sales() {
                             </div>
                           </div>
                         </td>
-                        <td id='code'>
+                        {/* <td id='code'>
                           <a className="text-gray-900 fw-bold text-hover-primary fs-6">{sale.codeVente}</a>
-                        </td>
+                        </td> */}
                         <td>
                           <a className="text-gray-900 fw-bold text-hover-primary fs-6">{sale.Employe.nom} {sale.Employe.prenom}</a>
                         </td>
