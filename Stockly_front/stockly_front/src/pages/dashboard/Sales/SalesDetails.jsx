@@ -23,7 +23,9 @@ const SalesDetails = () => {
             .catch(error => {
                 console.error('Erreur lors de la récupération des détails des ventes: ', error)
             })
-
+        console.log("##############################");
+        console.log(code);
+        console.log("##############################");
         fetch(`${API_URL}/produitvente/${code}`)
             .then(response => response.json())
             .then(data => {

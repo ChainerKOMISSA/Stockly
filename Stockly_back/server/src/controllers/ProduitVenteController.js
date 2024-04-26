@@ -29,16 +29,19 @@ exports.createProduitVente = async (req, res) => {
 
 exports.getProduitVenteById = async (req, res) => {
     const { code } = req.params;
+    console.log(code);
     try {
         const produitVente = await ProduitVente.findAll({
+            where : {
+                codeVente : code
+            },
             include :  {
                 model : Produit,
                 attributes : ['nom']
             },
-            where : {
-                codeVente : code
-            }
+           
         });
+        console.log(produitVente);
         if (!produitVente) return res.status(404).json({ message: "La vente de produit n'existe pas!" });
         res.status(200).json(produitVente);
     } catch (error) {

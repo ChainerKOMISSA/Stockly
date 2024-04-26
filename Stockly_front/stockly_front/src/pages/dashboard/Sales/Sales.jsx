@@ -302,7 +302,8 @@ function Sales() {
   const [salesdetails, setSalesDetails] = useState([])
 
   const getDetails = (saleId) => {
-    const codeElement = document.getElementById('code');
+    const codeElement = document.getElementById('details_'+saleId);
+    console.log(codeElement);
     const code = codeElement.textContent;
     navigate(`/sales/details/${saleId}?code=${code}`)
   }
@@ -433,14 +434,14 @@ function Sales() {
                           </div>
                         </td>
                         <td id='code'>
-                          <a className="text-gray-900 fw-bold text-hover-primary fs-6">{sale.codeVente}</a>
+                          <a className="text-gray-900 fw-bold text-hover-primary fs-6" id={"details_"+sale.id}>{sale.codeVente}</a>
                         </td>
                         <td>
                           <a className="text-gray-900 fw-bold text-hover-primary fs-6">{sale.Employe.nom} {sale.Employe.prenom}</a>
                         </td>
                         <td>
                           <div className="d-flex justify-content-end flex-shrink-0">
-                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" onClick={() => getDetails(sale.id)}>
+                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"  onClick={() => getDetails(sale.id)}>
                               <i className="ki-outline ki-file fs-2"></i>
                             </a>
                             {/* <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#kt_modal_edit">
