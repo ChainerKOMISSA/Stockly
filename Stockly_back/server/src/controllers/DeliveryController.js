@@ -1,8 +1,14 @@
 const Livraison = require('../models/Delivery');
+const Commande = require('../models/Order');
 
 exports.getAllLivraisons = async (req, res) => {
     try {
-        const livraisons = await Livraison.findAll();
+        const livraisons = await Livraison.findAll({
+            include : {
+                model : Commande,
+                attributes : ['id', 'codeCommande']
+            }
+        });
         res.json(livraisons);
     } catch (error) {
         res.status(500).json({ message: error.message });
