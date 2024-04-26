@@ -16,9 +16,9 @@ exports.getAllCommandes = async (req, res) => {
 }
 
 exports.createCommande = async (req, res) => {
-    const { dateCommande, idFournisseur } = req.body;
+    const { dateCommande, idFournisseur, codeCommande } = req.body;
     try {
-        const commande = await Commande.create({ dateCommande, idFournisseur });
+        const commande = await Commande.create({ dateCommande, idFournisseur, codeCommande });
         res.status(201).json(commande);
     } catch (error) {
         res.status(400).json({ message: error.message });

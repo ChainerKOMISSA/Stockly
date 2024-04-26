@@ -12,6 +12,10 @@ const Commande = sequelize.define('Commande', {
     dateCommande: {
         type: DataTypes.DATE,
         allowNull: false
+    },
+    codeCommande: {
+        type: DataTypes.STRING,
+        allowNull: false
     }
 });
 

@@ -1,7 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('./database');
 const Produit = require('./Produit');
-const Commande = require('./Order');
 
 const ProduitCommande = sequelize.define('ProduitCommande', {
     id: {
@@ -16,16 +15,15 @@ const ProduitCommande = sequelize.define('ProduitCommande', {
     quantite: {
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+    codeCommande: {
+        type: DataTypes.STRING,
+        allowNull: false
     }
 });
 
 ProduitCommande.belongsTo(Produit, {
     foreignKey: 'idProduit',
-    allowNull: false
-});
-
-ProduitCommande.belongsTo(Commande, {
-    foreignKey: 'idCommande',
     allowNull: false
 });
 

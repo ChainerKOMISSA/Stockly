@@ -10,10 +10,11 @@ exports.getAllProduitCommandes = async (req, res) => {
 }
 
 exports.createProduitCommande = async (req, res) => {
-    const { prixAchat, quantite, idProduit, idCommande } = req.body;
+    const listeProduit = req.body;
     try {
-        const produitCommande = await ProduitCommande.create({ prixAchat, quantite, idProduit, idCommande });
-        res.status(201).json(produitCommande);
+        let produitCommandes = []
+        produitCommandes = await ProduitCommande.bulkCreate(listeProduit);
+        res.status(201).json(produitCommandes);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
