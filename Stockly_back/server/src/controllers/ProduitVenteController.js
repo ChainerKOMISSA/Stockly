@@ -11,10 +11,11 @@ exports.getAllProduitVentes = async (req, res) => {
 }
 
 exports.createProduitVente = async (req, res) => {
-    const { nom, prix, quantite, codeVente, idProduit } = req.body;
+    const listeProduit = req.body;
     try {
-        const produitVente = await ProduitVente.create({ nom, prix, quantite, codeVente, idProduit });
-        res.status(201).json(produitVente);
+        let produitVentes = []
+        produitVentes = await ProduitVente.bulkCreate(listeProduit);
+        res.status(201).json(produitVentes);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
@@ -24,12 +25,12 @@ exports.getProduitVenteById = async (req, res) => {
     const { code } = req.params;
     try {
         const produitVente = await ProduitVente.findAll({
-            include :  {
-                model : Produit,
-                attributes : ['nom']
+            include: {
+                model: Produit,
+                attributes: ['nom']
             },
-            where : {
-                codeVente : code
+            where: {
+                codeVente: code
             }
         });
         if (!produitVente) return res.status(404).json({ message: "La vente de produit n'existe pas!" });
