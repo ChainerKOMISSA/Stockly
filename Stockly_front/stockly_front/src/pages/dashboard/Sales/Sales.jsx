@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { API_URL } from '../../../components/constantes'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../../components/alerts'
 import { getCurrentDate } from '../../../helpers/CalendarControl'
 import { formatDate } from '../../../helpers/DateFormat'
@@ -243,14 +243,6 @@ function Sales() {
     }
   }
 
-  const [salesdetails, setSalesDetails] = useState([])
-
-  const getDetails = (saleId) => {
-    const codeElement = document.getElementById('code');
-    const code = codeElement.textContent;
-    navigate(`/sales/details/${saleId}?code=${code}`)
-  }
-
   const getVenteCode = (nom) => {
     if (nom) {
       const date = getCurrentDate();
@@ -297,6 +289,12 @@ function Sales() {
     } catch (error) {
       failureAlert(error);
     }
+  };
+
+  const [selectedSaleId, setSelectedSaleId] = useState(null);
+
+  const handleSaleSelect = (saleId) => {
+    setSelectedSaleId(saleId);
   };
 
 
@@ -350,7 +348,6 @@ function Sales() {
                       </div>
                     </th>
                     <th className="min-w-150px">Date</th>
-                    {/* <th className="min-w-200px">Code vente</th> */}
                     <th className="min-w-200px">Employe</th>
                     <th className="min-w-100px text-end">Actions</th>
                   </tr>
@@ -371,18 +368,17 @@ function Sales() {
                             </div>
                           </div>
                         </td>
-                        {/* <td id='code'>
-                          <a className="text-gray-900 fw-bold text-hover-primary fs-6">{sale.codeVente}</a>
-                        </td> */}
                         <td>
                           <a className="text-gray-900 fw-bold text-hover-primary fs-6">{sale.Employe.nom} {sale.Employe.prenom}</a>
                         </td>
                         <td>
                           <div className="d-flex justify-content-end flex-shrink-0">
-                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" onClick={() => getDetails(sale.id)}>
-                              <i className="ki-outline ki-file fs-2"></i>
-                            </a>
-                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={() => handleDelete(sale.id)}>
+                            <Link to={`/sales/${sale.id}`}>
+                              <a className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" onClick={() => handleSaleSelect(sale.id)}>
+                                <i className="ki-outline ki-file fs-2"></i>
+                              </a>
+                            </Link>
+                            <a className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={() => handleDelete(sale.id)}>
                               <i className="ki-outline ki-trash fs-2"></i>
                             </a>
                           </div>

@@ -4,37 +4,31 @@ import { useParams, useLocation } from 'react-router-dom'
 import { formatDate } from '../../../helpers/DateFormat'
 
 
-const SalesDetails = () => {
-    const [salesdetails, setSalesDetails] = useState([])
+const SalesDetails = ({ match }) => {
+    const [salesdetails, setSalesDetails] = useState(null)
     const [listeproduits, setListeProduits] = useState([])
     const { id } = useParams();
-    const location = useLocation();
-
-    const searchParams = new URLSearchParams(location.search);
-    const code = searchParams.get('code');
 
     useEffect(() => {
         fetch(`${API_URL}/ventes/${id}`)
             .then(response => response.json())
             .then(data => {
                 setSalesDetails(data)
-                // console.log(salesdetails);
             })
             .catch(error => {
                 console.error('Erreur lors de la récupération des détails des ventes: ', error)
             })
 
-        fetch(`${API_URL}/produitvente/${code}`)
-            .then(response => response.json())
-            .then(data => {
-                setListeProduits(data)
-                console.log(listeproduits);
-            })
-            .catch(error => {
-                console.error('Erreur lors de la récupération des détails des produits vendus: ', error)
-            })
-    }, [location.search]);
-
+        // fetch(`${API_URL}/produitvente/${code}`)
+        //     .then(response => response.json())
+        //     .then(data2 => {
+        //         setListeProduits(data2)
+        //         console.log('liste: ', listeproduits)
+        //     })
+        //     .catch(error => {
+        //         console.error('Erreur lors de la récupération des détails des produits vendus: ', error)
+        //     })
+    }, [id]);
 
 
     return (
@@ -78,16 +72,20 @@ const SalesDetails = () => {
                                 </div>
                                 <div className="separator separator-dashed my-3"></div>
                                 <div id="kt_customer_view_details" className="collapse show">
-                                    <div className="py-5 fs-6">
-                                        {/* <div className="badge badge-light-info d-inline">Premium user</div> */}
-                                        <div className="fw-bold mt-5">Date</div>
-                                        <div className="text-gray-600">{formatDate(salesdetails.dateVente)}</div>
-                                        <div className="fw-bold mt-5">Code vente </div>
-                                        <div className="text-gray-600">{salesdetails.codeVente}</div>
-                                        {/* <div className="fw-bold mt-5">Vendeur</div>
-                                        <div className="text-gray-600">{salesdetails.Employe.nom}</div> */}
+                                    {
+                                        salesdetails ? (
+                                            <div className="py-5 fs-6">
+                                                {/* <div className="badge badge-light-info d-inline">Premium user</div> */}
+                                                <div className="fw-bold mt-5">Date</div>
+                                                <div className="text-gray-600">{formatDate(salesdetails.dateVente)}</div>
+                                                <div className="fw-bold mt-5">Vendeur</div>
+                                                <div className="text-gray-600">{salesdetails.Employe.nom} {salesdetails.Employe.prenom}</div>
+                                            </div>
+                                        ) : (
+                                            <p>Chargement des détails de la vente...</p>
+                                        )
+                                    }
 
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -115,7 +113,7 @@ const SalesDetails = () => {
                                                     <th className="min-w-100px">Quantité</th>
                                                 </tr>
                                             </thead>
-                                            <tbody className="fs-6 fw-semibold text-gray-600">
+                                            {/* <tbody className="fs-6 fw-semibold text-gray-600">
                                                 {
                                                     listeproduits.map((produit, index) => (
                                                         <tr key={index}>
@@ -126,7 +124,7 @@ const SalesDetails = () => {
                                                         </tr>
                                                     ))
                                                 }
-                                            </tbody>
+                                            </tbody> */}
                                         </table>
                                     </div>
                                 </div>
