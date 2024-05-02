@@ -13,10 +13,12 @@ exports.getAllProduitVentes = async (req, res) => {
 }
 
 exports.createProduitVente = async (req, res) => {
-    const listeProduit = req.body;
+    // const listeProduit = req.body;
+    const { idVente, produits } = req.body;
     try {
-        let produitVentes = []
-        produitVentes = await ProduitVente.bulkCreate(listeProduit);
+        // Créer un tableau de données en ajoutant l'ID de la vente à chaque produit
+        const produitsAvecVenteId = produits.map(produit => ({ ...produit, idVente }));
+        const produitVentes = await ProduitVente.bulkCreate(produitsAvecVenteId); 
         res.status(201).json(produitVentes);
     } catch (error) {
         res.status(400).json({ message: error.message });

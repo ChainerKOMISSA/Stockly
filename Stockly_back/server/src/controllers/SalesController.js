@@ -20,7 +20,8 @@ exports.createVente = async (req, res) => {
     const { dateVente, idEmploye, codeVente } = req.body;
     try {
         const vente = await Vente.create({ dateVente, idEmploye, codeVente });
-        res.status(201).json(vente);
+        // res.status(201).json(vente);
+        res.status(201).json({ id: vente.id, ...vente._doc }); // Ajouter l'ID dans la réponse
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
@@ -32,7 +33,7 @@ exports.getVenteById = async (req, res) => {
         const vente = await Vente.findByPk(id, {
             include: {
                 model: Employe,
-                attributes: ['nom','prenom']
+                attributes: ['nom', 'prenom']
             }
         });
         if (!vente) return res.status(404).json({ message: "La vente n'existe pas!" });
