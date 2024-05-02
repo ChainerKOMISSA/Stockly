@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { API_URL } from '../../../components/constantes'
 import { useNavigate, Link } from 'react-router-dom'
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../../components/alerts'
 import { getCurrentDate } from '../../../helpers/CalendarControl'
 import { formatDate } from '../../../helpers/DateFormat'
-
 
 
 function Sales() {
@@ -18,6 +17,19 @@ function Sales() {
     dateVente: getCurrentDate(),
     codeVente: "",
   });
+
+  const [recherche, setRecherche] = useState('');
+
+
+  // Fonction de gestion du changement de recherche
+  const handleChangeRecherche = (e) => {
+    setRecherche(e.target.value);
+  };
+
+  // Filtrer les produits basés sur la recherche
+  const produitsFiltres = produits.filter(produit =>
+    produit.nom.toLowerCase().includes(recherche.toLowerCase())
+  );
 
 
   useEffect(() => {
@@ -432,7 +444,7 @@ function Sales() {
                                   </span>
                                 </label>
                                 <div className="w-100">
-                                  <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Sélectionnez..." onChange={handleEmployeeChange} name="idEmploye">
+                                  <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-control="select2" data-placeholder="Sélectionnez..." onChange={handleEmployeeChange} name="idEmploye">
                                     <option value="">Sélectionnez...</option>
                                     {
                                       vendeurs.map((vendeur, index) => (
@@ -459,14 +471,41 @@ function Sales() {
                                   </span>
                                 </label>
                                 <div className="w-100">
-                                  <select id="kt_ecommerce_select2_country" className="form-select form-select-solid produit_select" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Sélectionnez..." onChange={handleChangeProduit} name="nom">
+                                  <input
+                                    type="text"
+                                    placeholder="Rechercher un produit..."
+                                    value={recherche}
+                                    onChange={handleChangeRecherche}
+                                  />
+                                  <select
+                                    id="select_produit"
+                                    className="form-select form-select-solid produit_select"
+                                    data-kt-ecommerce-settings-type="select2_flags"
+                                    data-placeholder="Sélectionnez..."
+                                    onChange={handleChangeProduit}
+                                    name="nom"
+                                  >
+                                    <option value="">Sélectionnez...</option>
+                                    {
+                                      produitsFiltres.map((produit, index) => (
+                                        <option
+                                          key={index}
+                                          value={produit.id}
+                                          data-prix={produit.prix}
+                                        >
+                                          {produit.nom}
+                                        </option>
+                                      ))
+                                    }
+                                  </select>
+                                  {/* <select id="select_produit" className="form-select form-select-solid produit_select" data-control="select2" data-placeholder="Sélectionnez..." onChange={handleChangeProduit} name="nom">
                                     <option value="">Sélectionnez...</option>
                                     {
                                       produits.map((produit, index) => (
                                         <option key={index} value={produit.id} data-prix={produit.prix}>{produit.nom}</option>
                                       ))
                                     }
-                                  </select>
+                                  </select> */}
                                 </div>
                               </div>
                             </div>
