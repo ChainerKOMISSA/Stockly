@@ -266,13 +266,19 @@ function Sales() {
       });
 
       if (response1.ok) {
-        const data = await response1.json();
+        const venteData = await response1.json();
+        const idVente = venteData.id;
+        const produitVenteData = {
+          idVente: idVente,
+          produits: listeProduits
+        };
+
         const response2 = await fetch(`${API_URL}/produitvente`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(listeProduits),
+          body: JSON.stringify(produitVenteData),
         });
 
         if (response2.ok) {

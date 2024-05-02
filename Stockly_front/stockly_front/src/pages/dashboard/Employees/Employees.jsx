@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert, saveLoginSuccessAlert } from '../../../components/alerts'
 import Swal from 'sweetalert2'
 
+
 function Employees() {
   const navigate = useNavigate()
   const [employees, setEmployees] = useState([])
@@ -215,13 +216,15 @@ function Employees() {
     }
 
     setPassword(newPassword);
+    setSuccessMessage("Le mot de passe a été généré! Veuillez le copier et le communiquer à l'employé pour sa connexion.");
+    setTimeout(() => setSuccessMessage(""), 10000);
   };
 
 
   function confirmSaveLogins(id) {
     Swal.fire({
       title: "Voulez-vous enregistrer ces identifiants pour cet utilisateur?",
-      text: `Ce utilisateur ${id} pourra désormais utiliser ces identifiants pour se connecter`,
+      text: `Ce utilisateur pourra désormais utiliser ces identifiants pour se connecter`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -255,7 +258,6 @@ function Employees() {
       if (response.ok) {
         const data = await response.json();
         saveLoginSuccessAlert()
-        navigate(0)
       } else {
         const errorData = await response.json();
         failureAlert(errorData)
@@ -616,7 +618,7 @@ function Employees() {
                                   </label></div>
                                 </div> <br />
 
-                                <button type="button" className="btn btn-primary me-3" onClick={generatePassword}>Générer le mot de passe</button>
+                                <button type="button" className="btn btn-primary me-3" onClick={generatePassword}>Générer le mot de passe</button> <br />
                                 {password && (
                                   <div className="row row-cols-1 row-cols-sm-2 rol-cols-md-1 row-cols-lg-4">
                                     <div className='col'>
@@ -640,18 +642,11 @@ function Employees() {
                                     </div>
                                   </div>
                                 )}
-                                {/* {successMessage && (
-                                  <p
-                                    style={{
-                                      color: "green",
-                                      textAlign: "center",
-                                    }}
-                                  >
-                                    {successMessage}
-                                  </p>
-                                )} */}
+                                {successMessage && (
+                                  <div className="fw-semibold text-danger fs-5 text-center" id='generator_title'>{successMessage}</div>
+                                )}
 
-                              </div> <br /><br />
+                              </div> <br />
 
                               <div className="separator mb-6"></div>
                               <div className="d-flex justify-content-center">

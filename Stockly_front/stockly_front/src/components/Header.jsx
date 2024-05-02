@@ -1,6 +1,6 @@
 import { React, useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import logo from '../assets/img/logo.jpg'
+import logo from '../assets/img/logo.png'
 import avatar from '../assets/img/profile-img.jpg'
 
 
@@ -34,7 +34,7 @@ const Header = () => {
                                 {/*end::Mobile toggle*/}
                                 {/*begin::Logo image*/}
                                 <Link to={"/"}>
-                                    <img alt="Logo" src={logo} className="h-70px h-lg-70px theme-light-show" />
+                                    <img alt="Logo" src={logo} className="h-100px h-lg-100px theme-light-show" />
                                 </Link>
                                 {/*end::Logo image*/}
                             </div>

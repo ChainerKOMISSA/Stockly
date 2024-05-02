@@ -474,7 +474,7 @@ function Products() {
 
       <div id="kt_app_content" className="app-content">
         <div className="card card-flush pb-0 bgi-position-y-center bgi-no-repeat mb-10" style={{ backgroundSize: "auto calc(100% + 10rem)", backgroundPositionX: "100%" }}>
-          <div className="card-header pt-10">
+          <div className="card-header pt-10 pb-15">
             <div className="d-flex align-items-center">
               <div className="symbol symbol-circle me-5"></div>
               <div className="d-flex flex-column">
@@ -511,7 +511,6 @@ function Products() {
               </div>
             </div>
           </div>
-          <div className="card-body pb-0"></div>
         </div>
         <div className="card mb-5 mb-xl-8">
           <div className="card-header border-0 pt-5">

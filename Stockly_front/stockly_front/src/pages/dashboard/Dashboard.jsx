@@ -27,6 +27,7 @@ function Dashboard() {
       .then(response => response.json())
       .then(data => {
         setSumventes(data)
+        // console.log(sumventes);
       })
       .catch(error => {
         console.error('Erreur lors de la récupération des statistiques des ventes: ', error)
