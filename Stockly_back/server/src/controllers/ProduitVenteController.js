@@ -24,11 +24,11 @@ exports.createProduitVente = async (req, res) => {
 }
 
 exports.getProduitVenteById = async (req, res) => {
-    const { code } = req.params;
+    const { id } = req.params;
     try {
         const produitVente = await ProduitVente.findAll({
             where: {
-                codeVente: code
+                idVente: id
             },
             include: {
                 model: Produit,

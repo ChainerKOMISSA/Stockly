@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('./database');
 const Produit = require('./Produit');
+const Vente = require('../models/Sale');
 
 const ProduitVente = sequelize.define('ProduitVente', {
     nom: {
@@ -23,6 +24,11 @@ const ProduitVente = sequelize.define('ProduitVente', {
 
 ProduitVente.belongsTo(Produit, {
     foreignKey: 'idProduit',
+    allowNull: false
+});
+
+ProduitVente.belongsTo(Vente, {
+    foreignKey: 'idVente',
     allowNull: false
 });
 

@@ -1,5 +1,7 @@
 const Employe = require('../models/Employe')
 const Role = require('../models/Role')
+const bcrypt = require('bcrypt');
+
 
 exports.getAllEmployes = async (req, res) => {
     try {
@@ -79,10 +81,13 @@ exports.updateEmployeById = async (req, res) => {
 exports.updateEmployeLoginById = async (req, res) => {
     const { id } = req.params;
     const { username, motdepasse } = req.body;
+    // Cryptage du mot de passe
+    const hashedPassword = await bcrypt.hash(motdepasse, 10);
+
     try {
         const employe = await Employe.findByPk(id);
         if (!employe) return res.status(404).json({ message: "L'employé n'existe pas!" })
-        await employe.update({ username, motdepasse })
+        await employe.update({ username, motdepasse: hashedPassword })
         res.status(200).json({ message: 'Employé modifié avec succès!', employe });
     }
     catch (error) {
