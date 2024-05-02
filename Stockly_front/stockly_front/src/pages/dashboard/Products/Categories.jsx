@@ -291,11 +291,11 @@ function Categories() {
                             </label>
                             <input type="text" className="form-control form-control-solid" name="description" value={formData.description} onChange={handleChange} />
                           </div>
-                          <div class="separator mb-6"></div>
-                          <div class="d-flex justify-content-end">
-                            <button type="reset" data-kt-contacts-type="cancel" class="btn btn-light me-3">Annuler</button>
-                            <button class="btn btn-primary" onClick={handleSubmit}>
-                              <span class="indicator-label">Enregistrer</span>
+                          <div className="separator mb-6"></div>
+                          <div className="d-flex justify-content-end">
+                            <button type="reset" data-kt-contacts-type="cancel" className="btn btn-light me-3">Annuler</button>
+                            <button className="btn btn-primary" onClick={handleSubmit}>
+                              <span className="indicator-label">Enregistrer</span>
                             </button>
                           </div>
                         </form>
@@ -343,11 +343,11 @@ function Categories() {
                                 </label>
                                 <input type="text" className="form-control form-control-solid" name="description" value={updatedData.description} onChange={handleUpdateChange} />
                               </div>
-                              <div class="separator mb-6"></div>
-                              <div class="d-flex justify-content-end">
-                                <button type="reset" data-kt-contacts-type="cancel" class="btn btn-light me-3">Annuler</button>
-                                <button class="btn btn-primary" onClick={(e) => handleUpdate(e, selectedCategory.id)}>
-                                  <span class="indicator-label">Enregistrer les modifications</span>
+                              <div className="separator mb-6"></div>
+                              <div className="d-flex justify-content-end">
+                                <button type="reset" data-kt-contacts-type="cancel" className="btn btn-light me-3">Annuler</button>
+                                <button className="btn btn-primary" onClick={(e) => handleUpdate(e, selectedCategory.id)}>
+                                  <span className="indicator-label">Enregistrer les modifications</span>
                                 </button>
                               </div>
                             </form>

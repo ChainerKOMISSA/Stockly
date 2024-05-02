@@ -4,7 +4,6 @@ import Home from './pages/dashboard/Home';
 import Login from './pages/Login';
 import Sales from './pages/dashboard/Sales/Sales';
 import Orders from './pages/dashboard/Orders/Orders';
-import Register from './pages/Register';
 import Products from './pages/dashboard/Products/Products';
 import Depenses from './pages/dashboard/Depenses';
 import Incidents from './pages/dashboard/Incidents';
@@ -17,6 +16,7 @@ import Liquidation from './pages/dashboard/Liquidation';
 import Rupture from './pages/dashboard/Rupture';
 import SalesDetails from './pages/dashboard/Sales/SalesDetails';
 import ListeProduitsGenerator from './pages/dashboard/Products/ListeProduitsGenerator';
+import Profil from './pages/dashboard/Employees/Profil';
 
 
 function App() {
@@ -24,7 +24,6 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
-        {/* <Route path="/register" element={<Register />} /> */}
         <Route path="products/liste" element={<ListeProduitsGenerator />} />
         <Route path="/" element={<Home />}>
           <Route path="dashboard" element={<Dashboard />} />
@@ -40,6 +39,7 @@ function App() {
           <Route path="depenses" element={<Depenses />} />
           <Route path="liquidation" element={<Liquidation />} />
           <Route path="rupture" element={<Rupture />} />
+          <Route path="profil" element={<Profil />} />
         </Route>
       </Routes>
     </BrowserRouter>
