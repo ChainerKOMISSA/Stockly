@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize')
+const { DataTypes, BOOLEAN } = require('sequelize')
 const sequelize = require('./database')
 const Fournisseur = require('./Supplier')
 
@@ -20,6 +20,10 @@ const Commande = sequelize.define('Commande', {
     etat: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    addToStock : {
+        type : BOOLEAN,
+        allowNull : true
     }
 });
 

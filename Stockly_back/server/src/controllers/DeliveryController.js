@@ -16,9 +16,9 @@ exports.getAllLivraisons = async (req, res) => {
 }
 
 exports.createLivraison = async (req, res) => {
-    const { dateLivraison, idCommande } = req.body;
+    const { idCommande, dateLivraison } = req.body;
     try {
-        const livraison = await Livraison.create({ dateLivraison, idCommande });
+        const livraison = await Livraison.create({ idCommande, dateLivraison });
         res.status(201).json(livraison);
     } catch (error) {
         res.status(400).json({ message: error.message });

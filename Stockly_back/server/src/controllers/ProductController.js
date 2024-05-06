@@ -1,7 +1,8 @@
 const { Op } = require("sequelize");
 const Produit = require('../models/Produit')
 const Categorie = require('../models/Categorie');
-
+const { QueryTypes } = require('sequelize');
+const sequelize = require('../models/database')
 
 exports.getAllProducts = async (req, res) => {
     try {
@@ -70,6 +71,36 @@ exports.updateProductQuantityById = async (req, res) => {
 
         // Décrémenter la quantité vendue de la quantité actuelle du produit
         const newQuantity = produit.quantiteStock - quantitySold;
+
+        // Mettre à jour la quantité du produit avec la nouvelle quantité calculée
+        await produit.update({ quantiteStock: newQuantity });
+
+        res.status(200).json({ message: "Produit modifié avec succès" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+exports.updateProductQuantityAfterOrder = async (req, res) => {
+    // const { id } = req.params;
+    const { produits } = req.body; // Modifier pour correspondre à la structure de données envoyée depuis le frontend
+    let listeProduits = [];
+    for (let produit in produits) {
+        listeProduits.push({
+            id: produit.id,
+            quantite: produit.quantite
+        })
+    }
+    try {
+        // const produit = await Produit.findByPk(id);
+        const produit = await sequelize.query('UPDATE produits SET quantiteStock = ? WHERE id = ?', {
+            type : QueryTypes.UPDATE,
+            attributes : [listeProduits.quantite, listeProduits.id]
+        })
+        if (!produit) return res.status(404).json({ message: "Le produit n'existe pas!" });
+
+        // Décrémenter la quantité vendue de la quantité actuelle du produit
+        const newQuantity = produit.quantiteStock + quantite;
 
         // Mettre à jour la quantité du produit avec la nouvelle quantité calculée
         await produit.update({ quantiteStock: newQuantity });
