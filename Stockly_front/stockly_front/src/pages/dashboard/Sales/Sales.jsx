@@ -264,6 +264,26 @@ function Sales() {
     } else return ""
   }
 
+  // Fonction pour décrémenter la quantité du produit dans la base de données
+const decrementProductQuantity = async (productId, quantitySold) => {
+  try {
+    const response = await fetch(`${API_URL}/produits/${productId}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ quantitySold }), // Envoyer la quantité vendue
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message); // Lever une erreur en cas de problème avec la requête
+    }
+  } catch (error) {
+    throw new Error('Erreur lors de la mise à jour de la quantité du produit: ' + error.message);
+  }
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -294,6 +314,9 @@ function Sales() {
         });
 
         if (response2.ok) {
+          for (const produit of produitVenteData.produits) {
+            await decrementProductQuantity(produit.idProduit, produit.quantite);
+          }
           createSuccessAlert();
           navigate(0);
         } else {
@@ -444,7 +467,7 @@ function Sales() {
                                   </span>
                                 </label>
                                 <div className="w-100">
-                                  <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-control="select2" data-placeholder="Sélectionnez..." onChange={handleEmployeeChange} name="idEmploye">
+                                  <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-control="select2" data-placeholder="Sélectionnez..." onChange={handleEmployeeChange} name="idEmploye" required>
                                     <option value="">Sélectionnez...</option>
                                     {
                                       vendeurs.map((vendeur, index) => (
@@ -471,41 +494,14 @@ function Sales() {
                                   </span>
                                 </label>
                                 <div className="w-100">
-                                  <input
-                                    type="text"
-                                    placeholder="Rechercher un produit..."
-                                    value={recherche}
-                                    onChange={handleChangeRecherche}
-                                  />
-                                  <select
-                                    id="select_produit"
-                                    className="form-select form-select-solid produit_select"
-                                    data-kt-ecommerce-settings-type="select2_flags"
-                                    data-placeholder="Sélectionnez..."
-                                    onChange={handleChangeProduit}
-                                    name="nom"
-                                  >
-                                    <option value="">Sélectionnez...</option>
-                                    {
-                                      produitsFiltres.map((produit, index) => (
-                                        <option
-                                          key={index}
-                                          value={produit.id}
-                                          data-prix={produit.prix}
-                                        >
-                                          {produit.nom}
-                                        </option>
-                                      ))
-                                    }
-                                  </select>
-                                  {/* <select id="select_produit" className="form-select form-select-solid produit_select" data-control="select2" data-placeholder="Sélectionnez..." onChange={handleChangeProduit} name="nom">
+                                  <select id="select_produit" className="form-select form-select-solid produit_select" data-control="select2" data-placeholder="Sélectionnez..." onChange={handleChangeProduit} name="nom" required>
                                     <option value="">Sélectionnez...</option>
                                     {
                                       produits.map((produit, index) => (
                                         <option key={index} value={produit.id} data-prix={produit.prix}>{produit.nom}</option>
                                       ))
                                     }
-                                  </select> */}
+                                  </select>
                                 </div>
                               </div>
                             </div>
@@ -530,7 +526,7 @@ function Sales() {
                                     <i className="ki-outline ki-information fs-7"></i>
                                   </span>
                                 </label>
-                                <input type="number" min={0} className="form-control form-control-solid" id="quantite" name="quantite" value={formData.quantite} onChange={e => handleQuantityChange(e)} />
+                                <input type="number" min={0} className="form-control form-control-solid" id="quantite" name="quantite" value={formData.quantite} onChange={e => handleQuantityChange(e)} required />
                               </div>
                             </div>
                             <div className="col">
