@@ -17,6 +17,7 @@ import Rupture from './pages/dashboard/Rupture';
 import SalesDetails from './pages/dashboard/Sales/SalesDetails';
 import ListeProduitsGenerator from './pages/dashboard/Products/ListeProduitsGenerator';
 import Profil from './pages/dashboard/Employees/Profil';
+import OrdersDetails from './pages/dashboard/Orders/OrdersDetails';
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
           <Route path="sales" element={<Sales />} />
           <Route path='sales/:id' element={<SalesDetails />} />
           <Route path="orders" element={<Orders />} />
+          <Route path="orders/:id" element={<OrdersDetails />} />
           <Route path="deliveries" element={<Deliveries />} />
           <Route path="suppliers" element={<Suppliers />} />
           <Route path="employees" element={<Employees />} />

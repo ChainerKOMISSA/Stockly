@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { API_URL } from '../../components/constantes';
+import { Link } from 'react-router-dom';
 
 
 
@@ -7,6 +8,7 @@ function Dashboard() {
   const [nbrupture, setNbrupture] = useState([]);
   const [sumdepenses, setSumdepenses] = useState([]);
   const [sumventes, setSumventes] = useState([]);
+  const [nbproduits, setNbProduits] = useState([]);
 
 
   // Somme des dépenses
@@ -19,7 +21,7 @@ function Dashboard() {
       .catch(error => {
         console.error('Erreur lors de la récupération des statistiques des dépenses: ', error)
       })
-  });
+  }, []);
 
   // Somme des ventes
   useEffect(() => {
@@ -27,12 +29,12 @@ function Dashboard() {
       .then(response => response.json())
       .then(data => {
         setSumventes(data)
-        // console.log(sumventes);
+        console.log(sumventes);
       })
       .catch(error => {
         console.error('Erreur lors de la récupération des statistiques des ventes: ', error)
       })
-  });
+  }, []);
 
   // Somme des dépenses
   useEffect(() => {
@@ -44,7 +46,20 @@ function Dashboard() {
       .catch(error => {
         console.error('Erreur lors de la récupération des statistiques du nombre des ruptures: ', error)
       })
-  });
+  }, []);
+
+
+  // Somme des dépenses
+  useEffect(() => {
+    fetch(`${API_URL}/produits/count`)
+      .then(response => response.json())
+      .then(data => {
+        setNbProduits(data)
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération des statistiques du nombre des produits: ', error)
+      })
+  }, []);
 
 
   return (
@@ -74,21 +89,23 @@ function Dashboard() {
       <div id="kt_app_content" className="app-content">
         <div className="row g-5 g-xl-8">
           <div className="col-xl-4">
-            <div className="card bg-light-success card-xl-stretch mb-xl-8">
-              <div className="card-body my-3">
-                <a href="/sales" className="card-title fw-bold text-success fs-5 mb-3 d-block">Ventes réalisées</a>
-                <div className="py-1">
-                  <span className="text-gray-900 fs-1 fw-bold me-2">{sumventes.somme}</span>
-                  <span className="fw-semibold text-muted fs-7">FCFA</span>
-                </div>
-                <div className="progress h-7px bg-success bg-opacity-50 mt-7">
-                  <div className="progress-bar bg-success" role="progressbar" style={{ width: "50%" }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+            <Link to="/sales">
+              <div className="card bg-light-success card-xl-stretch mb-xl-8 board">
+                <div className="card-body my-3">
+                  <a className="card-title fw-bold text-success fs-5 mb-3 d-block">Ventes réalisées</a>
+                  <div className="py-1">
+                    <span className="text-gray-900 fs-1 fw-bold me-2">{sumventes.somme}</span>
+                    <span className="fw-semibold text-muted fs-7">FCFA</span>
+                  </div>
+                  <div className="progress h-7px bg-success bg-opacity-50 mt-7">
+                    <div className="progress-bar bg-success" role="progressbar" style={{ width: "0%" }} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                  </div>
                 </div>
               </div>
-            </div>
+            </Link>
           </div>
           <div className="col-xl-4">
-            <div className="card bg-light-warning card-xl-stretch mb-xl-8">
+            <div className="card bg-light-warning card-xl-stretch mb-xl-8 board">
               <div className="card-body my-3">
                 <a href="#" className="card-title fw-bold text-warning fs-5 mb-3 d-block">Dépenses effectuées</a>
                 <div className="py-1">
@@ -96,13 +113,13 @@ function Dashboard() {
                   <span className="fw-semibold text-muted fs-7">FCFA</span>
                 </div>
                 <div className="progress h-7px bg-warning bg-opacity-50 mt-7">
-                  <div className="progress-bar bg-warning" role="progressbar" style={{ width: "15%" }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                  <div className="progress-bar bg-warning" role="progressbar" style={{ width: `${sumdepenses.somme}%` }} aria-valuenow="0" aria-valuemin="0" aria-valuemax={`${sumventes.somme}%`}></div>
                 </div>
               </div>
             </div>
           </div>
           <div className="col-xl-4">
-            <div className="card bg-light-danger card-xl-stretch mb-5 mb-xl-8">
+            <div className="card bg-light-danger card-xl-stretch mb-5 mb-xl-8 board">
               <div className="card-body my-3">
                 <a href="/rupture" className="card-title fw-bold text-danger fs-5 mb-3 d-block">Alerte stock</a>
                 <div className="py-1">
@@ -110,21 +127,17 @@ function Dashboard() {
                   <span className="fw-semibold text-muted fs-7">produit(s)</span>
                 </div>
                 <div className="progress h-7px bg-danger bg-opacity-50 mt-7">
-                  <div className="progress-bar bg-danger" role="progressbar" style={{ width: "76%" }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                  <div className="progress-bar bg-danger" role="progressbar" style={{ width: `${nbrupture.nbRupture}%` }} aria-valuenow="0" aria-valuemin="0" aria-valuemax={`${nbproduits.count}%`}></div>
                 </div>
               </div>
             </div>
           </div>
           <div className="col-xl-4">
-            <div className="card bg-light-danger card-xl-stretch mb-5 mb-xl-8">
+            <div className="card bg-light-danger card-xl-stretch mb-5 mb-xl-8 board">
               <div className="card-body my-4">
                 <i className="ki-outline text-danger ki-information-3 fs-2qx"></i> <a href="/liquidation" className="card-title fw-bold text-danger fs-5 mb-3 d-block">Produits à liquider</a>
-                {/* <div className="py-1">
-                  <span className="text-gray-900 fs-1 fw-bold me-2"></span>
-                  <span className="fw-semibold text-muted fs-7"></span>
-                </div> */}
                 {/* <div className="progress h-7px bg-danger bg-opacity-50 mt-7">
-                  <div className="progress-bar bg-danger" role="progressbar" style={{ width: "76%" }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                  <div className="progress-bar bg-danger" role="progressbar" style={{ width: "0%" }} aria-valuenow="0" aria-valuemin="0" aria-valuemax={`${nbproduits.count}%`}></div>
                 </div> */}
               </div>
             </div>

@@ -3,43 +3,41 @@ import { API_URL } from '../../../components/constantes'
 import { useParams } from 'react-router-dom'
 import { formatDate } from '../../../helpers/DateFormat'
 
-
-const SalesDetails = () => {
-    const [salesdetails, setSalesDetails] = useState(null)
+const OrdersDetails = () => {
+    const [orderdetails, setOrdersDetails] = useState(null)
     const [listeproduits, setListeProduits] = useState([])
     const { id } = useParams();
 
     useEffect(() => {
-        fetch(`${API_URL}/ventes/${id}`)
+        fetch(`${API_URL}/commandes/${id}`)
             .then(response => response.json())
             .then(data => {
-                setSalesDetails(data)
+                setOrdersDetails(data)
             })
             .catch(error => {
-                console.error('Erreur lors de la récupération des détails des ventes: ', error)
+                console.error('Erreur lors de la récupération des détails des commandes: ', error)
             })
 
-        fetch(`${API_URL}/produitvente/${id}`)
+        fetch(`${API_URL}/produitcommande/${id}`)
             .then(response => response.json())
             .then(data2 => {
                 setListeProduits(data2)
             })
             .catch(error => {
-                console.error('Erreur lors de la récupération des détails des produits vendus: ', error)
+                console.error('Erreur lors de la récupération des détails des produits commandés: ', error)
             })
     }, [id]);
 
     function getMontantTotal(listeproduits) {
         if (listeproduits && listeproduits.length > 0) {
             const total = listeproduits.reduce((acc, produit) => {
-                return acc + (produit.prix * produit.quantite);
+                return acc + (produit.prixAchat * produit.quantite);
             }, 0);
             return total;
         } else {
             return 0;
         }
     }
-
 
     return (
         <>
@@ -55,13 +53,13 @@ const SalesDetails = () => {
                             <li className="breadcrumb-item">
                                 <i className="ki-outline ki-right fs-7 text-gray-700"></i>
                             </li>
-                            <li className="breadcrumb-item text-gray-700 fw-bold lh-1 mx-n1">Ventes</li>
+                            <li className="breadcrumb-item text-gray-700 fw-bold lh-1 mx-n1">Commandes</li>
                             <li className="breadcrumb-item">
                                 <i className="ki-outline ki-right fs-7 text-gray-700"></i>
                             </li>
-                            <li className="breadcrumb-item text-gray-500 mx-n1">Détails de ventes</li>
+                            <li className="breadcrumb-item text-gray-500 mx-n1">Détails de commandes</li>
                         </ul>
-                        <h1 className="page-heading d-flex flex-column justify-content-center text-gray-900 fw-bold fs-3 m-0">Détails de ventes</h1>
+                        <h1 className="page-heading d-flex flex-column justify-content-center text-gray-900 fw-bold fs-3 m-0">Détails de commandes</h1>
                     </div>
                 </div>
             </div>
@@ -83,16 +81,16 @@ const SalesDetails = () => {
                                 <div className="separator separator-dashed my-3"></div>
                                 <div id="kt_customer_view_details" className="collapse show">
                                     {
-                                        salesdetails ? (
+                                        orderdetails ? (
                                             <div className="py-5 fs-6">
                                                 {/* <div className="badge badge-light-info d-inline">Premium user</div> */}
                                                 <div className="fw-bold mt-5">Date</div>
-                                                <div className="text-gray-600">{formatDate(salesdetails.dateVente)}</div>
-                                                <div className="fw-bold mt-5">Vendeur</div>
-                                                <div className="text-gray-600">{salesdetails.Employe.nom} {salesdetails.Employe.prenom}</div>
+                                                <div className="text-gray-600">{formatDate(orderdetails.dateCommande)}</div>
+                                                <div className="fw-bold mt-5">Fournisseur</div>
+                                                <div className="text-gray-600">{orderdetails.Fournisseur.nom}</div>
                                             </div>
                                         ) : (
-                                            <p>Chargement des détails de la vente...</p>
+                                            <p>Chargement des détails de la commande...</p>
                                         )
                                     }
 
@@ -130,10 +128,10 @@ const SalesDetails = () => {
                                                         listeproduits.map((produit, index) => (
                                                             <tr key={index}>
                                                                 <td>{index + 1}</td>
-                                                                <td>{produit.nom}</td>
-                                                                <td>{produit.prix}</td>
+                                                                <td>{produit.Produit.nom}</td>
+                                                                <td>{produit.prixAchat}</td>
                                                                 <td>{produit.quantite}</td>
-                                                                <td id='montant'>{produit.prix * produit.quantite}</td>
+                                                                <td id='montant'>{produit.prixAchat * produit.quantite}</td>
                                                             </tr>
                                                         ))
                                                     ) : (
@@ -158,4 +156,4 @@ const SalesDetails = () => {
     )
 }
 
-export default SalesDetails
+export default OrdersDetails
