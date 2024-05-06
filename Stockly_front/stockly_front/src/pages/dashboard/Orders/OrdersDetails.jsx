@@ -19,6 +19,7 @@ const OrdersDetails = () => {
             .then(response => response.json())
             .then(data => {
                 setOrdersDetails(data)
+                console.log(orderdetails);
             })
             .catch(error => {
                 console.error('Erreur lors de la récupération des détails des commandes: ', error)
@@ -28,6 +29,7 @@ const OrdersDetails = () => {
             .then(response => response.json())
             .then(data2 => {
                 setListeProduits(data2)
+                // console.log(listeproduits);
             })
             .catch(error => {
                 console.error('Erreur lors de la récupération des détails des produits commandés: ', error)
@@ -54,6 +56,7 @@ const OrdersDetails = () => {
     }
 
     const handleSaveEtat = async (id) => {
+        // e.preventDefault();
         try {
             const response = await fetch(`${API_URL}/commandes/${id}`, {
                 method: 'PATCH',
@@ -74,7 +77,7 @@ const OrdersDetails = () => {
     }
 
 
-    function confirmAddToStock() {
+    function confirmAddToStock(id, etat, produits) {
         Swal.fire({
             title: "Etes-vous sûr d'ajouter ces produits au stock?",
             text: "Cette action est irréversible",
@@ -86,13 +89,49 @@ const OrdersDetails = () => {
             confirmButtonText: "Oui, ajouter"
         }).then((result) => {
             if (result.isConfirmed) {
-                addToStock();
+                addToStock(id, etat, produits);
             }
         });
     }
 
-    const addToStock = () => {
+    const addToStock = async (id, etat, produits) => {
+        if (etat === "L") {
+            try {
+                const response = await fetch(`${API_URL}/produits`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({produits}),
+                });
+                if (response.ok) {
+                    const response2 = await fetch(`${API_URL}/commandes/stock/${id}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ addToStock: 1 }),
+                    });
 
+                    if (response2.ok) {
+                        const data = await response2.json();
+                        createSuccessAlert()
+                    } else {
+                        const errorData = await response.json();
+                        failureAlert(errorData)
+                    }
+                } else {
+                    const errorData = await response.json();
+                    failureAlert(errorData)
+                }
+            } catch (error) {
+                failureAlert(error)
+            }
+        } else if (addToStock === true) {
+            failureAlert("Cette commande a déjà été ajoutée au stock!");
+        } else {
+            failureAlert("Cette commande n'a pas encore été livrée!");
+        }
     }
 
     function confirmDelivery(id, etat) {
@@ -131,7 +170,7 @@ const OrdersDetails = () => {
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({etat : etat}),
+                        body: JSON.stringify({ etat: etat }),
                     });
                     if (response2.ok) {
                         createSuccessAlert();
@@ -146,6 +185,9 @@ const OrdersDetails = () => {
             } catch (error) {
                 failureAlert(error);
             }
+        } else if (etat === "L") {
+            failureAlert("Cette commande a déjà été livrée!");
+
         } else {
             failureAlert("La livraison de cette commande n'est pas programmée!");
         }
@@ -213,6 +255,8 @@ const OrdersDetails = () => {
                                                     <div className="text-gray-600">{formatDate(orderdetails.dateCommande)}</div>
                                                     <div className="fw-bold mt-5">Fournisseur</div>
                                                     <div className="text-gray-600">{orderdetails.Fournisseur.nom}</div>
+                                                    <div className="fw-bold mt-5">Commande ajoutée au stock</div>
+                                                    <div className="text-gray-600">{orderdetails.addToStock === true ? "Oui" : "Non"}</div>
                                                 </div>
 
                                                 <div className="modal fade" id="kt_modal_update_customer" tabIndex="-1" aria-hidden="true" >
@@ -284,20 +328,32 @@ const OrdersDetails = () => {
                                         <div className="card-title">
                                             <h3>Liste des produits</h3>
                                         </div>
-                                        {
-                                            orderdetails ? (
-                                                <div className="card-toolbar align-items-center gap-2 gap-lg-3">
-                                                    <button type="button" data-etat={`${orderdetails.etat}`} className="btn btn-sm btn-flex btn-light-info" onClick={() => confirmDelivery(orderdetails.id, orderdetails.etat)}>
-                                                        <i className="ki-outline ki-delivery fs-3"></i>Enregistrer la livraison
-                                                    </button>
-                                                    <button type="button" className="btn btn-sm btn-flex btn-light-primary" onClick={() => confirmAddToStock()}>
-                                                        <i className="ki-outline ki-plus fs-3"></i>Ajouter au stock
-                                                    </button>
-                                                </div>
-                                            ) : (
-                                                <p>Chargement des détails de la commande...</p>
-                                            )
-                                        }
+                                        <div className="card-toolbar align-items-center gap-2 gap-lg-3">
+                                            {
+                                                orderdetails ? (
+                                                    <>
+                                                        <button type="button" className="btn btn-sm btn-flex btn-light-info" onClick={() => confirmDelivery(orderdetails.id, orderdetails.etat)}>
+                                                            <i className="ki-outline ki-delivery fs-3"></i>Enregistrer la livraison
+                                                        </button>
+                                                        {
+                                                            listeproduits ? (
+                                                                <>
+                                                                    <button type="button" className="btn btn-sm btn-flex btn-light-primary" onClick={() => confirmAddToStock(orderdetails.id, orderdetails.etat, orderdetails.addToStock, listeproduits)}>
+                                                                        <i className="ki-outline ki-plus fs-3"></i>Ajouter au stock
+                                                                    </button>
+                                                                </>
+
+                                                            ) : (
+                                                                <p>Chargement des détails de la commande...</p>
+                                                            )
+                                                        }
+                                                    </>
+
+                                                ) : (
+                                                    <p>Chargement des détails de la commande...</p>
+                                                )
+                                            }
+                                        </div>
                                     </div>
                                     <div className="card-body pt-0 pb-5">
                                         <table className="table align-middle table-row-dashed gy-5" id="kt_table_customers_payment">
