@@ -368,11 +368,6 @@ function Orders() {
               <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
                 <thead>
                   <tr className="fw-bold text-muted">
-                    <th className="w-25px">
-                      <div className="form-check form-check-sm form-check-custom form-check-solid">
-                        <input className="form-check-input" type="checkbox" value="1" data-kt-check="true" data-kt-check-target=".widget-9-check" />
-                      </div>
-                    </th>
                     <th className="min-w-150px">Date de la commande</th>
                     <th className="min-w-200px">Fournisseur</th>
                     <th className="min-w-200px">Etat de la commande</th>
@@ -383,11 +378,6 @@ function Orders() {
                   {
                     orders.map((order, index) => (
                       <tr key={index}>
-                        <td>
-                          <div className="form-check form-check-sm form-check-custom form-check-solid">
-                            <input className="form-check-input widget-9-check" type="checkbox" value="1" />
-                          </div>
-                        </td>
                         <td>
                           <div className="d-flex align-items-center">
                             <div className="d-flex justify-content-start flex-column">
@@ -400,7 +390,20 @@ function Orders() {
                         </td>
                         <td>
                           <a className="text-gray-900 fw-bold text-hover-primary fs-6">
-                            {order.etat === 'L' ? 'Livrée' : (order.etat === 'NV' ? 'Non Validée' : order.etat === 'P' ? 'Programmée' : order.etat === 'V' ? 'Validée' : order.etat)}
+                            <div className={`badge d-inline ${order.etat === 'NV' ? 'badge-light-danger' :
+                              order.etat === 'V' ? 'badge-light-success' :
+                                order.etat === 'L' ? 'badge-light-info' :
+                                  order.etat === 'P' ? 'badge-light-warning' :
+                                    '' // Si aucun des cas ne correspond, aucune classe n'est ajoutée
+                              }`}>
+                              {order.etat === 'NV' ? 'Non validée' :
+                                order.etat === 'V' ? 'Validée' :
+                                order.etat === 'L' ? 'Livrée' :
+                                  order.etat === 'P' ? 'Programmée' :
+                                    order.etat // Si aucun des cas ne correspond, affiche simplement la valeur
+                              }
+                            </div>
+                            {/* {order.etat === 'L' ? 'Livrée' : (order.etat === 'NV' ? 'Non Validée' : order.etat === 'P' ? 'Programmée' : order.etat === 'V' ? 'Validée' : order.etat)} */}
                           </a>
                         </td>
                         <td>
