@@ -148,3 +148,13 @@ exports.getCountRupture = async (req, res) => {
         res.status(500).json({ message: error.message })
     }
 }
+
+exports.getCountProd = async (req, res) => {
+    try {
+        const count = await Produit.findAndCountAll({});
+        res.json({ count })
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}

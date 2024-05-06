@@ -16,10 +16,12 @@ exports.getAllCommandes = async (req, res) => {
 }
 
 exports.createCommande = async (req, res) => {
+    const etat = "NV"; // Non validée par défaut
     const { dateCommande, idFournisseur, codeCommande } = req.body;
     try {
-        const commande = await Commande.create({ dateCommande, idFournisseur, codeCommande });
-        res.status(201).json(commande);
+        const commande = await Commande.create({ dateCommande, idFournisseur, codeCommande, etat });
+        // res.status(201).json(commande);
+        res.status(201).json({ id: commande.id, ...commande._doc }); // Ajouter l'ID dans la réponse
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
@@ -28,7 +30,12 @@ exports.createCommande = async (req, res) => {
 exports.getCommandeById = async (req, res) => {
     const { id } = req.params;
     try {
-        const commande = await Commande.findByPk(id);
+        const commande = await Commande.findByPk(id, {
+            include : {
+                model : Fournisseur,
+                attributes : ['nom']
+            }
+        });
         if (!commande) return res.status(404).json({ message: "La commande n'existe pas!" });
         res.status(200).json(commande);
     } catch (error) {

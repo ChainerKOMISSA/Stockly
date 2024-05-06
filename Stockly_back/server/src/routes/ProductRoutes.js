@@ -5,6 +5,7 @@ router.get('/', productController.getAllProducts);
 router.get('/liquidation', productController.getLiquidation);
 router.get('/rupture', productController.getRupture);
 router.get('/countrupture', productController.getCountRupture);
+router.get('/count', productController.getCountProd);
 router.post('/', productController.createProduct);
 router.get('/:id',  productController.getProductById);
 router.put('/:id', productController.updateProductById);

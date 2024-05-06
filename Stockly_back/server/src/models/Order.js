@@ -16,6 +16,10 @@ const Commande = sequelize.define('Commande', {
     codeCommande: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    etat: {
+        type: DataTypes.STRING,
+        allowNull: false
     }
 });
 
