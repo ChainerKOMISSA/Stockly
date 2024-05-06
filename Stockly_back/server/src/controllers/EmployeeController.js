@@ -81,7 +81,6 @@ exports.updateEmployeById = async (req, res) => {
 exports.updateEmployeLoginById = async (req, res) => {
     const { id } = req.params;
     const { username, motdepasse } = req.body;
-    // Cryptage du mot de passe
     const hashedPassword = await bcrypt.hash(motdepasse, 10);
 
     try {
@@ -105,5 +104,25 @@ exports.deleteEmployeById = async (req, res) => {
     }
     catch (error) {
         res.status(500).json({ message: error.message });
+    }
+}
+
+exports.verifyEmploye = async (req, res) => {
+    const { username, motdepasse } = req.body;
+    try {
+        const employe = await Employe.findOne({ username: username });
+        if (employe) {
+            const passwordMatch = await bcrypt.compare(motdepasse, employe.motdepasse);
+            if (passwordMatch) {
+                return res.status(200).json({ success: true, message: "Connexion réussie" });
+            }
+            else {
+                return res.status(401).json({ success: false, message: "Mot de passe incorrect" });
+            }
+        } else {
+            return res.status(401).json({ success: false, message: "Utilisateur inexistant" });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
     }
 }

@@ -9,10 +9,7 @@ exports.getAllProducts = async (req, res) => {
             include: {
                 model: Categorie,
                 attributes: ['id', 'libelle']
-            },
-            // order: [
-            //     ['libelle', 'DESC']
-            // ]
+            }
         });
         res.json(produits)
     }
@@ -63,6 +60,25 @@ exports.updateProductById = async (req, res) => {
         res.status(500).json({ message: error.message })
     }
 }
+
+exports.updateProductQuantityById = async (req, res) => {
+    const { id } = req.params;
+    const { quantitySold } = req.body; // Modifier pour correspondre à la structure de données envoyée depuis le frontend
+    try {
+        const produit = await Produit.findByPk(id);
+        if (!produit) return res.status(404).json({ message: "Le produit n'existe pas!" });
+
+        // Décrémenter la quantité vendue de la quantité actuelle du produit
+        const newQuantity = produit.quantiteStock - quantitySold;
+
+        // Mettre à jour la quantité du produit avec la nouvelle quantité calculée
+        await produit.update({ quantiteStock: newQuantity });
+
+        res.status(200).json({ message: "Produit modifié avec succès" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
 exports.deleteProductById = async (req, res) => {
     const { id } = req.params;

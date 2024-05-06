@@ -8,6 +8,7 @@ router.get('/countrupture', productController.getCountRupture);
 router.post('/', productController.createProduct);
 router.get('/:id',  productController.getProductById);
 router.put('/:id', productController.updateProductById);
+router.patch('/:id', productController.updateProductQuantityById);
 router.delete('/:id', productController.deleteProductById);
 
 module.exports = {productRouter : router };
