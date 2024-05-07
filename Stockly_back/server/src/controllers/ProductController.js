@@ -82,34 +82,32 @@ exports.updateProductQuantityById = async (req, res) => {
 };
 
 exports.updateProductQuantityAfterOrder = async (req, res) => {
-    // const { id } = req.params;
-    const { produits } = req.body; // Modifier pour correspondre à la structure de données envoyée depuis le frontend
-    let listeProduits = [];
-    for (let produit in produits) {
-        listeProduits.push({
-            id: produit.id,
-            quantite: produit.quantite
-        })
-    }
+    const { produits } = req.body;
     try {
-        // const produit = await Produit.findByPk(id);
-        const produit = await sequelize.query('UPDATE produits SET quantiteStock = ? WHERE id = ?', {
-            type : QueryTypes.UPDATE,
-            attributes : [listeProduits.quantite, listeProduits.id]
-        })
-        if (!produit) return res.status(404).json({ message: "Le produit n'existe pas!" });
+        for (let produit of produits) {
+            const { idProduit, quantite } = produit;
 
-        // Décrémenter la quantité vendue de la quantité actuelle du produit
-        const newQuantity = produit.quantiteStock + quantite;
+            try {
+                const product = await Produit.findByPk(idProduit);
 
-        // Mettre à jour la quantité du produit avec la nouvelle quantité calculée
-        await produit.update({ quantiteStock: newQuantity });
+                if (!product) {
+                    return res.status(404).json({ message: "Le produit n'existe pas!" });
+                }
 
-        res.status(200).json({ message: "Produit modifié avec succès" });
+                const newQuantity = product.quantiteStock + quantite;
+
+                await product.update({ quantiteStock: newQuantity });
+            } catch (error) {
+                return res.status(500).json({ message: `Erreur lors de la mise à jour du produit avec l'ID ${id}: ${error.message}` });
+            }
+        }
+
+        res.status(200).json({ message: "Produits modifiés avec succès" });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
+
 
 exports.deleteProductById = async (req, res) => {
     const { id } = req.params;
