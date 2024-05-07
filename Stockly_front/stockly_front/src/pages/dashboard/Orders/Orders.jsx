@@ -371,6 +371,7 @@ function Orders() {
                     <th className="min-w-150px">Date de la commande</th>
                     <th className="min-w-200px">Fournisseur</th>
                     <th className="min-w-200px">Etat de la commande</th>
+                    <th className="min-w-200px">Produits ajoutés au stock?</th>
                     <th className="min-w-100px text-end">Actions</th>
                   </tr>
                 </thead>
@@ -403,8 +404,10 @@ function Orders() {
                                     order.etat // Si aucun des cas ne correspond, affiche simplement la valeur
                               }
                             </div>
-                            {/* {order.etat === 'L' ? 'Livrée' : (order.etat === 'NV' ? 'Non Validée' : order.etat === 'P' ? 'Programmée' : order.etat === 'V' ? 'Validée' : order.etat)} */}
                           </a>
+                        </td>
+                        <td>
+                          <a className="text-gray-900 fw-bold text-hover-primary fs-6">{order.addToStock ? "Oui" : "Non"}</a>
                         </td>
                         <td>
                           <div className="d-flex justify-content-end flex-shrink-0">

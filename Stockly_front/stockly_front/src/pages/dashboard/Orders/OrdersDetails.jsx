@@ -18,23 +18,24 @@ const OrdersDetails = () => {
         fetch(`${API_URL}/commandes/${id}`)
             .then(response => response.json())
             .then(data => {
-                setOrdersDetails(data)
-                console.log(orderdetails);
+                setOrdersDetails(data);
+                console.log(data); // Affiche les données récupérées de la commande dans la console
             })
             .catch(error => {
-                console.error('Erreur lors de la récupération des détails des commandes: ', error)
-            })
+                console.error('Erreur lors de la récupération des détails des commandes: ', error);
+            });
 
         fetch(`${API_URL}/produitcommande/${id}`)
             .then(response => response.json())
             .then(data2 => {
-                setListeProduits(data2)
-                // console.log(listeproduits);
+                setListeProduits(data2);
+                console.log(data2); // Affiche les données récupérées des produits de la commande dans la console
             })
             .catch(error => {
-                console.error('Erreur lors de la récupération des détails des produits commandés: ', error)
-            })
+                console.error('Erreur lors de la récupération des détails des produits commandés: ', error);
+            });
     }, [id]);
+
 
     function getMontantTotal(listeproduits) {
         if (listeproduits && listeproduits.length > 0) {
@@ -89,12 +90,13 @@ const OrdersDetails = () => {
             confirmButtonText: "Oui, ajouter"
         }).then((result) => {
             if (result.isConfirmed) {
-                addToStock(id, etat, produits);
+                addProductsToStock(id, etat, produits);
             }
         });
     }
 
-    const addToStock = async (id, etat, produits) => {
+    const addProductsToStock = async (id, etat, produits) => {
+        console.log("Produits à ajouter au stock", produits);
         if (etat === "L") {
             try {
                 const response = await fetch(`${API_URL}/produits`, {
@@ -102,7 +104,7 @@ const OrdersDetails = () => {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({produits}),
+                    body: JSON.stringify({ produits }),
                 });
                 if (response.ok) {
                     const response2 = await fetch(`${API_URL}/commandes/stock/${id}`, {
@@ -110,7 +112,7 @@ const OrdersDetails = () => {
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({ addToStock: 1 }),
+                        body: JSON.stringify({ addToStock: true }),
                     });
 
                     if (response2.ok) {
@@ -127,8 +129,6 @@ const OrdersDetails = () => {
             } catch (error) {
                 failureAlert(error)
             }
-        } else if (addToStock === true) {
-            failureAlert("Cette commande a déjà été ajoutée au stock!");
         } else {
             failureAlert("Cette commande n'a pas encore été livrée!");
         }
@@ -234,87 +234,85 @@ const OrdersDetails = () => {
                                 </div>
                                 <div className="separator separator-dashed my-3"></div>
                                 <div id="kt_customer_view_details" className="collapse show">
-                                    {
-                                        orderdetails ? (
-                                            <>
-                                                <div className="py-5 fs-6">
-                                                    <div className={`badge d-inline ${orderdetails.etat === 'NV' ? 'badge-light-danger' :
-                                                        orderdetails.etat === 'V' ? 'badge-light-success' :
-                                                            orderdetails.etat === 'L' ? 'badge-light-info' :
-                                                                orderdetails.etat === 'P' ? 'badge-light-warning' :
-                                                                    ''
-                                                        }`}>
-                                                        {orderdetails.etat === 'NV' ? 'Non validée' :
-                                                            orderdetails.etat === 'V' ? 'Validée' :
-                                                                orderdetails.etat === 'L' ? 'Livrée' :
-                                                                    orderdetails.etat === 'P' ? 'Programmée' :
-                                                                        orderdetails.etat
-                                                        }
-                                                    </div>
-                                                    <div className="fw-bold mt-5">Date</div>
-                                                    <div className="text-gray-600">{formatDate(orderdetails.dateCommande)}</div>
-                                                    <div className="fw-bold mt-5">Fournisseur</div>
-                                                    <div className="text-gray-600">{orderdetails.Fournisseur.nom}</div>
-                                                    <div className="fw-bold mt-5">Commande ajoutée au stock</div>
-                                                    <div className="text-gray-600">{orderdetails.addToStock === true ? "Oui" : "Non"}</div>
+                                    {orderdetails ? (
+                                        <>
+                                            <div className="py-5 fs-6">
+                                                <div className={`badge d-inline ${orderdetails.etat === 'NV' ? 'badge-light-danger' :
+                                                    orderdetails.etat === 'V' ? 'badge-light-success' :
+                                                        orderdetails.etat === 'L' ? 'badge-light-info' :
+                                                            orderdetails.etat === 'P' ? 'badge-light-warning' :
+                                                                ''}`}>
+                                                    {orderdetails.etat === 'NV' ? 'Non validée' :
+                                                        orderdetails.etat === 'V' ? 'Validée' :
+                                                            orderdetails.etat === 'L' ? 'Livrée' :
+                                                                orderdetails.etat === 'P' ? 'Programmée' :
+                                                                    orderdetails.etat}
                                                 </div>
+                                                <div className="fw-bold mt-5">Date</div>
+                                                <div className="text-gray-600">{formatDate(orderdetails.dateCommande)}</div>
+                                                <div className="fw-bold mt-5">Fournisseur</div>
+                                                <div className="text-gray-600">{orderdetails.Fournisseur.nom}</div>
+                                                <div className="fw-bold mt-5">Commande ajoutée au stock</div>
+                                                <div className="text-gray-600">{orderdetails.addToStock ? "Oui" : "Non"}</div>
+                                            </div>
 
-                                                <div className="modal fade" id="kt_modal_update_customer" tabIndex="-1" aria-hidden="true" >
-                                                    <div className="modal-dialog modal-dialog-centered mw-600px">
-                                                        <div className="modal-content">
-                                                            <div className="modal-header pb-0 border-0 justify-content-end">
-                                                                <div className="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
-                                                                    <i className="ki-outline ki-cross fs-1"></i>
-                                                                </div>
+
+                                            <div className="modal fade" id="kt_modal_update_customer" tabIndex="-1" aria-hidden="true" >
+                                                <div className="modal-dialog modal-dialog-centered mw-600px">
+                                                    <div className="modal-content">
+                                                        <div className="modal-header pb-0 border-0 justify-content-end">
+                                                            <div className="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                                                                <i className="ki-outline ki-cross fs-1"></i>
                                                             </div>
-                                                            <div className="modal-body scroll-y pt-0 pb-15">
-                                                                <div className="mw-lg-400px mx-auto">
-                                                                    <div className="mb-13 text-center">
-                                                                        <h1 className="mb-3">Modifier l'état de la commande</h1>
-                                                                        <div className="text-muted fw-semibold fs-5">Choisissez le nouvel état de la commande.
+                                                        </div>
+                                                        <div className="modal-body scroll-y pt-0 pb-15">
+                                                            <div className="mw-lg-400px mx-auto">
+                                                                <div className="mb-13 text-center">
+                                                                    <h1 className="mb-3">Modifier l'état de la commande</h1>
+                                                                    <div className="text-muted fw-semibold fs-5">Choisissez le nouvel état de la commande.
+                                                                    </div>
+                                                                </div>
+                                                                <form id="kt_ecommerce_settings_general_form" className="form">
+                                                                    <div className="fv-row mb-7">
+                                                                        <label className="fs-6 fw-semibold form-label mt-3">
+                                                                            <span className="required">Etat de la commande</span>
+                                                                            <span className="ms-1" data-bs-toggle="tooltip" title="Choisissez le fournisseur">
+                                                                                <i className="ki-outline ki-information fs-7"></i>
+                                                                            </span>
+                                                                        </label>
+                                                                        <div className="w-100">
+                                                                            <select
+                                                                                id="kt_ecommerce_select2_country"
+                                                                                className="form-select form-select-solid"
+                                                                                data-kt-ecommerce-settings-type="select2_flags"
+                                                                                data-placeholder="Sélectionnez..."
+                                                                                name="etat"
+                                                                                onChange={handleNewState}
+                                                                            >
+                                                                                <option value="">Sélectionnez...</option>
+                                                                                <option value="NV" selected={orderdetails.etat === 'NV'}>Non validée</option>
+                                                                                <option value="V" selected={orderdetails.etat === 'V'}>Validée</option>
+                                                                                <option value="P" selected={orderdetails.etat === 'P'}>Programmée</option>
+                                                                            </select>
                                                                         </div>
                                                                     </div>
-                                                                    <form id="kt_ecommerce_settings_general_form" className="form">
-                                                                        <div className="fv-row mb-7">
-                                                                            <label className="fs-6 fw-semibold form-label mt-3">
-                                                                                <span className="required">Etat de la commande</span>
-                                                                                <span className="ms-1" data-bs-toggle="tooltip" title="Choisissez le fournisseur">
-                                                                                    <i className="ki-outline ki-information fs-7"></i>
-                                                                                </span>
-                                                                            </label>
-                                                                            <div className="w-100">
-                                                                                <select
-                                                                                    id="kt_ecommerce_select2_country"
-                                                                                    className="form-select form-select-solid"
-                                                                                    data-kt-ecommerce-settings-type="select2_flags"
-                                                                                    data-placeholder="Sélectionnez..."
-                                                                                    name="etat"
-                                                                                    onChange={handleNewState}
-                                                                                >
-                                                                                    <option value="">Sélectionnez...</option>
-                                                                                    <option value="NV" selected={orderdetails.etat === 'NV'}>Non validée</option>
-                                                                                    <option value="V" selected={orderdetails.etat === 'V'}>Validée</option>
-                                                                                    <option value="P" selected={orderdetails.etat === 'P'}>Programmée</option>
-                                                                                </select>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div className="separator mb-6"></div>
-                                                                        <div className="d-flex justify-content-end">
-                                                                            <button type="reset" data-kt-contacts-type="cancel" className="btn btn-light me-3">Annuler</button>
-                                                                            <button className="btn btn-primary" onClick={() => handleSaveEtat(id)}>
-                                                                                <span className="indicator-label">Enregistrer le nouvel état</span>
-                                                                            </button>
-                                                                        </div>
-                                                                    </form>
-                                                                </div>
+                                                                    <div className="separator mb-6"></div>
+                                                                    <div className="d-flex justify-content-end">
+                                                                        <button type="reset" data-kt-contacts-type="cancel" className="btn btn-light me-3">Annuler</button>
+                                                                        <button className="btn btn-primary" onClick={() => handleSaveEtat(id)}>
+                                                                            <span className="indicator-label">Enregistrer le nouvel état</span>
+                                                                        </button>
+                                                                    </div>
+                                                                </form>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </>
-                                        ) : (
-                                            <p>Chargement des détails de la commande...</p>
-                                        )
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <p>Chargement des détails de la commande...</p>
+                                    )
                                     }
                                 </div>
                             </div>
@@ -329,31 +327,31 @@ const OrdersDetails = () => {
                                             <h3>Liste des produits</h3>
                                         </div>
                                         <div className="card-toolbar align-items-center gap-2 gap-lg-3">
-                                            {
-                                                orderdetails ? (
-                                                    <>
-                                                        <button type="button" className="btn btn-sm btn-flex btn-light-info" onClick={() => confirmDelivery(orderdetails.id, orderdetails.etat)}>
-                                                            <i className="ki-outline ki-delivery fs-3"></i>Enregistrer la livraison
-                                                        </button>
-                                                        {
-                                                            listeproduits ? (
-                                                                <>
-                                                                    <button type="button" className="btn btn-sm btn-flex btn-light-primary" onClick={() => confirmAddToStock(orderdetails.id, orderdetails.etat, orderdetails.addToStock, listeproduits)}>
-                                                                        <i className="ki-outline ki-plus fs-3"></i>Ajouter au stock
-                                                                    </button>
-                                                                </>
-
-                                                            ) : (
-                                                                <p>Chargement des détails de la commande...</p>
-                                                            )
-                                                        }
-                                                    </>
-
-                                                ) : (
-                                                    <p>Chargement des détails de la commande...</p>
-                                                )
-                                            }
+                                            {orderdetails ? (
+                                                <>
+                                                    <button type="button" className="btn btn-sm btn-flex btn-light-info" onClick={() => confirmDelivery(orderdetails.id, orderdetails.etat)}>
+                                                        <i className="ki-outline ki-delivery fs-3"></i>Enregistrer la livraison
+                                                    </button>
+                                                    {listeproduits ? (
+                                                        <>
+                                                            <button
+                                                                type="button"
+                                                                className="btn btn-sm btn-flex btn-light-primary"
+                                                                onClick={() => confirmAddToStock(orderdetails.id, orderdetails.etat, listeproduits)}
+                                                                disabled={orderdetails.addToStock}
+                                                            >
+                                                                <i className="ki-outline ki-plus fs-3"></i>Ajouter au stock
+                                                            </button>
+                                                        </>
+                                                    ) : (
+                                                        <p>Chargement des détails de la commande...</p>
+                                                    )}
+                                                </>
+                                            ) : (
+                                                <p>Chargement des détails de la commande...</p>
+                                            )}
                                         </div>
+
                                     </div>
                                     <div className="card-body pt-0 pb-5">
                                         <table className="table align-middle table-row-dashed gy-5" id="kt_table_customers_payment">
@@ -367,23 +365,21 @@ const OrdersDetails = () => {
                                                 </tr>
                                             </thead>
                                             <tbody className="fs-6 fw-semibold text-gray-600">
-                                                {
-                                                    listeproduits ? (
-                                                        listeproduits.map((produit, index) => (
-                                                            <tr key={index}>
-                                                                <td>{index + 1}</td>
-                                                                <td>{produit.Produit.nom}</td>
-                                                                <td>{produit.prixAchat}</td>
-                                                                <td>{produit.quantite}</td>
-                                                                <td id='montant'>{produit.prixAchat * produit.quantite}</td>
-                                                            </tr>
-                                                        ))
-                                                    ) : (
-                                                        <tr>
-                                                            <td colSpan="4">Aucun produit dans cette vente.</td>
+                                                {listeproduits ? (
+                                                    listeproduits.map((produit, index) => (
+                                                        <tr key={index}>
+                                                            <td>{index + 1}</td>
+                                                            <td>{produit.Produit.nom}</td>
+                                                            <td>{produit.prixAchat}</td>
+                                                            <td>{produit.quantite}</td>
+                                                            <td id='montant'>{produit.prixAchat * produit.quantite}</td>
                                                         </tr>
-                                                    )
-                                                }
+                                                    ))
+                                                ) : (
+                                                    <tr>
+                                                        <td colSpan="4">Aucun produit dans cette vente.</td>
+                                                    </tr>
+                                                )}
                                                 <tr>
                                                     <td className="fs-4 fw-bold text-600 text-end" colSpan={5}>Total : {getMontantTotal(listeproduits)} FCFA</td>
                                                 </tr>
