@@ -5,7 +5,7 @@ import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAler
 import Swal from 'sweetalert2'
 import { getCurrentDate } from '../../../helpers/CalendarControl'
 import { formatDate } from '../../../helpers/DateFormat'
-
+import { useUser } from '../../UserContext'
 
 
 function Orders() {
@@ -19,6 +19,11 @@ function Orders() {
     dateCommande: getCurrentDate(),
     codeCommande: "",
   });
+
+  const { userData } = useUser();
+
+  console.log(userData);
+
 
 
 
@@ -399,9 +404,9 @@ function Orders() {
                               }`}>
                               {order.etat === 'NV' ? 'Non validée' :
                                 order.etat === 'V' ? 'Validée' :
-                                order.etat === 'L' ? 'Livrée' :
-                                  order.etat === 'P' ? 'Programmée' :
-                                    order.etat // Si aucun des cas ne correspond, affiche simplement la valeur
+                                  order.etat === 'L' ? 'Livrée' :
+                                    order.etat === 'P' ? 'Programmée' :
+                                      order.etat // Si aucun des cas ne correspond, affiche simplement la valeur
                               }
                             </div>
                           </a>

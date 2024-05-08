@@ -18,32 +18,37 @@ import SalesDetails from './pages/dashboard/Sales/SalesDetails';
 import ListeProduitsGenerator from './pages/dashboard/Products/ListeProduitsGenerator';
 import Profil from './pages/dashboard/Employees/Profil';
 import OrdersDetails from './pages/dashboard/Orders/OrdersDetails';
+import { UserProvider } from './pages/UserContext';
+
 
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="products/liste" element={<ListeProduitsGenerator />} />
-        <Route path="/" element={<Home />}>
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="products" element={<Products />} />
-          <Route path="categories" element={<Categories />} />
-          <Route path="sales" element={<Sales />} />
-          <Route path='sales/:id' element={<SalesDetails />} />
-          <Route path="orders" element={<Orders />} />
-          <Route path="orders/:id" element={<OrdersDetails />} />
-          <Route path="deliveries" element={<Deliveries />} />
-          <Route path="suppliers" element={<Suppliers />} />
-          <Route path="employees" element={<Employees />} />
-          <Route path="incidents" element={<Incidents />} />
-          <Route path="depenses" element={<Depenses />} />
-          <Route path="liquidation" element={<Liquidation />} />
-          <Route path="rupture" element={<Rupture />} />
-          <Route path="profil" element={<Profil />} />
-        </Route>
-      </Routes>
+      <UserProvider>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="products/liste" element={<ListeProduitsGenerator />} />
+          <Route path="/" element={<Home />}>
+            <Route index element={<Dashboard />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="products" element={<Products />} />
+            <Route path="categories" element={<Categories />} />
+            <Route path="sales" element={<Sales />} />
+            <Route path='sales/:id' element={<SalesDetails />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="orders/:id" element={<OrdersDetails />} />
+            <Route path="deliveries" element={<Deliveries />} />
+            <Route path="suppliers" element={<Suppliers />} />
+            <Route path="employees" element={<Employees />} />
+            <Route path="incidents" element={<Incidents />} />
+            <Route path="depenses" element={<Depenses />} />
+            <Route path="liquidation" element={<Liquidation />} />
+            <Route path="rupture" element={<Rupture />} />
+            <Route path="profil" element={<Profil />} />
+          </Route>
+        </Routes>
+      </UserProvider>
     </BrowserRouter>
   );
 }

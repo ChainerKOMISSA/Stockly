@@ -3,7 +3,6 @@ import { API_URL } from '../../../components/constantes'
 import { useNavigate } from 'react-router-dom'
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../../components/alerts'
 import Swal from 'sweetalert2'
-import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 
 

@@ -4,6 +4,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../../components/alerts'
 import { getCurrentDate } from '../../../helpers/CalendarControl'
 import { formatDate } from '../../../helpers/DateFormat'
+import { useUser } from '../../UserContext'
 
 
 function Sales() {
@@ -19,6 +20,9 @@ function Sales() {
   });
 
   const [recherche, setRecherche] = useState('');
+  const { userData } = useUser();
+
+  console.log(userData);
 
 
   // Fonction de gestion du changement de recherche

@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/img/logo.png'
 import avatar from '../assets/img/profile-img.jpg'
 
-
 const Header = () => {
     const navigate = useNavigate();
     const [activeMenu, setActiveMenu] = useState("");
@@ -99,84 +98,24 @@ const Header = () => {
                                 </div>
                                 {/*end::Menu holder*/}
                             </div>
-                            {/*end::Menu wrapper*/}
-                            {/*begin::Navbar*/}
                             <div className="app-navbar flex-shrink-0">
-                                {/*begin::User menu*/}
-                                <div className="app-navbar-item ms-2 ms-md-5 position-relative" id="kt_header_user_menu_toggle">
-                                    <div onClick={toggleModal} className="cursor-pointer symbol symbol-35px symbol-md-40px">
-                                        <img className="symbol symbol-35px symbol-md-40px" src={avatar} alt="user" />
+                                <div className="app-navbar-item ms-2 ms-md-5 position-relative">
+                                    <div onClick={toggleModal} hidden={false} className="cursor-pointer symbol symbol-35px symbol-md-40px">
+                                        <i className="ki-outline ki-sun text-gray-500 fs-1"></i>
                                     </div>
-                                    {isModalOpen && (
-                                        <div className="modal fade show position-relative"  tabIndex="-1" role="dialog" style={{ display: 'flex', flexDirection : 'column', height : '300%', marginTop : '120%'}}>
-                                            <div className="modal-dialog" role="document" style={{ maxWidth: '300px' }}>
-                                                <div className="modal-content">
-                                                    <div className="modal-body">
-                                                        <div className="menu-item px-3">
-                                                            <div className="menu-content d-flex align-items-center px-3">
-                                                                <div className="symbol symbol-50px me-5">
-                                                                    <img alt="Logo" src={avatar} />
-                                                                </div>
-                                                                <div className="d-flex flex-column">
-                                                                    <div className="fw-bold d-flex align-items-center fs-5">Max Smith
-                                                                        <span className="badge badge-light-success fw-bold fs-8 px-2 py-1 ms-2">Pro</span></div>
-                                                                    <a className="fw-semibold text-muted text-hover-primary fs-7">max@kt.com</a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="separator my-2"></div>
-                                                        <div className="menu-item px-5">
-                                                            <a href="/profil" className="menu-link px-5">Mon profil</a>
-                                                        </div>
-                                                        <div className="menu-item px-5">
-                                                            <a href="#" className="menu-link px-5">
-                                                                <span className="menu-text">Mes ventes</span>
-                                                                <span className="menu-badge">
-                                                                    <span className="badge badge-light-danger badge-circle fw-bold fs-7">3</span>
-                                                                </span>
-                                                            </a>
-                                                        </div>
-                                                        <div className="separator my-2"></div>
-                                                        <div className="menu-item px-5" data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-placement="left-start" data-kt-menu-offset="-15px, 0">
-                                                            <a href="#" className="menu-link px-5">
-                                                                <span className="menu-title position-relative">Mode
-                                                                    <span className="ms-5 position-absolute translate-middle-y top-50 end-0">
-                                                                        <i className="ki-outline ki-night-day theme-light-show fs-2"></i>
-                                                                        <i className="ki-outline ki-moon theme-dark-show fs-2"></i>
-                                                                    </span></span>
-                                                            </a>
-                                                            <div className="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-title-gray-700 menu-icon-gray-500 menu-active-bg menu-state-color fw-semibold py-4 fs-base w-150px" data-kt-menu="true" data-kt-element="theme-mode-menu">
-                                                                <div className="menu-item px-3 my-0">
-                                                                    <a href="#" className="menu-link px-3 py-2" data-kt-element="mode" data-kt-value="light">
-                                                                        <span className="menu-icon" data-kt-element="icon">
-                                                                            <i className="ki-outline ki-night-day fs-2"></i>
-                                                                        </span>
-                                                                        <span className="menu-title">Clair</span>
-                                                                    </a>
-                                                                </div>
-                                                                <div className="menu-item px-3 my-0">
-                                                                    <a href="#" className="menu-link px-3 py-2" data-kt-element="mode" data-kt-value="dark">
-                                                                        <span className="menu-icon" data-kt-element="icon">
-                                                                            <i className="ki-outline ki-moon fs-2"></i>
-                                                                        </span>
-                                                                        <span className="menu-title">Sombre</span>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="menu-item px-5">
-                                                            <a href="#" className="menu-link px-5">Me déconnecter</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
+                                </div>
+                                <div className="app-navbar-item ms-2 ms-md-5 position-relative">
+                                    <div onClick={toggleModal} hidden = {true} className="cursor-pointer symbol symbol-35px symbol-md-40px">
+                                        <i className="ki-outline ki-moon text-gray-500 fs-1"></i>
+                                    </div>
+                                </div>
+                                <div className="app-navbar-item ms-2 ms-md-5 position-relative">
+                                    <div onClick={toggleModal} className="cursor-pointer symbol symbol-35px symbol-md-40px">
+                                        <i className="ki-outline ki-entrance-left text-danger fs-1"></i>
+                                    </div>
                                 </div>
                             </div>
-                            {/*end::Navbar*/}
                         </div>
-                        {/*end::Header primary*/}
                     </div>
                     {/*end::Header primary container*/}
                 </div>

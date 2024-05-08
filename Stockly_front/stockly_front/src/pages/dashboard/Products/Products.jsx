@@ -7,6 +7,9 @@ import { formatDate, formatDate2 } from '../../../helpers/DateFormat'
 import Swal from 'sweetalert2'
 import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
 import ListeProduitsGenerator from './ListeProduitsGenerator'
+import ReactPaginate from 'react-paginate'
+
+
 
 function Products() {
   const navigate = useNavigate();
@@ -15,8 +18,24 @@ function Products() {
   const [formData, setFormData] = useState({});
   const [updatedData, setUpdatedData] = useState({});
   const [selectedProduct, setSelectedProduct] = useState({})
+  const [pageNumber, setPageNumber] = useState(0);
+  const produitsPerPage = 10;
+  const pagesVisited = pageNumber * produitsPerPage;
 
+  const pageCount = Math.ceil(produits.length / produitsPerPage);
 
+  const displayProduits = produits
+    .slice(pagesVisited, pagesVisited + produitsPerPage)
+    .map((produit, index) => (
+      <tr key={index}>
+        <td>{index + 1 + pagesVisited}</td>
+        {/* Les autres colonnes */}
+      </tr>
+    ));
+
+  const changePage = ({ selected }) => {
+    setPageNumber(selected);
+  };
 
   useEffect(() => {
     fetch(`${API_URL}/categories`)
@@ -197,6 +216,11 @@ function Products() {
     const selectProduit = document.getElementById('selectProduit').value;
     const table = document.getElementById('tableProduits');
 
+    document.getElementById('btn_all_products').hidden = false;
+    document.getElementById('generer_produits').hidden = true;
+
+
+
     // Nettoyer la table avant d'ajouter de nouvelles lignes
     table.innerHTML = '';
     const titles = document.createElement('tr');
@@ -281,19 +305,29 @@ function Products() {
 
         const cellBoutons = document.createElement('td');
         cellBoutons.className = 'text-end';
-        cellBoutons.innerHTML = `
-        <div class="d-flex justify-content-end flex-shrink-0">
-          <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-            data-bs-toggle="modal" data-bs-target="#kt_modal_edit"
-            onClick={() => handleProductSelection(produit.id)}>
-            <i class="ki-outline ki-pencil fs-2"></i>
-          </a>
-          <a href="#" class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm"
-            onClick={(e) => confirmDelete(produit.id)}>
-            <i class="ki-outline ki-trash fs-2"></i>
-          </a>
-        </div>
-      `;
+
+        const updateButton = document.createElement('button');
+        updateButton.className = 'btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1';
+        updateButton.setAttribute('data-bs-toggle', 'modal');
+        updateButton.setAttribute('data-bs-target', '#kt_modal_edit');
+        updateButton.addEventListener('click', () => handleProductSelection(produit.id));
+
+        const updateIcon = document.createElement('i');
+        updateIcon.className = 'ki-outline ki-pencil fs-2';
+
+        updateButton.appendChild(updateIcon);
+
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'btn btn-icon btn-bg-light btn-active-color-danger btn-sm';
+        deleteButton.addEventListener('click', (e) => confirmDelete(produit.id));
+
+        const deleteIcon = document.createElement('i');
+        deleteIcon.className = 'ki-outline ki-trash fs-2';
+
+        deleteButton.appendChild(deleteIcon);
+
+        cellBoutons.appendChild(updateButton);
+        cellBoutons.appendChild(deleteButton);
         ligne.appendChild(cellBoutons);
 
 
@@ -340,19 +374,28 @@ function Products() {
 
         const cellBoutons = document.createElement('td');
         cellBoutons.className = 'text-end';
-        cellBoutons.innerHTML = `
-        <div class="d-flex justify-content-end flex-shrink-0">
-          <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-            data-bs-toggle="modal" data-bs-target="#kt_modal_edit"
-            onClick={() => handleProductSelection(produit.id)}>
-            <i class="ki-outline ki-pencil fs-2"></i>
-          </a>
-          <a href="#" class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm"
-            onClick={(e) => confirmDelete(produit.id)}>
-            <i class="ki-outline ki-trash fs-2"></i>
-          </a>
-        </div>
-      `;
+        const updateButton = document.createElement('button');
+        updateButton.className = 'btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1';
+        updateButton.setAttribute('data-bs-toggle', 'modal');
+        updateButton.setAttribute('data-bs-target', '#kt_modal_edit');
+        updateButton.addEventListener('click', () => handleProductSelection(produit.id));
+
+        const updateIcon = document.createElement('i');
+        updateIcon.className = 'ki-outline ki-pencil fs-2';
+
+        updateButton.appendChild(updateIcon);
+
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'btn btn-icon btn-bg-light btn-active-color-danger btn-sm';
+        deleteButton.addEventListener('click', (e) => confirmDelete(produit.id));
+
+        const deleteIcon = document.createElement('i');
+        deleteIcon.className = 'ki-outline ki-trash fs-2';
+
+        deleteButton.appendChild(deleteIcon);
+
+        cellBoutons.appendChild(updateButton);
+        cellBoutons.appendChild(deleteButton);
         ligne.appendChild(cellBoutons);
 
 
@@ -399,19 +442,28 @@ function Products() {
 
         const cellBoutons = document.createElement('td');
         cellBoutons.className = 'text-end';
-        cellBoutons.innerHTML = `
-  <div class="d-flex justify-content-end flex-shrink-0">
-    <a href="#" class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-      data-bs-toggle="modal" data-bs-target="#kt_modal_edit"
-      onClick={() => handleProductSelection(produit.id)}>
-      <i class="ki-outline ki-pencil fs-2"></i>
-    </a>
-    <a href="#" class="btn btn-icon btn-bg-light btn-active-color-danger btn-sm"
-      onClick={(e) => confirmDelete(produit.id)}>
-      <i class="ki-outline ki-trash fs-2"></i>
-    </a>
-  </div>
-`;
+        const updateButton = document.createElement('button');
+        updateButton.className = 'btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1';
+        updateButton.setAttribute('data-bs-toggle', 'modal');
+        updateButton.setAttribute('data-bs-target', '#kt_modal_edit');
+        updateButton.addEventListener('click', () => handleProductSelection(produit.id));
+
+        const updateIcon = document.createElement('i');
+        updateIcon.className = 'ki-outline ki-pencil fs-2';
+
+        updateButton.appendChild(updateIcon);
+
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'btn btn-icon btn-bg-light btn-active-color-danger btn-sm';
+        deleteButton.addEventListener('click', (e) => confirmDelete(produit.id));
+
+        const deleteIcon = document.createElement('i');
+        deleteIcon.className = 'ki-outline ki-trash fs-2';
+
+        deleteButton.appendChild(deleteIcon);
+
+        cellBoutons.appendChild(updateButton);
+        cellBoutons.appendChild(deleteButton);
         ligne.appendChild(cellBoutons);
 
         // Ajouter la ligne à la table
@@ -445,6 +497,18 @@ function Products() {
       });
     });
   }
+
+
+  // Grouper les produits par catégorie
+  const produitsParCategorie = produits.reduce((acc, produit) => {
+    const { Categorie, ...rest } = produit;
+    const categorieId = Categorie.id;
+    if (!acc[categorieId]) {
+      acc[categorieId] = { ...Categorie, produits: [] };
+    }
+    acc[categorieId].produits.push(rest);
+    return acc;
+  }, {});
 
 
   return (
@@ -523,15 +587,19 @@ function Products() {
                 <i className="ki-outline ki-plus fs-2"></i>
                 Nouveau produit
               </a>
-              <a className="btn btn-sm btn-light-primary" href='/products/liste'>
+              <a className="btn btn-sm btn-light-primary" href='/products/liste' id='generer_produits' hidden={false}>
                 <i className="ki-outline ki-printer fs-2"></i>
                 Générer la liste des produits
+              </a>
+              <a className="btn btn-sm btn-primary" href='/products' id='btn_all_products' hidden={true}>
+                <i className="ki-outline ki-file fs-2"></i>
+                Afficher tous les produits
               </a>
             </div>
           </div>
           <div className="card-body py-3">
             <div className="table-responsive">
-              <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4" id='tableProduits'>
+              {/* <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4" id='tableProduits'>
                 <thead>
                   <tr className="fw-bold text-muted">
                     <th className="w-25px">#</th>
@@ -563,9 +631,6 @@ function Products() {
                             <div className="d-flex flex-stack mb-2">
                               <span className="text-gray-700 fw-bold text-hover-primary d-block fs-6">{produit.prix}</span>
                             </div>
-                            {/* <div className="progress h-6px w-100">
-                              <div className="progress-bar bg-primary" role="progressbar" style={{ width: "50%" }} aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                            </div> */}
                           </div>
                         </td>
                         <td className="text-end">
@@ -600,7 +665,93 @@ function Products() {
                     ))
                   }
                 </tbody>
+              </table> */}
+
+              <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4" id='tableProduits'>
+                <thead>
+                  <tr className="fw-bold text-muted">
+                    <th className="w-25px">#</th>
+                    {/* <th className="min-w-200px">Catégorie</th> */}
+                    <th className="min-w-300px">Produit</th>
+                    <th className="min-w-100px">Prix (CFA)</th>
+                    <th className="min-w-100px">Quantité</th>
+                    <th className="min-w-100px">Péremption</th>
+                    <th className="min-w-100px text-end">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.values(produitsParCategorie).map((categorie, index) => (
+                    <React.Fragment key={index}>
+                      <tr className="fw-bold text-primary">
+                        <td colSpan="7">{categorie.libelle}</td>
+                      </tr>
+                      {categorie.produits.map((produit, index) => (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          {/* <td>
+                            <div className="d-flex align-items-center">
+                              <div className="d-flex justify-content-start flex-column">
+                                <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{categorie.libelle}</a>
+                              </div>
+                            </div>
+                          </td> */}
+                          <td>
+                            <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{produit.nom}</a>
+                          </td>
+                          <td className="text-end">
+                            <div className="d-flex flex-column w-100 me-2">
+                              <div className="d-flex flex-stack mb-2">
+                                <span className="text-gray-700 fw-bold text-hover-primary d-block fs-6">{produit.prix}</span>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="text-end">
+                            <div className="d-flex flex-column w-100 me-2">
+                              <div className="d-flex flex-stack mb-2">
+                                <span className="text-gray-700 fw-bold text-hover-primary d-block fs-6">{produit.quantiteStock}</span>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="text-end">
+                            <div className="d-flex flex-column w-100 me-2">
+                              <div className="d-flex flex-stack mb-2">
+                                <span className="text-gray-700 fw-bold text-hover-primary d-block fs-6">{formatDate(produit.datePeremption)}</span>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="d-flex justify-content-end flex-shrink-0">
+                              <a href="#"
+                                className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
+                                data-bs-toggle="modal"
+                                data-bs-target="#kt_modal_edit"
+                                onClick={() => handleProductSelection(produit.id)}>
+                                <i className="ki-outline ki-pencil fs-2"></i>
+                              </a>
+                              <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={(e) => confirmDelete(produit.id)}>
+                                <i className="ki-outline ki-trash fs-2"></i>
+                              </a>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </React.Fragment>
+                  ))}
+                </tbody>
               </table>
+
+              <ReactPaginate
+                previousLabel={"Précédent"}
+                nextLabel={"Suivant"}
+                pageCount={pageCount}
+                onPageChange={changePage}
+                containerClassName={"pagination"}
+                previousLinkClassName={"page-link"}
+                nextLinkClassName={"page-link"}
+                disabledClassName={"pagination-disabled"}
+                activeClassName={"pagination-active"}
+              />
+
               {/* Create Product Modal */}
               <div className="modal fade" id="kt_modal_share_earn" tabIndex="-1" aria-hidden="true" >
                 <div className="modal-dialog modal-dialog-centered mw-900px">

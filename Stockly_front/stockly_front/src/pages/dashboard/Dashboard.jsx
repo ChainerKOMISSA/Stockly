@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { API_URL } from '../../components/constantes';
 import { Link } from 'react-router-dom';
-
-
+import { useUser } from '../UserContext';
 
 function Dashboard() {
   const [nbrupture, setNbrupture] = useState([]);
   const [sumdepenses, setSumdepenses] = useState([]);
   const [sumventes, setSumventes] = useState([]);
   const [nbproduits, setNbProduits] = useState([]);
+  const { userData } = useUser();
 
+  console.log(userData);
 
   // Somme des dépenses
   useEffect(() => {
@@ -29,7 +30,6 @@ function Dashboard() {
       .then(response => response.json())
       .then(data => {
         setSumventes(data)
-        console.log(sumventes);
       })
       .catch(error => {
         console.error('Erreur lors de la récupération des statistiques des ventes: ', error)

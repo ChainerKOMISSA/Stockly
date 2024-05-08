@@ -5,7 +5,7 @@ import { formatDate } from '../../../helpers/DateFormat'
 import { getCurrentDate } from '../../../helpers/CalendarControl'
 import { createSuccessAlert, failureAlert } from '../../../components/alerts'
 import Swal from 'sweetalert2'
-
+import { useUser } from '../../UserContext'
 
 const OrdersDetails = () => {
     const navigate = useNavigate()
@@ -13,13 +13,16 @@ const OrdersDetails = () => {
     const [listeproduits, setListeProduits] = useState([])
     const { id } = useParams();
     const [etat, setEtat] = useState({});
+    const { userData } = useUser();
+
+    console.log(userData);
 
     useEffect(() => {
         fetch(`${API_URL}/commandes/${id}`)
             .then(response => response.json())
             .then(data => {
                 setOrdersDetails(data);
-                console.log(data); // Affiche les données récupérées de la commande dans la console
+                // console.log(data); // Affiche les données récupérées de la commande dans la console
             })
             .catch(error => {
                 console.error('Erreur lors de la récupération des détails des commandes: ', error);
@@ -29,7 +32,7 @@ const OrdersDetails = () => {
             .then(response => response.json())
             .then(data2 => {
                 setListeProduits(data2);
-                console.log(data2); // Affiche les données récupérées des produits de la commande dans la console
+                // console.log(data2); // Affiche les données récupérées des produits de la commande dans la console
             })
             .catch(error => {
                 console.error('Erreur lors de la récupération des détails des produits commandés: ', error);

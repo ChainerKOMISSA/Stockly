@@ -1,6 +1,5 @@
 import React from 'react'
-import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { BiGridAlt, BiPackage, BiPlus, BiPurchaseTagAlt, BiBuilding, BiUser, BiUserPlus, BiNotepad, BiArrowFromBottom, BiListPlus, BiCube, BiCart, BiCog, BiCartAdd } from "react-icons/bi";
+import { Outlet } from 'react-router-dom';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Sidebar from '../../components/Sidebar';
