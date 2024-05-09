@@ -5,6 +5,7 @@ import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAler
 import { getCurrentDate } from '../../../helpers/CalendarControl'
 import { formatDate } from '../../../helpers/DateFormat'
 import { useUser } from '../../UserContext'
+import Select from 'react-select'
 
 
 function Sales() {
@@ -23,6 +24,14 @@ function Sales() {
   const { userData } = useUser();
 
   console.log(userData);
+
+  let options = produits.map((produit) => ({
+    value: produit.id,
+    label: produit.nom
+  }));
+
+  const [isClearable, setIsClearable] = useState(true);
+  const [isSearchable, setIsSearchable] = useState(true)
 
 
   // Fonction de gestion du changement de recherche
@@ -69,19 +78,39 @@ function Sales() {
       })
   }, []);
 
-
-  const handleChangeProduit = (e) => {
-    let prod = e.target.value;
-    let prd = produits.find(produit => produit.id == prod)
-    setFormData(
-      {
-        ...formData,
-        id: prd.id,
-        nom: prd.nom,
-        prix: prd.prix
-      }
-    )
+  const [selectedOption, setSelectedOption] = useState(null);
+  const handleSelectChange = (option) => {
+    setSelectedOption(option)
+    handleChangeProduit(option)
   }
+
+  // const handleChangeProduit = (selectedOption) => {
+  //   let prod = selectedOption.value;
+  //   let prd = produits.find(produit => produit.id == prod)
+  //   setFormData(
+  //     {
+  //       ...formData,
+  //       id: prd.id,
+  //       nom: prd.nom,
+  //       prix: prd.prix
+  //     }
+  //   )
+  // }
+
+  const handleChangeProduit = (selectedOption) => {
+    if (selectedOption) {
+      let prod = selectedOption.value;
+      let prd = produits.find((produit) => produit.id == prod);
+      if (prd) {
+        setFormData({
+          ...formData,
+          id: prd.id,
+          nom: prd.nom,
+          prix: prd.prix,
+        });
+      }
+    }
+  };
 
   const registerSale = (e) => {
     const { name, value } = e.target;
@@ -269,24 +298,24 @@ function Sales() {
   }
 
   // Fonction pour décrémenter la quantité du produit dans la base de données
-const decrementProductQuantity = async (productId, quantitySold) => {
-  try {
-    const response = await fetch(`${API_URL}/produits/${productId}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ quantitySold }), // Envoyer la quantité vendue
-    });
+  const decrementProductQuantity = async (productId, quantitySold) => {
+    try {
+      const response = await fetch(`${API_URL}/produits/${productId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ quantitySold }), // Envoyer la quantité vendue
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message); // Lever une erreur en cas de problème avec la requête
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message); // Lever une erreur en cas de problème avec la requête
+      }
+    } catch (error) {
+      throw new Error('Erreur lors de la mise à jour de la quantité du produit: ' + error.message);
     }
-  } catch (error) {
-    throw new Error('Erreur lors de la mise à jour de la quantité du produit: ' + error.message);
-  }
-};
+  };
 
 
   const handleSubmit = async (e) => {
@@ -498,14 +527,28 @@ const decrementProductQuantity = async (productId, quantitySold) => {
                                   </span>
                                 </label>
                                 <div className="w-100">
-                                  <select id="select_produit" className="form-select form-select-solid produit_select" data-control="select2" data-placeholder="Sélectionnez..." onChange={handleChangeProduit} name="nom" required>
+                                  {/* <select id="select_produit" className="form-select form-select-solid produit_select" data-control="select2" data-placeholder="Sélectionnez..." onChange={handleChangeProduit} name="nom" required>
                                     <option value="">Sélectionnez...</option>
                                     {
                                       produits.map((produit, index) => (
                                         <option key={index} value={produit.id} data-prix={produit.prix}>{produit.nom}</option>
                                       ))
                                     }
-                                  </select>
+                                  </select> */}
+                                  <Select
+                                    id="select_produit"
+                                    className="produit_select"
+                                    classNamePrefix="select"
+                                    placeholder="Sélectionnez un produit ..."
+                                    defaultValue={options[0]}
+                                    isClearable={isClearable}
+                                    isSearchable={isSearchable}
+                                    options={options}
+                                    value={selectedOption}
+                                    onChange={(option) => handleSelectChange(option)}
+                                    name="nom"
+                                    required
+                                  />
                                 </div>
                               </div>
                             </div>

@@ -592,7 +592,7 @@ function Products() {
                 Générer la liste des produits
               </a>
               <a className="btn btn-sm btn-primary" href='/products' id='btn_all_products' hidden={true}>
-                <i className="ki-outline ki-file fs-2"></i>
+                <i className="ki-outline ki-document fs-2"></i>
                 Afficher tous les produits
               </a>
             </div>
@@ -696,7 +696,7 @@ function Products() {
                             </div>
                           </td> */}
                           <td>
-                            <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{produit.nom}</a>
+                            <a className="text-gray-900 fw-bold text-hover-primary fs-6">{produit.nom}</a>
                           </td>
                           <td className="text-end">
                             <div className="d-flex flex-column w-100 me-2">
@@ -721,14 +721,14 @@ function Products() {
                           </td>
                           <td>
                             <div className="d-flex justify-content-end flex-shrink-0">
-                              <a href="#"
+                              <a
                                 className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
                                 data-bs-toggle="modal"
                                 data-bs-target="#kt_modal_edit"
                                 onClick={() => handleProductSelection(produit.id)}>
                                 <i className="ki-outline ki-pencil fs-2"></i>
                               </a>
-                              <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={(e) => confirmDelete(produit.id)}>
+                              <a className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={(e) => confirmDelete(produit.id)}>
                                 <i className="ki-outline ki-trash fs-2"></i>
                               </a>
                             </div>
