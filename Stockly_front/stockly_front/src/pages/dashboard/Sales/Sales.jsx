@@ -84,19 +84,6 @@ function Sales() {
     handleChangeProduit(option)
   }
 
-  // const handleChangeProduit = (selectedOption) => {
-  //   let prod = selectedOption.value;
-  //   let prd = produits.find(produit => produit.id == prod)
-  //   setFormData(
-  //     {
-  //       ...formData,
-  //       id: prd.id,
-  //       nom: prd.nom,
-  //       prix: prd.prix
-  //     }
-  //   )
-  // }
-
   const handleChangeProduit = (selectedOption) => {
     if (selectedOption) {
       let prod = selectedOption.value;

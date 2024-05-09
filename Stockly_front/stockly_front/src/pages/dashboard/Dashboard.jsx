@@ -87,67 +87,58 @@ function Dashboard() {
       </div>
 
       <div id="kt_app_content" className="app-content">
-        <div className="row g-5 g-xl-8">
-          <div className="col-xl-4">
+        <div class="row g-5 g-xl-8">
+          <div class="col-xl-3">
             <Link to="/sales">
-              <div className="card bg-light-success card-xl-stretch mb-xl-8 board">
-                <div className="card-body my-3">
-                  <a className="card-title fw-bold text-success fs-5 mb-3 d-block">Ventes réalisées</a>
-                  <div className="py-1">
-                    <span className="text-gray-900 fs-1 fw-bold me-2">{sumventes.somme}</span>
-                    <span className="fw-semibold text-muted fs-7">FCFA</span>
-                  </div>
-                  <div className="progress h-7px bg-success bg-opacity-50 mt-7">
-                    <div className="progress-bar bg-success" role="progressbar" style={{ width: "0%" }} aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
+              <a href="#" class="card bg-light-success hoverable card-xl-stretch mb-xl-8 hover-scale">
+                <div class="card-body">
+                  <i class="ki-outline ki-basket text-success fs-2x ms-n1"></i>
+                  <div class="fw-bold text-gray-900 fs-1 mb-2 mt-5">{sumventes.somme} <span className="fw-semibold text-muted fs-7">FCFA</span></div>
+                  <div class="fw-semibold text-success">Ventes réalisées</div>
                 </div>
-              </div>
+              </a>
             </Link>
           </div>
-          <div className="col-xl-4">
-            <div className="card bg-light-warning card-xl-stretch mb-xl-8 board">
-              <div className="card-body my-3">
-                <a href="#" className="card-title fw-bold text-warning fs-5 mb-3 d-block">Dépenses effectuées</a>
-                <div className="py-1">
-                  <span className="text-gray-900 fs-1 fw-bold me-2">{sumdepenses.somme}</span>
-                  <span className="fw-semibold text-muted fs-7">FCFA</span>
+          <div class="col-xl-3">
+            <Link to="/depenses">
+              <a href="#" class="card bg-light-warning hoverable card-xl-stretch mb-xl-8 hover-scale">
+                <div class="card-body">
+                  <i class="ki-outline ki-chart-line-down text-warning fs-2x ms-n1"></i>
+                  <div class="fw-bold text-gray-900 fs-1 mb-2 mt-5">{sumdepenses.somme} <span className="fw-semibold text-muted fs-7">FCFA</span></div>
+                  <div class="fw-semibold text-warning">Dépenses effectuées</div>
                 </div>
-                <div className="progress h-7px bg-warning bg-opacity-50 mt-7">
-                  <div className="progress-bar bg-warning" role="progressbar" style={{ width: `${sumdepenses.somme}%` }} aria-valuenow="0" aria-valuemin="0" aria-valuemax={`${sumventes.somme}%`}></div>
-                </div>
-              </div>
-            </div>
+              </a>
+            </Link>
           </div>
-          <div className="col-xl-4">
-            <div className="card bg-light-danger card-xl-stretch mb-5 mb-xl-8 board">
-              <div className="card-body my-3">
-                <a href="/rupture" className="card-title fw-bold text-danger fs-5 mb-3 d-block">Alerte stock</a>
-                <div className="py-1">
-                  <span className="text-gray-900 fs-1 fw-bold me-2">{nbrupture.nbRupture}</span>
-                  <span className="fw-semibold text-muted fs-7">produit(s)</span>
+          <div class="col-xl-3">
+            <Link to="/rupture">
+              <a href="#" class="card bg-light-danger hoverable card-xl-stretch mb-xl-8 hover-scale">
+                <div class="card-body">
+                  <i class="ki-outline ki-information-2 text-danger fs-2x ms-n1"></i>
+                  <div class="fw-bold text-gray-900 fs-1 mb-2 mt-5">{nbrupture.nbRupture} <span className="fw-semibold text-muted fs-7">produits</span></div>
+                  <div class="fw-semibold text-danger">Alerte stock</div>
                 </div>
-                <div className="progress h-7px bg-danger bg-opacity-50 mt-7">
-                  <div className="progress-bar bg-danger" role="progressbar" style={{ width: `${nbrupture.nbRupture}%` }} aria-valuenow="0" aria-valuemin="0" aria-valuemax={`${nbproduits.count}%`}></div>
+              </a>
+            </Link>
+          </div>
+          <div class="col-xl-3">
+            <Link to="/liquidation">
+              <a href="#" class="card bg-light-danger hoverable card-xl-stretch mb-xl-8 hover-scale">
+                <div class="card-body">
+                  <i class="ki-outline ki-information-2 text-danger fs-2x ms-n1"></i>
+                  <div class="fw-semibold text-danger fs-1 mb-2 mt-5">Produits à liquider</div>
+                  {/* <div class="fw-semibold text-info">Produits à liquider</div> */}
                 </div>
-              </div>
-            </div>
+              </a>
+            </Link>
           </div>
-          <div className="col-xl-4">
-            <div className="card bg-light-danger card-xl-stretch mb-5 mb-xl-8 board">
-              <div className="card-body my-4">
-                <i className="ki-outline text-danger ki-information-3 fs-2qx"></i> <a href="/liquidation" className="card-title fw-bold text-danger fs-5 mb-3 d-block">Produits à liquider</a>
-                {/* <div className="progress h-7px bg-danger bg-opacity-50 mt-7">
-                  <div className="progress-bar bg-danger" role="progressbar" style={{ width: "0%" }} aria-valuenow="0" aria-valuemin="0" aria-valuemax={`${nbproduits.count}%`}></div>
-                </div> */}
-              </div>
-            </div>
-          </div>
+
         </div>
         {/* <ul className="nav nav-pills nav-pills-custom mb-3">
           <li className="nav-item mb-3 me-3 me-lg-6">
             <a className="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
               <div className="nav-icon">
-              <i className="ki-outline ki-cube-2 text-gray-700 fs-2x"></i>
+                <i className="ki-outline ki-cube-2 text-gray-700 fs-2x"></i>
               </div>
               <span className="nav-text text-gray-700 fw-bold fs-6 lh-1">Produits</span>
             </a>
@@ -155,7 +146,7 @@ function Dashboard() {
           <li className="nav-item mb-3 me-3 me-lg-6">
             <a className="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
               <div className="nav-icon">
-              <i className="ki-outline ki-abstract-28 text-gray-700 fs-2x"></i>
+                <i className="ki-outline ki-abstract-28 text-gray-700 fs-2x"></i>
               </div>
               <span className="nav-text text-gray-700 fw-bold fs-6 lh-1">Catégories</span>
             </a>
@@ -163,7 +154,7 @@ function Dashboard() {
           <li className="nav-item mb-3 me-3 me-lg-6">
             <a className="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
               <div className="nav-icon">
-              <i className="ki-outline ki-basket-ok text-gray-700 fs-2x"></i>
+                <i className="ki-outline ki-basket-ok text-gray-700 fs-2x"></i>
               </div>
               <span className="nav-text text-gray-700 fw-bold fs-6 lh-1">Ventes</span>
             </a>
@@ -171,7 +162,7 @@ function Dashboard() {
           <li className="nav-item mb-3 me-3 me-lg-6">
             <a className="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
               <div className="nav-icon">
-              <i className="ki-outline ki-files-tablet text-gray-700 fs-2x"></i>
+                <i className="ki-outline ki-files-tablet text-gray-700 fs-2x"></i>
               </div>
               <span className="nav-text text-gray-700 fw-bold fs-6 lh-1">Commandes</span>
             </a>
@@ -179,7 +170,7 @@ function Dashboard() {
           <li className="nav-item mb-3 me-3 me-lg-6">
             <a className="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
               <div className="nav-icon">
-              <i className="ki-outline ki-tablet-ok text-gray-700 fs-2x"></i>
+                <i className="ki-outline ki-tablet-ok text-gray-700 fs-2x"></i>
               </div>
               <span className="nav-text text-gray-700 fw-bold fs-6 lh-1">Livraisons</span>
             </a>
@@ -187,7 +178,7 @@ function Dashboard() {
           <li className="nav-item mb-3 me-3 me-lg-6">
             <a className="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
               <div className="nav-icon">
-              <i className="ki-outline ki-delivery-2 text-gray-700 fs-2x"></i>
+                <i className="ki-outline ki-delivery-2 text-gray-700 fs-2x"></i>
               </div>
               <span className="nav-text text-gray-700 fw-bold fs-6 lh-1">Fournisseurs</span>
             </a>
@@ -195,7 +186,7 @@ function Dashboard() {
           <li className="nav-item mb-3 me-3 me-lg-6">
             <a className="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
               <div className="nav-icon">
-              <i className="ki-outline ki-profile-user text-gray-700 fs-2x"></i>
+                <i className="ki-outline ki-profile-user text-gray-700 fs-2x"></i>
               </div>
               <span className="nav-text text-gray-700 fw-bold fs-6 lh-1">Employés</span>
             </a>
@@ -203,7 +194,7 @@ function Dashboard() {
           <li className="nav-item mb-3 me-3 me-lg-6">
             <a className="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
               <div className="nav-icon">
-              <i className="ki-outline ki-wallet text-gray-700 fs-2x"></i>
+                <i className="ki-outline ki-wallet text-gray-700 fs-2x"></i>
               </div>
               <span className="nav-text text-gray-700 fw-bold fs-6 lh-1">Dépenses</span>
             </a>
@@ -211,12 +202,43 @@ function Dashboard() {
           <li className="nav-item mb-3 me-3 me-lg-6">
             <a className="nav-link d-flex justify-content-between flex-column flex-center overflow-hidden w-80px h-85px py-4" data-bs-toggle="pill" href="#kt_stats_widget_1_tab_2">
               <div className="nav-icon">
-              <i className="ki-outline ki-information-3 text-gray-700 fs-2x"></i>
+                <i className="ki-outline ki-information-3 text-gray-700 fs-2x"></i>
               </div>
               <span className="nav-text text-gray-700 fw-bold fs-6 lh-1">Incidents</span>
             </a>
           </li>
         </ul> */}
+
+        <div class="row">
+          <div class="card card-xl-stretch mb-5 mb-xl-8">
+            <div class="card-header border-0 pt-5">
+              <h3 class="card-title align-items-start flex-column">
+                <span class="card-label fw-bold fs-3 mb-1">Ventes réalisées</span>
+                <span class="text-muted fw-semibold fs-7">Plus de ... ventes</span>
+              </h3>
+              <div class="card-toolbar">
+                <select name="" id="" class="btn btn-sm btn-light-primary px-4 me-1">
+                  <option value="1">Janvier</option>
+                  <option value="2">Février</option>
+                  <option value="3">Mars</option>
+                  <option value="4">Avril</option>
+                  <option value="5">Mai</option>
+                  <option value="6">Juin</option>
+                  <option value="7">Juillet</option>
+                  <option value="8">Août</option>
+                  <option value="9">Septembre</option>
+                  <option value="10">Octobre</option>
+                  <option value="11">Novembre</option>
+                  <option value="12">Décembre</option>
+                </select>
+              </div>
+            </div>
+            <div class="card-body">
+              <div id="graphe_ventes" style={{ height: '350px' }}></div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </>
   )

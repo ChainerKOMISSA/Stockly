@@ -6,6 +6,7 @@ import Swal from 'sweetalert2'
 import { getCurrentDate } from '../../../helpers/CalendarControl'
 import { formatDate } from '../../../helpers/DateFormat'
 import { useUser } from '../../UserContext'
+import Select from 'react-select'
 
 
 function Orders() {
@@ -19,12 +20,17 @@ function Orders() {
     dateCommande: getCurrentDate(),
     codeCommande: "",
   });
+  const [isClearable, setIsClearable] = useState(true);
+  const [isSearchable, setIsSearchable] = useState(true)
 
   const { userData } = useUser();
 
   console.log(userData);
 
-
+  let options = produits.map((produit) => ({
+    value: produit.id,
+    label: produit.nom
+  }));
 
 
   useEffect(() => {
@@ -60,17 +66,26 @@ function Orders() {
       })
   }, []);
 
+  const [selectedOption, setSelectedOption] = useState(null);
+  const handleSelectChange = (option) => {
+    setSelectedOption(option)
+    handleChangeProduit(option)
+  }
 
-  const handleChangeProduit = (e) => {
-    let prod = e.target.value;
-    let prd = produits.find(produit => produit.id == prod)
-    setFormData(
-      {
-        ...formData,
-        id: prd.id,
-        nom: prd.nom,
+  const handleChangeProduit = (selectedOption) => {
+    if (selectedOption) {
+      let prod = selectedOption.value;
+      let prd = produits.find(produit => produit.id == prod)
+      if (prd) {
+        setFormData(
+          {
+            ...formData,
+            id: prd.id,
+            nom: prd.nom,
+          }
+        )
       }
-    )
+    }
   }
 
   const registerOrder = (e) => {
@@ -469,7 +484,7 @@ function Orders() {
                                   </span>
                                 </label>
                                 <div className="w-100">
-                                  <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Sélectionnez..." onChange={handleSupplierChange} name="idFournisseur">
+                                  <select id="kt_ecommerce_select2_country" className="form-select form-select-solid" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Sélectionnez..." onChange={handleSupplierChange} name="idFournisseur" required>
                                     <option value="">Sélectionnez...</option>
                                     {
                                       suppliers.map((supplier, index) => (
@@ -497,14 +512,28 @@ function Orders() {
                                   </span>
                                 </label>
                                 <div className="w-100">
-                                  <select id="kt_ecommerce_select2_country" className="form-select form-select-solid produit_select" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Sélectionnez..." onChange={handleChangeProduit} name="nom">
+                                  {/* <select id="kt_ecommerce_select2_country" className="form-select form-select-solid produit_select" data-kt-ecommerce-settings-type="select2_flags" data-placeholder="Sélectionnez..." onChange={handleChangeProduit} name="nom">
                                     <option value="">Sélectionnez...</option>
                                     {
                                       produits.map((produit, index) => (
                                         <option key={index} value={produit.id}>{produit.nom}</option>
                                       ))
                                     }
-                                  </select>
+                                  </select> */}
+                                  <Select
+                                    id="select_produit"
+                                    className="produit_select"
+                                    classNamePrefix="select"
+                                    placeholder="Sélectionnez un produit ..."
+                                    defaultValue={options[0]}
+                                    isClearable={isClearable}
+                                    isSearchable={isSearchable}
+                                    options={options}
+                                    value={selectedOption}
+                                    onChange={(option) => handleSelectChange(option)}
+                                    name="nom"
+                                    required
+                                  />
                                 </div>
                               </div>
                             </div>
