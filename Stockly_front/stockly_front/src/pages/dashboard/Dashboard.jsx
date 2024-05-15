@@ -2,8 +2,9 @@ import React, { useState, useEffect, useContext } from 'react'
 import { API_URL } from '../../components/constantes';
 import { Link } from 'react-router-dom';
 import { useUser } from '../UserContext';
-import { Chart } from 'chart.js';
-import { failureAlert } from '../../components/alerts';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js/auto";
+import { Doughnut, Line, Bar, PolarArea, Pie } from "react-chartjs-2";
+import { failureAlert, infoAlert } from '../../components/alerts';
 
 function Dashboard() {
   const [nbrupture, setNbrupture] = useState([]);
@@ -11,18 +12,14 @@ function Dashboard() {
   const [sumventes, setSumventes] = useState([]);
   const [sumcommandes, setSumCommandes] = useState([]);
   const [nbproduits, setNbProduits] = useState([]);
+  const [nbliquidation, setNbLiquidation] = useState([]);
   const [venteparjour, setVenteparJour] = useState([]);
+  const { userData } = useUser();
+  console.log(userData)
 
-  const dataVentes = {
-    jour1: {
-      'date': '02-04-2024',
-      'nombre': '24'
-    },
-    jour2: {
-      'date': '02-02-2024',
-      'nombre': '4'
-    }
-  }
+  ChartJS.register(ArcElement, Tooltip, Legend);
+
+
 
   // Somme des dépenses
   useEffect(() => {
@@ -66,6 +63,19 @@ function Dashboard() {
       .then(response => response.json())
       .then(data => {
         setNbrupture(data)
+        console.log(nbrupture);
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération des statistiques du nombre des ruptures: ', error)
+      })
+  }, []);
+
+  useEffect(() => {
+    fetch(`${API_URL}/produits/countliquidation`)
+      .then(response => response.json())
+      .then(data => {
+        setNbLiquidation(data)
+        console.log(nbliquidation);
       })
       .catch(error => {
         console.error('Erreur lors de la récupération des statistiques du nombre des ruptures: ', error)
@@ -79,6 +89,7 @@ function Dashboard() {
       .then(response => response.json())
       .then(data => {
         setNbProduits(data)
+        console.log(nbproduits);
       })
       .catch(error => {
         console.error('Erreur lors de la récupération des statistiques du nombre des produits: ', error)
@@ -98,27 +109,6 @@ function Dashboard() {
       return 0; // Returning 0 if any of the data is missing
     }
   }
-
-  // const salesChartCtx = document.getElementById('salesChart').getContext('2d');
-  // const salesChart = new Chart(salesChartCtx, {
-  //   type: 'line',
-  //   data: {
-  //     labels: [], // Labels pour les jours du mois
-  //     datasets: [{
-  //       label: 'Ventes par jour',
-  //       data: [], // Données des ventes par jour
-  //       borderColor: 'rgb(75, 192, 192)',
-  //       tension: 0.1
-  //     }]
-  //   },
-  //   options: {
-  //     scales: {
-  //       y: {
-  //         beginAtZero: true
-  //       }
-  //     }
-  //   }
-  // });
 
   const handleMonthSelect = (month) => {
     const selectedMonth = month.target.value;
@@ -141,7 +131,7 @@ function Dashboard() {
       if (response.ok) {
         const data = await response.json();
         setVenteparJour(data.dataTotal);
-        console.log('vente: ', venteparjour);
+        console.log(venteparjour);
       } else {
         const errorData = await response.json();
         console.log(errorData);
@@ -151,19 +141,23 @@ function Dashboard() {
       console.log(error);
       failureAlert(error.message);
     }
-
-    // Exemple de données factices pour le graphique
-    // const salesData = [100, 150, 200, 250, 300]; // Valeurs des ventes par jour
-
-    // // Mettre à jour les données du graphique
-    // salesChart.data.labels = Array.from({ length: salesData.length }, (_, i) => (i + 1).toString()); // Labels pour les jours du mois
-    // salesChart.data.datasets[0].data = salesData;
-
-    // // Mettre à jour le graphique
-    // salesChart.update();
   }
 
+  let dates = [];
+  let total = [];
+  if (venteparjour) {
+    for (let key in venteparjour) {
+      dates.push(venteparjour[key].DateOfSale);
+      total.push(venteparjour[key].TOTAL)
+    }
+  }
 
+  let produitchart = [];
+  if (nbproduits && nbrupture) {
+    for (let key in nbproduits) {
+      produitchart.push(nbproduits.count);
+    }
+  }
 
 
 
@@ -231,7 +225,7 @@ function Dashboard() {
               <a href="#" className="card bg-light-danger hoverable card-xl-stretch mb-xl-8 hover-scale">
                 <div className="card-body">
                   <i className="ki-outline ki-information-2 text-danger fs-2x ms-n1"></i>
-                  <div className="fw-bold text-gray-900 fs-1 mb-2 mt-5">{nbrupture.nbRupture} <span className="fw-semibold text-muted fs-7">produits</span></div>
+                  <div className="fw-bold text-gray-900 fs-1 mb-2 mt-5">{nbrupture.nbRupture}<span className="fw-semibold text-muted fs-7">produits</span></div>
                   <div className="fw-semibold text-danger">Alerte stock</div>
                 </div>
               </a>
@@ -350,7 +344,7 @@ function Dashboard() {
             <div className="card-header border-0 pt-5">
               <h3 className="card-title align-items-start flex-column">
                 <span className="card-label fw-bold fs-3 mb-1">Ventes réalisées</span>
-                <span className="text-muted fw-semibold fs-7">Plus de ... ventes</span>
+                <span className="text-muted fw-semibold fs-7">Veuillez choisir un mois pour voir les ventes</span>
               </h3>
               <div className="card-toolbar">
                 <div className="input-group mb-5">
@@ -374,67 +368,156 @@ function Dashboard() {
               </div>
             </div>
             <div className="card-body">
-              <div style={{ height: '350px' }}>
-                <canvas id="salesChart" width="400" height="400"></canvas>
-              </div>
+              {
+                venteparjour ? (
+                  // Si des données de vente par jour sont disponibles
+                  <div>
+                    <Line
+                      data={{
+                        labels: dates,
+                        datasets: [
+                          {
+                            label: 'Ventes mensuelles',
+                            data: total
+                          }
+                        ],
+                      }}
+                    />
+                  </div>
+                ) : (
+                  infoAlert("Aucune vente disponible pour ce mois!")
+                )
+              }
             </div>
           </div>
         </div>
 
         <div className="row g-5 g-xl-8">
-          {
-            sumventes.somme ? (
-              sumdepenses.somme ? (
-                sumcommandes.somme ? (
-                  <div className="col-xl-4">
-                    <div className="card card-xl-stretch mb-xl-8">
-                      <div className="card-header border-0 py-5">
-                        <h3 className="card-title align-items-start flex-column">
-                          <span className="card-label fw-bold fs-3 mb-1">Chiffre d'affaire actuel</span>
-                          {/* <span className="text-muted fw-semibold fs-7">Complete your profile setup</span> */}
-                        </h3>
-                      </div>
-                      <div className="card-body d-flex flex-column">
-                        <div className="flex-grow-1">
-                          <div className="d-flex align-items-center">
-                            <span className="fs-4 fw-semibold text-gray-500 me-1 align-self-start">$</span>
-                            <span className="fs-2hx fw-bold text-gray-900 me-2 lh-1 ls-n2">69,700</span>
-                            <span className="badge badge-light-success fs-base">
-                              <i className="ki-outline ki-arrow-up fs-5 text-success ms-n1"></i>2.2%</span>
-                          </div>
-                        </div>
-                        <div className="pt-5">
-                          <p className="text-center fs-6 pb-5">
-                            <span className="badge badge-light-info fs-8">Notes:</span>&nbsp; Current sprint requires stakeholders
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <p>Calcul de la somme des commandes en cours</p>
-                )
-              ) : (
-                <p>Calcul de la somme des dépenses en cours ...</p>
-              )
-            ) : (
-              <p>Calcul de la somme des ventes en cours ...</p>
-            )
-          }
+          <div className="col-xl-4">
+            <div className="card card-xl-stretch mb-xl-8">
+              <div className="card-header border-0 py-5">
+                <h3 className="card-title align-items-start flex-column">
+                  <span className="card-label fw-bold fs-3 mb-1">Etat du stock</span>
+                  {/* <span className="text-muted fw-semibold fs-7">Complete your profile setup</span> */}
+                </h3>
+              </div>
+              <div className="card-body">
+                <div>
+                  {
+                    nbproduits ? (
+                      nbrupture ? (
+                        <Doughnut
+                          data={{
+                            labels: [],
+                            datasets: [
+                              {
+                                label: 'Produits',
+                                data: [nbproduits.count],
+                                backgroundColor: 'rgb(0,191,255)'
+                              },
+                              {
+                                label: 'Produits en rupture',
+                                data: [nbrupture.nbRupture],
+                                backgroundColor: 'rgb(255,127,80)'
+                              },
+                              {
+                                label: 'Produits périmés',
+                                data: [nbliquidation.count],
+                                backgroundColor: 'rgb(255,0,0)'
+                              }
+                            ],
+                          }}
+                        />
+
+                      ) : (
+                        infoAlert("Aucun produit en rupture")
+                      )
+                    ) : (
+                      infoAlert("Aucun produit disponible")
+                    )
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
           <div className="col-xl-8">
             <div className="card card-xl-stretch mb-5 mb-xl-8">
               <div className="card-header border-0 pt-5">
                 <h3 className="card-title align-items-start flex-column">
-                  <span className="card-label fw-bold fs-3 mb-1">Ventes réalisées</span>
-                  <span className="text-muted fw-semibold fs-7">Plus de ... ventes</span>
+                  <span className="card-label fw-bold fs-3 mb-1">Nos 5 produits les plus vendus</span>
+                  {/* <span className="text-muted fw-semibold fs-7">Plus de ... ventes</span> */}
                 </h3>
-                <div className="card-toolbar">
-
-                </div>
               </div>
               <div className="card-body">
+                <div>
+                  {
+                    nbproduits ? (
+                      nbrupture ? (
+                        <p>Pie chart here</p>
 
+                      ) : (
+                        infoAlert("Aucun produit en rupture")
+                      )
+                    ) : (
+                      infoAlert("Aucun produit disponible")
+                    )
+                  }
+                </div>
               </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div className="row">
+          <div className="card card-xl-stretch mb-5 mb-xl-8">
+            <div className="card-header border-0 pt-5">
+              <h3 className="card-title align-items-start flex-column">
+                <span className="card-label fw-bold fs-3 mb-1">Etat de nos commandes</span>
+                <span className="text-muted fw-semibold fs-7">Veuillez choisir un mois pour voir les commandes</span>
+              </h3>
+              <div className="card-toolbar">
+                <div className="input-group mb-5">
+                  <span className="input-group-text"><i className='ki-outline ki-calendar fs-2'></i></span>
+                  <select name="select_month" id="select_month" className="form-control" onChange={(month) => handleMonthSelect(month)}>
+                    <option value="" selected disabled>Sélectionnez un mois ...</option>
+                    <option value="1">Janvier</option>
+                    <option value="2">Février</option>
+                    <option value="3">Mars</option>
+                    <option value="4">Avril</option>
+                    <option value="5">Mai</option>
+                    <option value="6">Juin</option>
+                    <option value="7">Juillet</option>
+                    <option value="8">Août</option>
+                    <option value="9">Septembre</option>
+                    <option value="10">Octobre</option>
+                    <option value="11">Novembre</option>
+                    <option value="12">Décembre</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div className="card-body">
+              {
+                venteparjour ? (
+                  // Si des données de vente par jour sont disponibles
+                  <div>
+                    <Line
+                      data={{
+                        labels: dates,
+                        datasets: [
+                          {
+                            label: 'Ventes mensuelles',
+                            data: total
+                          }
+                        ],
+                      }}
+                    />
+                  </div>
+                ) : (
+                  infoAlert("Aucune vente disponible pour ce mois!")
+                )
+              }
             </div>
           </div>
         </div>

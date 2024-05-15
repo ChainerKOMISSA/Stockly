@@ -61,7 +61,6 @@ const Login = () => {
             if (responseData.success) {
               const userData = responseData.data;
               setUserData(userData);
-              setIsLoggedIn(true);
               navigate("/dashboard");
             } else {
               handleAlerte(responseData.message);
