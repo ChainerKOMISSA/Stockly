@@ -110,11 +110,13 @@ exports.deleteEmployeById = async (req, res) => {
 exports.verifyEmploye = async (req, res) => {
     const { username, motdepasse } = req.body;
     try {
-        const employe = await Employe.findOne({ username: username });
+        const employe = await Employe.findOne({
+            where: { username: username } // Explicitly define the where clause
+        });
         if (employe) {
             const passwordMatch = await bcrypt.compare(motdepasse, employe.motdepasse);
             if (passwordMatch) {
-                return res.status(200).json({ success: true, message: "Connexion réussie" });
+                return res.status(200).json({ success: true, message: "Connexion réussie", data : employe });
             }
             else {
                 return res.status(401).json({ success: false, message: "Mot de passe incorrect" });

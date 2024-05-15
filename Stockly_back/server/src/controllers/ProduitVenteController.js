@@ -1,7 +1,10 @@
 const ProduitVente = require('../models/ProduitVente');
+const Vente = require('../models/Sale');
 const Produit = require('../models/Produit');
 const { QueryTypes } = require('sequelize');
+const { Op } = require('sequelize');
 const sequelize = require('../models/database')
+
 
 exports.getAllProduitVentes = async (req, res) => {
     try {
@@ -18,7 +21,7 @@ exports.createProduitVente = async (req, res) => {
     try {
         // Créer un tableau de données en ajoutant l'ID de la vente à chaque produit
         const produitsAvecVenteId = produits.map(produit => ({ ...produit, idVente }));
-        const produitVentes = await ProduitVente.bulkCreate(produitsAvecVenteId); 
+        const produitVentes = await ProduitVente.bulkCreate(produitsAvecVenteId);
         res.status(201).json(produitVentes);
     } catch (error) {
         res.status(400).json({ message: error.message });
@@ -80,3 +83,49 @@ exports.getTotalProduitVente = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 }
+
+const formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
+
+
+exports.getTotalSalesByDay = async (req, res) => {
+    const { month } = req.body;
+    try {
+
+        const monthNumber = parseInt(month, 10);
+
+        const startOfMonth = new Date(new Date().getFullYear(), monthNumber - 1, 1);
+        const formattedStartOfMonth = formatDate(startOfMonth);
+
+        const endOfMonth = new Date(new Date().getFullYear(), monthNumber, 0);
+        const formattedEndOfMonth = formatDate(endOfMonth);
+
+        let query = `
+            SELECT DATE(V.dateVente) AS DateOfSale, SUM(P.prix * P.quantite) AS TOTAL
+            FROM ventes V
+            JOIN produitventes P ON V.id = P.idVente
+            WHERE YEAR(V.dateVente) = ? AND MONTH(V.dateVente) = ?
+            GROUP BY DATE(V.dateVente);
+        `;
+
+        // Résolution de la promesse avec await
+        let totalSalesByDay = await sequelize.query(query, {
+            replacements: [new Date().getFullYear(), monthNumber],
+            type: sequelize.QueryTypes.SELECT
+        });
+
+        res.status(200).json({
+            dataTotal: totalSalesByDay
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+
+
+

@@ -9,7 +9,7 @@ const Vente = sequelize.define('Vente', {
         autoIncrement: true
     },
     dateVente: {
-        type: DataTypes.DATE,
+        type: DataTypes.DATEONLY,
         allowNull: false
     },
     codeVente: {

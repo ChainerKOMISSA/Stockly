@@ -10,7 +10,11 @@ exports.getAllProducts = async (req, res) => {
             include: {
                 model: Categorie,
                 attributes: ['id', 'libelle']
-            }
+            },
+            order: [
+                [Categorie, 'libelle', 'ASC'],
+                ['nom', 'ASC']
+            ]
         });
         res.json(produits)
     }

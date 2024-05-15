@@ -1,6 +1,7 @@
 const ProduitCommande = require('../models/ProduitCommande');
 const Produit = require('../models/Produit');
-
+const { QueryTypes } = require('sequelize');
+const sequelize = require('../models/database')
 
 exports.getAllProduitCommandes = async (req, res) => {
     try {
@@ -32,7 +33,7 @@ exports.getProduitCommandeById = async (req, res) => {
             },
             include: {
                 model: Produit,
-                attributes : ['nom']
+                attributes: ['nom']
             }
         });
         if (!produitCommande) return res.status(404).json({ message: "La commande de produit n'existe pas!" });
@@ -62,6 +63,18 @@ exports.deleteProduitCommandeById = async (req, res) => {
         if (!produitCommande) return res.status(404).json({ message: "La commande de produit n'existe pas!" });
         await produitCommande.destroy();
         res.status(200).json({ message: "Commande de produit supprimée avec succès!" });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+exports.getTotalProduitCommande = async (req, res) => {
+    try {
+        const somme = await sequelize.query('SELECT sum(prixAchat * quantite) AS total FROM produitcommandes', {
+            type: QueryTypes.SELECT
+        });
+
+        res.json({ somme: somme[0].total });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
