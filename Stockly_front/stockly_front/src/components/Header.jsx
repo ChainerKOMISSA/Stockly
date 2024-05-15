@@ -1,7 +1,6 @@
 import { React, useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/img/logo.png'
-import avatar from '../assets/img/profile-img.jpg'
 
 const Header = () => {
     const navigate = useNavigate();
@@ -105,7 +104,7 @@ const Header = () => {
                                     </div>
                                 </div>
                                 <div className="app-navbar-item ms-2 ms-md-5 position-relative">
-                                    <div onClick={toggleModal} hidden = {true} className="cursor-pointer symbol symbol-35px symbol-md-40px">
+                                    <div onClick={toggleModal} hidden={true} className="cursor-pointer symbol symbol-35px symbol-md-40px">
                                         <i className="ki-outline ki-moon text-gray-500 fs-1"></i>
                                     </div>
                                 </div>
@@ -122,7 +121,6 @@ const Header = () => {
                 {/*end::Header primary*/}
                 {/*begin::Header secondary*/}
                 <div className="app-header-secondary">
-
                 </div>
                 {/*end::Header secondary*/}
             </div>

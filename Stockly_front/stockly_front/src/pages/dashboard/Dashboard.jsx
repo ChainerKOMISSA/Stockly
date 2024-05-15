@@ -2,15 +2,27 @@ import React, { useState, useEffect, useContext } from 'react'
 import { API_URL } from '../../components/constantes';
 import { Link } from 'react-router-dom';
 import { useUser } from '../UserContext';
+import { Chart } from 'chart.js';
+import { failureAlert } from '../../components/alerts';
 
 function Dashboard() {
   const [nbrupture, setNbrupture] = useState([]);
   const [sumdepenses, setSumdepenses] = useState([]);
   const [sumventes, setSumventes] = useState([]);
+  const [sumcommandes, setSumCommandes] = useState([]);
   const [nbproduits, setNbProduits] = useState([]);
-  const { userData } = useUser();
+  const [venteparjour, setVenteparJour] = useState([]);
 
-  console.log(userData);
+  const dataVentes = {
+    jour1: {
+      'date': '02-04-2024',
+      'nombre': '24'
+    },
+    jour2: {
+      'date': '02-02-2024',
+      'nombre': '4'
+    }
+  }
 
   // Somme des dépenses
   useEffect(() => {
@@ -33,6 +45,18 @@ function Dashboard() {
       })
       .catch(error => {
         console.error('Erreur lors de la récupération des statistiques des ventes: ', error)
+      })
+  }, []);
+
+  // Somme des commandes
+  useEffect(() => {
+    fetch(`${API_URL}/produitcommande/total`)
+      .then(response => response.json())
+      .then(data => {
+        setSumCommandes(data)
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération des statistiques des commandes: ', error)
       })
   }, []);
 
@@ -62,6 +86,87 @@ function Dashboard() {
   }, []);
 
 
+  function getChiffreAffaire(ventes, commandes, depenses) {
+    // Checking if all necessary data is available
+    if (ventes !== undefined && commandes !== undefined && depenses !== undefined) {
+      // Calculating the total expenses and commands
+      let depensetotal = parseFloat(depenses) + parseFloat(commandes);
+      // Calculating the gross profit
+      let ca = parseFloat(ventes) - depensetotal;
+      return ca >= 0 ? ca : 0; // Ensuring positive value, returning 0 if negative
+    } else {
+      return 0; // Returning 0 if any of the data is missing
+    }
+  }
+
+  // const salesChartCtx = document.getElementById('salesChart').getContext('2d');
+  // const salesChart = new Chart(salesChartCtx, {
+  //   type: 'line',
+  //   data: {
+  //     labels: [], // Labels pour les jours du mois
+  //     datasets: [{
+  //       label: 'Ventes par jour',
+  //       data: [], // Données des ventes par jour
+  //       borderColor: 'rgb(75, 192, 192)',
+  //       tension: 0.1
+  //     }]
+  //   },
+  //   options: {
+  //     scales: {
+  //       y: {
+  //         beginAtZero: true
+  //       }
+  //     }
+  //   }
+  // });
+
+  const handleMonthSelect = (month) => {
+    const selectedMonth = month.target.value;
+    console.log('Selected month: ', selectedMonth);
+    updateChart(selectedMonth);
+  }
+
+
+  // Fonction pour mettre à jour les données du graphique
+  const updateChart = async (month) => {
+    try {
+      const response = await fetch(`${API_URL}/produitvente/totalbyjour`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ month: month }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setVenteparJour(data.dataTotal);
+        console.log('vente: ', venteparjour);
+      } else {
+        const errorData = await response.json();
+        console.log(errorData);
+        failureAlert(errorData.message);
+      }
+    } catch (error) {
+      console.log(error);
+      failureAlert(error.message);
+    }
+
+    // Exemple de données factices pour le graphique
+    // const salesData = [100, 150, 200, 250, 300]; // Valeurs des ventes par jour
+
+    // // Mettre à jour les données du graphique
+    // salesChart.data.labels = Array.from({ length: salesData.length }, (_, i) => (i + 1).toString()); // Labels pour les jours du mois
+    // salesChart.data.datasets[0].data = salesData;
+
+    // // Mettre à jour le graphique
+    // salesChart.update();
+  }
+
+
+
+
+
   return (
     <>
       <div id="kt_app_toolbar" className="app-toolbar pt-7 pt-lg-10">
@@ -87,50 +192,81 @@ function Dashboard() {
       </div>
 
       <div id="kt_app_content" className="app-content">
-        <div class="row g-5 g-xl-8">
-          <div class="col-xl-3">
+        <div className="row g-5 g-xl-8">
+          <div className="col-xl-3">
             <Link to="/sales">
-              <a href="#" class="card bg-light-success hoverable card-xl-stretch mb-xl-8 hover-scale">
-                <div class="card-body">
-                  <i class="ki-outline ki-basket text-success fs-2x ms-n1"></i>
-                  <div class="fw-bold text-gray-900 fs-1 mb-2 mt-5">{sumventes.somme} <span className="fw-semibold text-muted fs-7">FCFA</span></div>
-                  <div class="fw-semibold text-success">Ventes réalisées</div>
+              <a href="#" className="card bg-light-success hoverable card-xl-stretch mb-xl-8 hover-scale">
+                <div className="card-body">
+                  <i className="ki-outline ki-basket text-success fs-2x ms-n1"></i>
+                  <div className="fw-bold text-gray-900 fs-1 mb-2 mt-5">{sumventes.somme} <span className="fw-semibold text-muted fs-7">FCFA</span></div>
+                  <div className="fw-semibold text-success">Ventes réalisées</div>
                 </div>
               </a>
             </Link>
           </div>
-          <div class="col-xl-3">
+          <div className="col-xl-3">
             <Link to="/depenses">
-              <a href="#" class="card bg-light-warning hoverable card-xl-stretch mb-xl-8 hover-scale">
-                <div class="card-body">
-                  <i class="ki-outline ki-chart-line-down text-warning fs-2x ms-n1"></i>
-                  <div class="fw-bold text-gray-900 fs-1 mb-2 mt-5">{sumdepenses.somme} <span className="fw-semibold text-muted fs-7">FCFA</span></div>
-                  <div class="fw-semibold text-warning">Dépenses effectuées</div>
+              <a href="#" className="card bg-light-warning hoverable card-xl-stretch mb-xl-8 hover-scale">
+                <div className="card-body">
+                  <i className="ki-outline ki-chart-line-down text-warning fs-2x ms-n1"></i>
+                  <div className="fw-bold text-gray-900 fs-1 mb-2 mt-5">{sumdepenses.somme} <span className="fw-semibold text-muted fs-7">FCFA</span></div>
+                  <div className="fw-semibold text-warning">Dépenses effectuées</div>
                 </div>
               </a>
             </Link>
           </div>
-          <div class="col-xl-3">
+          <div className="col-xl-3">
+            <Link to="/orders">
+              <a href="#" className="card bg-light-primary hoverable card-xl-stretch mb-xl-8 hover-scale">
+                <div className="card-body">
+                  <i className="ki-outline ki-cheque text-primary fs-2x ms-n1"></i>
+                  <div className="fw-bold text-gray-900 fs-1 mb-2 mt-5">{sumcommandes.somme} <span className="fw-semibold text-muted fs-7">FCFA</span></div>
+                  <div className="fw-semibold text-primary">Commandes effectuées</div>
+                </div>
+              </a>
+            </Link>
+          </div>
+          <div className="col-xl-3">
             <Link to="/rupture">
-              <a href="#" class="card bg-light-danger hoverable card-xl-stretch mb-xl-8 hover-scale">
-                <div class="card-body">
-                  <i class="ki-outline ki-information-2 text-danger fs-2x ms-n1"></i>
-                  <div class="fw-bold text-gray-900 fs-1 mb-2 mt-5">{nbrupture.nbRupture} <span className="fw-semibold text-muted fs-7">produits</span></div>
-                  <div class="fw-semibold text-danger">Alerte stock</div>
+              <a href="#" className="card bg-light-danger hoverable card-xl-stretch mb-xl-8 hover-scale">
+                <div className="card-body">
+                  <i className="ki-outline ki-information-2 text-danger fs-2x ms-n1"></i>
+                  <div className="fw-bold text-gray-900 fs-1 mb-2 mt-5">{nbrupture.nbRupture} <span className="fw-semibold text-muted fs-7">produits</span></div>
+                  <div className="fw-semibold text-danger">Alerte stock</div>
                 </div>
               </a>
             </Link>
           </div>
-          <div class="col-xl-3">
+          <div className="col-xl-3">
             <Link to="/liquidation">
-              <a href="#" class="card bg-light-danger hoverable card-xl-stretch mb-xl-8 hover-scale">
-                <div class="card-body">
-                  <i class="ki-outline ki-information-2 text-danger fs-2x ms-n1"></i>
-                  <div class="fw-semibold text-danger fs-1 mb-2 mt-5">Produits à liquider</div>
-                  {/* <div class="fw-semibold text-info">Produits à liquider</div> */}
+              <a href="#" className="card bg-light-danger hoverable card-xl-stretch mb-xl-8 hover-scale">
+                <div className="card-body">
+                  <i className="ki-outline ki-information-2 text-danger fs-2x ms-n1"></i>
+                  <div className="fw-semibold text-danger fs-1 mb-2 mt-5">Produits à liquider</div>
+                  {/* <div className="fw-semibold text-info">Produits à liquider</div> */}
                 </div>
               </a>
             </Link>
+          </div>
+          <div className="col-xl-3">
+            <a className="card bg-light hoverable card-xl-stretch mb-xl-8 hover-scale">
+              <div className="card-header border-0 py-5 ribbon ribbon-top ribbon-vertical">
+                <div className="ribbon-label bg-success">
+                  <i className="ki-outline ki-chart-line-up text-inverse-success fs-1"></i>
+                </div>
+                <h3 className="card-title align-items-start flex-column">
+                  <span className="fw-semibold text-dark fs-5">Chiffre d'affaire actuel</span>
+                </h3>
+              </div>
+              <div className="card-body d-flex flex-column">
+                <div className="flex-grow-1">
+                  <div className="d-flex align-items-center">
+                    <span className="fs-2hx fw-bold text-gray-900 me-2 lh-1 ls-n2">{getChiffreAffaire(sumventes.somme, sumcommandes.somme, sumdepenses.somme)}</span>
+                    <span className="fs-4 fw-semibold text-gray-500 me-1 align-self-start">FCFA</span>
+                  </div>
+                </div>
+              </div>
+            </a>
           </div>
 
         </div>
@@ -209,32 +345,96 @@ function Dashboard() {
           </li>
         </ul> */}
 
-        <div class="row">
-          <div class="card card-xl-stretch mb-5 mb-xl-8">
-            <div class="card-header border-0 pt-5">
-              <h3 class="card-title align-items-start flex-column">
-                <span class="card-label fw-bold fs-3 mb-1">Ventes réalisées</span>
-                <span class="text-muted fw-semibold fs-7">Plus de ... ventes</span>
+        <div className="row">
+          <div className="card card-xl-stretch mb-5 mb-xl-8">
+            <div className="card-header border-0 pt-5">
+              <h3 className="card-title align-items-start flex-column">
+                <span className="card-label fw-bold fs-3 mb-1">Ventes réalisées</span>
+                <span className="text-muted fw-semibold fs-7">Plus de ... ventes</span>
               </h3>
-              <div class="card-toolbar">
-                <select name="" id="" class="btn btn-sm btn-light-primary px-4 me-1">
-                  <option value="1">Janvier</option>
-                  <option value="2">Février</option>
-                  <option value="3">Mars</option>
-                  <option value="4">Avril</option>
-                  <option value="5">Mai</option>
-                  <option value="6">Juin</option>
-                  <option value="7">Juillet</option>
-                  <option value="8">Août</option>
-                  <option value="9">Septembre</option>
-                  <option value="10">Octobre</option>
-                  <option value="11">Novembre</option>
-                  <option value="12">Décembre</option>
-                </select>
+              <div className="card-toolbar">
+                <div className="input-group mb-5">
+                  <span className="input-group-text"><i className='ki-outline ki-calendar fs-2'></i></span>
+                  <select name="select_month" id="select_month" className="form-control" onChange={(month) => handleMonthSelect(month)}>
+                    <option value="" selected disabled>Sélectionnez un mois ...</option>
+                    <option value="1">Janvier</option>
+                    <option value="2">Février</option>
+                    <option value="3">Mars</option>
+                    <option value="4">Avril</option>
+                    <option value="5">Mai</option>
+                    <option value="6">Juin</option>
+                    <option value="7">Juillet</option>
+                    <option value="8">Août</option>
+                    <option value="9">Septembre</option>
+                    <option value="10">Octobre</option>
+                    <option value="11">Novembre</option>
+                    <option value="12">Décembre</option>
+                  </select>
+                </div>
               </div>
             </div>
-            <div class="card-body">
-              <div id="graphe_ventes" style={{ height: '350px' }}></div>
+            <div className="card-body">
+              <div style={{ height: '350px' }}>
+                <canvas id="salesChart" width="400" height="400"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="row g-5 g-xl-8">
+          {
+            sumventes.somme ? (
+              sumdepenses.somme ? (
+                sumcommandes.somme ? (
+                  <div className="col-xl-4">
+                    <div className="card card-xl-stretch mb-xl-8">
+                      <div className="card-header border-0 py-5">
+                        <h3 className="card-title align-items-start flex-column">
+                          <span className="card-label fw-bold fs-3 mb-1">Chiffre d'affaire actuel</span>
+                          {/* <span className="text-muted fw-semibold fs-7">Complete your profile setup</span> */}
+                        </h3>
+                      </div>
+                      <div className="card-body d-flex flex-column">
+                        <div className="flex-grow-1">
+                          <div className="d-flex align-items-center">
+                            <span className="fs-4 fw-semibold text-gray-500 me-1 align-self-start">$</span>
+                            <span className="fs-2hx fw-bold text-gray-900 me-2 lh-1 ls-n2">69,700</span>
+                            <span className="badge badge-light-success fs-base">
+                              <i className="ki-outline ki-arrow-up fs-5 text-success ms-n1"></i>2.2%</span>
+                          </div>
+                        </div>
+                        <div className="pt-5">
+                          <p className="text-center fs-6 pb-5">
+                            <span className="badge badge-light-info fs-8">Notes:</span>&nbsp; Current sprint requires stakeholders
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <p>Calcul de la somme des commandes en cours</p>
+                )
+              ) : (
+                <p>Calcul de la somme des dépenses en cours ...</p>
+              )
+            ) : (
+              <p>Calcul de la somme des ventes en cours ...</p>
+            )
+          }
+          <div className="col-xl-8">
+            <div className="card card-xl-stretch mb-5 mb-xl-8">
+              <div className="card-header border-0 pt-5">
+                <h3 className="card-title align-items-start flex-column">
+                  <span className="card-label fw-bold fs-3 mb-1">Ventes réalisées</span>
+                  <span className="text-muted fw-semibold fs-7">Plus de ... ventes</span>
+                </h3>
+                <div className="card-toolbar">
+
+                </div>
+              </div>
+              <div className="card-body">
+
+              </div>
             </div>
           </div>
         </div>

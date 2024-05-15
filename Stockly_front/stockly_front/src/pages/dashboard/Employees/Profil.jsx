@@ -44,7 +44,7 @@ const Profil = () => {
                   <a className="fs-3 text-gray-800 fw-bold mb-3">Emma Stone</a>
                   <a className="fs-6 text-gray-600 mb-3">@Emma</a>
                   <div className="mb-9">
-                    <div className="badge badge-lg badge-light-primary d-inline">Administrator</div>
+                    <div className="badge badge-lg badge-light-primary d-inline">Vendeur</div>
                   </div>
                 </div>
                 <div className="d-flex flex-stack fs-4 py-3">
@@ -84,8 +84,8 @@ const Profil = () => {
                 <div className="card card-flush mb-6 mb-xl-9">
                   <div className="card-header mt-6">
                     <div className="card-title flex-column">
-                      <h2 className="mb-1">User's Tasks</h2>
-                      <div className="fs-6 fw-semibold text-muted">Total 25 tasks in backlog</div>
+                      <h2 className="mb-1">Activités réalisées</h2>
+                      <div className="fs-6 fw-semibold text-muted">Un total de 20 activités ...</div>
                     </div>
                     <div className="card-toolbar">
                       <button type="button" className="btn btn-light-primary btn-sm">
@@ -96,39 +96,22 @@ const Profil = () => {
                     <div className="d-flex align-items-center position-relative mb-7">
                       <div className="position-absolute top-0 start-0 rounded h-100 bg-secondary w-4px"></div>
                       <div className="fw-semibold ms-5">
-                        <a href="#" className="fs-5 fw-bold text-gray-900 text-hover-primary">Create FureStibe branding logo</a>
-                        <div className="fs-7 text-muted">Due in 1 day
-                          <a href="#">Karina Clark</a></div>
+                        <a href="#" className="fs-5 fw-bold text-gray-900 text-hover-primary">1 vente</a>
+                        <div className="fs-7 text-muted">20/02/2024</div>
                       </div>
-                      <button type="button" className="btn btn-icon btn-active-light-primary w-30px h-30px ms-auto" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
-                        <i className="ki-outline ki-setting-3 fs-3"></i>
-                      </button>
-                      <div className="menu menu-sub menu-sub-dropdown w-250px w-md-300px" data-kt-menu="true" data-kt-menu-id="kt-users-tasks">
-                        <div className="px-7 py-5">
-                          <div className="fs-5 text-gray-900 fw-bold">Update Status</div>
-                        </div>
-                        <div className="separator border-gray-200"></div>
-                        <form className="form px-7 py-5" data-kt-menu-id="kt-users-tasks-form">
-                          <div className="fv-row mb-10">
-                            <label className="form-label fs-6 fw-semibold">Status:</label>
-                            <select className="form-select form-select-solid" name="task_status" data-kt-select2="true" data-placeholder="Select option" data-allow-clear="true" data-hide-search="true">
-                              <option></option>
-                              <option value="1">Approved</option>
-                              <option value="2">Pending</option>
-                              <option value="3">In Process</option>
-                              <option value="4">Rejected</option>
-
-                            </select>
-                          </div>
-                          <div className="d-flex justify-content-end">
-                            <button type="button" className="btn btn-sm btn-light btn-active-light-primary me-2" data-kt-users-update-task-status="reset">Reset</button>
-                            <button type="submit" className="btn btn-sm btn-primary" data-kt-users-update-task-status="submit">
-                              <span className="indicator-label">Apply</span>
-                              <span className="indicator-progress">Please wait...
-                                <span className="spinner-border spinner-border-sm align-middle ms-2"></span></span>
-                            </button>
-                          </div>
-                        </form>
+                    </div>
+                    <div className="d-flex align-items-center position-relative mb-7">
+                      <div className="position-absolute top-0 start-0 rounded h-100 bg-secondary w-4px"></div>
+                      <div className="fw-semibold ms-5">
+                        <a href="#" className="fs-5 fw-bold text-gray-900 text-hover-primary">3 ventes</a>
+                        <div className="fs-7 text-muted">22/02/2024</div>
+                      </div>
+                    </div>
+                    <div className="d-flex align-items-center position-relative mb-7">
+                      <div className="position-absolute top-0 start-0 rounded h-100 bg-secondary w-4px"></div>
+                      <div className="fw-semibold ms-5">
+                        <a href="#" className="fs-5 fw-bold text-gray-900 text-hover-primary">2 commandes</a>
+                        <div className="fs-7 text-muted">24/02/2024</div>
                       </div>
                     </div>
                   </div>
