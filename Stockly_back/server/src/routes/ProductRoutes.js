@@ -3,6 +3,7 @@ const productController = require('../controllers/ProductController')
 
 router.get('/', productController.getAllProducts);
 router.get('/liquidation', productController.getLiquidation);
+router.get('/countliquidation', productController.getLiquidationCount);
 router.get('/rupture', productController.getRupture);
 router.get('/countrupture', productController.getCountRupture);
 router.get('/count', productController.getCountProd);

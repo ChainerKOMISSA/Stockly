@@ -146,6 +146,22 @@ exports.getLiquidation = async (req, res) => {
     }
 }
 
+exports.getLiquidationCount = async (req, res) => {
+    try {
+        const nbcount = await Produit.findAndCountAll({
+            where: {
+                datePeremption: {
+                    [Op.lt]: new Date()
+                }
+            }
+        });
+        res.json(nbcount)
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
 exports.getRupture = async (req, res) => {
     try {
         const produits = await Produit.findAll({
@@ -185,7 +201,7 @@ exports.getCountRupture = async (req, res) => {
 exports.getCountProd = async (req, res) => {
     try {
         const count = await Produit.findAndCountAll({});
-        res.json({ count })
+        res.json(count)
     }
     catch (error) {
         res.status(500).json({ message: error.message })
