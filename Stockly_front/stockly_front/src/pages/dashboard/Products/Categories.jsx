@@ -12,21 +12,34 @@ function Categories() {
   const [selectedCategory, setSelectedCategory] = useState({})
   const [formData, setFormData] = useState({});
   const [updatedData, setUpdatedData] = useState({});
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredCategories, setFilteredCategories] = useState(categories);
 
-
-  // useEffect(() => { }, [showupdateModal])
 
   useEffect(() => {
     fetch(`${API_URL}/categories`)
       .then(response => response.json())
       .then(data => {
         setCategories(data)
+        setFilteredCategories(data);
       })
       .catch(error => {
         console.error('Erreur lors de la récupération des catégories: ', error)
       })
   }, []);
 
+  useEffect(() => {
+    setFilteredCategories(
+      categories.filter(categorie =>
+        categorie.libelle.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        categorie.description.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [searchTerm, categories]);
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,7 +48,6 @@ function Categories() {
       [name]: value,
     });
   }
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -191,15 +203,21 @@ function Categories() {
       <div id="kt_app_content" className="app-content">
         <div className="card mb-5 mb-xl-8">
           <div className="card-header border-0 pt-5">
-            <div className="card-toolbar align-items-center gap-2 gap-lg-3" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover" title="Click to add a user">
-              <a href="#" className="btn btn-sm btn-light btn-active-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_share_earn">
+            <div className="card-toolbar align-items-center gap-2 gap-lg-3">
+              <a className="btn btn-sm btn-light btn-active-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_share_earn">
                 <i className="ki-outline ki-plus fs-2"></i>
                 Nouvelle catégorie
               </a>
-              <a href="#" className="btn btn-sm btn-light-primary">
+              <a className="btn btn-sm btn-light-primary">
                 <i className="ki-outline ki-printer fs-2"></i>
                 Exporter
               </a>
+              <div class="d-flex align-items-center">
+                <div class="position-relative w-md-400px me-md-2">
+                  <i class="ki-outline ki-magnifier fs-3 text-gray-500 position-absolute top-50 translate-middle ms-6"></i>
+                  <input type="text" class="form-control form-control-solid ps-10" name="search" placeholder="Rechercher ..." value={searchTerm} onChange={handleSearchChange} />
+                </div>
+              </div>
             </div>
           </div>
           <div className="card-body py-3">
@@ -207,11 +225,7 @@ function Categories() {
               <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
                 <thead>
                   <tr className="fw-bold text-muted">
-                    <th className="w-25px">
-                      <div className="form-check form-check-sm form-check-custom form-check-solid">
-                        <input className="form-check-input" type="checkbox" value="1" data-kt-check="true" data-kt-check-target=".widget-9-check" />
-                      </div>
-                    </th>
+                    <th className="w-25px">#</th>
                     <th className="min-w-150px">Libellé</th>
                     <th className="min-w-200px">Description</th>
                     <th className="min-w-100px text-end">Actions</th>
@@ -219,13 +233,9 @@ function Categories() {
                 </thead>
                 <tbody>
                   {
-                    categories.map((categorie, index) => (
+                    filteredCategories.map((categorie, index) => (
                       <tr key={index}>
-                        <td>
-                          <div className="form-check form-check-sm form-check-custom form-check-solid">
-                            <input className="form-check-input widget-9-check" type="checkbox" value="1" />
-                          </div>
-                        </td>
+                        <td>{index + 1}</td>
                         <td>
                           <div className="d-flex align-items-center">
                             <div className="d-flex justify-content-start flex-column">

@@ -20,29 +20,23 @@ function Sales() {
     codeVente: "",
   });
 
-  const [recherche, setRecherche] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredSales, setFilteredSales] = useState(sales);
+
   const { userData } = useUser();
 
   console.log(userData);
 
   let options = produits.map((produit) => ({
     value: produit.id,
-    label: produit.nom
+    label: produit.nom,
+    stock: produit.quantiteStock
   }));
 
-  const [isClearable, setIsClearable] = useState(true);
+  const [isClearable, setIsClearable] = useState(false);
   const [isSearchable, setIsSearchable] = useState(true)
+  const [stock, setStock] = useState(options[0]?.stock || 0);
 
-
-  // Fonction de gestion du changement de recherche
-  const handleChangeRecherche = (e) => {
-    setRecherche(e.target.value);
-  };
-
-  // Filtrer les produits basés sur la recherche
-  const produitsFiltres = produits.filter(produit =>
-    produit.nom.toLowerCase().includes(recherche.toLowerCase())
-  );
 
 
   useEffect(() => {
@@ -55,6 +49,20 @@ function Sales() {
         console.error('Erreur lors de la récupération des ventes: ', error)
       })
   }, []);
+
+  useEffect(() => {
+    setFilteredSales(
+      sales.filter(sale =>
+        sale.Employe.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        sale.dateVente.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        sale.Employe.prenom.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [searchTerm, sales])
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
   useEffect(() => {
     fetch(`${API_URL}/produits`)
@@ -82,6 +90,7 @@ function Sales() {
   const handleSelectChange = (option) => {
     setSelectedOption(option)
     handleChangeProduit(option)
+    setStock(option.stock)
   }
 
   const handleChangeProduit = (selectedOption) => {
@@ -396,6 +405,12 @@ function Sales() {
                 <i className="ki-outline ki-printer fs-2"></i>
                 Exporter
               </a>
+              <div class="d-flex align-items-center">
+                <div class="position-relative w-md-400px me-md-2">
+                  <i class="ki-outline ki-magnifier fs-3 text-gray-500 position-absolute top-50 translate-middle ms-6"></i>
+                  <input type="text" class="form-control form-control-solid ps-10" name="search" placeholder="Rechercher ..." value={searchTerm} onChange={handleSearchChange} />
+                </div>
+              </div>
             </div>
           </div>
           <div className="card-body py-3">
@@ -415,7 +430,7 @@ function Sales() {
                 </thead>
                 <tbody>
                   {
-                    sales.map((sale, index) => (
+                    filteredSales.map((sale, index) => (
                       <tr key={index}>
                         <td>
                           <div className="form-check form-check-sm form-check-custom form-check-solid">
@@ -514,14 +529,6 @@ function Sales() {
                                   </span>
                                 </label>
                                 <div className="w-100">
-                                  {/* <select id="select_produit" className="form-select form-select-solid produit_select" data-control="select2" data-placeholder="Sélectionnez..." onChange={handleChangeProduit} name="nom" required>
-                                    <option value="">Sélectionnez...</option>
-                                    {
-                                      produits.map((produit, index) => (
-                                        <option key={index} value={produit.id} data-prix={produit.prix}>{produit.nom}</option>
-                                      ))
-                                    }
-                                  </select> */}
                                   <Select
                                     id="select_produit"
                                     className="produit_select"
@@ -555,12 +562,12 @@ function Sales() {
                             <div className="col">
                               <div className="fv-row mb-7">
                                 <label className="fs-6 fw-semibold form-label mt-3">
-                                  <span className="required">Quantité vendue</span>
+                                  <span className="required">Quantité à vendre</span>
                                   <span className="ms-1" data-bs-toggle="tooltip" title="Entrez la quantité vendue">
                                     <i className="ki-outline ki-information fs-7"></i>
                                   </span>
                                 </label>
-                                <input type="number" min={0} className="form-control form-control-solid" id="quantite" name="quantite" value={formData.quantite} onChange={e => handleQuantityChange(e)} required />
+                                <input type="number" min={0} max={stock} className="form-control form-control-solid" id="quantite" name="quantite" value={formData.quantite} onChange={e => handleQuantityChange(e)} required />
                               </div>
                             </div>
                             <div className="col">

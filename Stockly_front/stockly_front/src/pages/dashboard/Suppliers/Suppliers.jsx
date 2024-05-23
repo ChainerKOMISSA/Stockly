@@ -12,6 +12,8 @@ function Suppliers() {
   const [selectedSupplier, setSelectedSupplier] = useState({})
   const [formData, setFormData] = useState({});
   const [updatedData, setUpdatedData] = useState({});
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredSuppliers, setFilteredSuppliers] = useState(suppliers);
 
 
   useEffect(() => {
@@ -24,6 +26,20 @@ function Suppliers() {
         console.error('Erreur lors de la récupération des fournisseurs: ', error)
       })
   }, []);
+
+  useEffect(() => {
+    setFilteredSuppliers(
+      suppliers.filter(supplier =>
+        supplier.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        supplier.adresse.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        supplier.contact.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [searchTerm, suppliers]);
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -199,6 +215,12 @@ function Suppliers() {
                 <i className="ki-outline ki-printer fs-2"></i>
                 Exporter
               </a>
+              <div class="d-flex align-items-center">
+                <div class="position-relative w-md-400px me-md-2">
+                  <i class="ki-outline ki-magnifier fs-3 text-gray-500 position-absolute top-50 translate-middle ms-6"></i>
+                  <input type="text" class="form-control form-control-solid ps-10" name="search" placeholder="Rechercher ..." value={searchTerm} onChange={handleSearchChange} />
+                </div>
+              </div>
             </div>
           </div>
           <div className="card-body py-3">
@@ -219,7 +241,7 @@ function Suppliers() {
                 </thead>
                 <tbody>
                   {
-                    suppliers.map((supplier, index) => (
+                    filteredSuppliers.map((supplier, index) => (
                       <tr key={index}>
                         <td>
                           <div className="form-check form-check-sm form-check-custom form-check-solid">
