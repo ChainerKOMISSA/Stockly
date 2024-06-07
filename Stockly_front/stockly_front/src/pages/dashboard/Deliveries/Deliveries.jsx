@@ -183,10 +183,10 @@ function Deliveries() {
         <div className="card mb-5 mb-xl-8">
           <div className="card-header border-0 pt-5">
             <div className="card-toolbar align-items-center gap-2 gap-lg-3" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover" title="Click to add a user">
-              <a href="#" className="btn btn-sm btn-light btn-active-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_share_earn">
+              {/* <a href="#" className="btn btn-sm btn-light btn-active-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_share_earn">
                 <i className="ki-outline ki-plus fs-2"></i>
                 Nouvelle livraison
-              </a>
+              </a> */}
               <a href="#" className="btn btn-sm btn-light-primary">
                 <i className="ki-outline ki-printer fs-2"></i>
                 Exporter
@@ -199,13 +199,14 @@ function Deliveries() {
                 <thead>
                   <tr className="fw-bold text-muted">
                     <th className="w-25px">
-                      <div className="form-check form-check-sm form-check-custom form-check-solid">
+                      {/* <div className="form-check form-check-sm form-check-custom form-check-solid">
                         <input className="form-check-input" type="checkbox" value="1" data-kt-check="true" data-kt-check-target=".widget-9-check" />
-                      </div>
+                      </div> */}
+                      #
                     </th>
                     <th className="min-w-150px">Date de livraison</th>
                     <th className="min-w-200px">Code de la commande</th>
-                    <th className="min-w-100px text-end">Actions</th>
+                    {/* <th className="min-w-100px text-end">Actions</th> */}
                   </tr>
                 </thead>
                 <tbody>
@@ -213,9 +214,10 @@ function Deliveries() {
                     deliveries.map((delivery, index) => (
                       <tr key={index}>
                         <td>
-                          <div className="form-check form-check-sm form-check-custom form-check-solid">
+                          {/* <div className="form-check form-check-sm form-check-custom form-check-solid">
                             <input className="form-check-input widget-9-check" type="checkbox" value="1" />
-                          </div>
+                          </div> */}
+                          {index+1}
                         </td>
                         <td>
                           <div className="d-flex align-items-center">
@@ -227,7 +229,7 @@ function Deliveries() {
                         <td>
                           <a className="text-gray-900 fw-bold text-hover-primary fs-6">{delivery.Commande.codeCommande}</a>
                         </td>
-                        <td>
+                        {/* <td>
                           <div className="d-flex justify-content-end flex-shrink-0">
                             <a href="#" className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#kt_modal_edit" data-category-id={delivery.id}>
                               <i className="ki-outline ki-pencil fs-2"></i>
@@ -236,7 +238,7 @@ function Deliveries() {
                               <i className="ki-outline ki-trash fs-2"></i>
                             </a>
                           </div>
-                        </td>
+                        </td> */}
                       </tr>
                     ))
                   }

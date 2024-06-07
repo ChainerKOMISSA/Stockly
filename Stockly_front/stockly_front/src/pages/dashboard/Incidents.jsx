@@ -205,14 +205,10 @@ function Incidents() {
           </div>
           <div className="card-body py-3">
             <div className="table-responsive">
-              <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
+              <table id='kt_project_users_table' className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
                 <thead>
                   <tr className="fw-bold text-muted">
-                    <th className="w-25px">
-                      <div className="form-check form-check-sm form-check-custom form-check-solid">
-                        <input className="form-check-input" type="checkbox" value="1" data-kt-check="true" data-kt-check-target=".widget-9-check" />
-                      </div>
-                    </th>
+                    <th className="w-25px">#</th>
                     <th className="min-w-100px">Date</th>
                     <th className="min-w-200px">Libellé</th>
                     <th className="min-w-100px text-end">Actions</th>
@@ -224,9 +220,7 @@ function Incidents() {
                     incidents.map((incident, index) => (
                       <tr key={index}>
                         <td>
-                          <div className="form-check form-check-sm form-check-custom form-check-solid">
-                            <input className="form-check-input widget-9-check" type="checkbox" value="1" />
-                          </div>
+                          {index + 1}
                         </td>
                         <td>
                           <a className="text-gray-900 fw-bold text-hover-primary fs-6">{formatDate(incident.date)}</a>

@@ -228,11 +228,7 @@ function Suppliers() {
               <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4">
                 <thead>
                   <tr className="fw-bold text-muted">
-                    <th className="w-25px">
-                      <div className="form-check form-check-sm form-check-custom form-check-solid">
-                        <input className="form-check-input" type="checkbox" value="1" data-kt-check="true" data-kt-check-target=".widget-9-check" />
-                      </div>
-                    </th>
+                    <th className="w-25px">#</th>
                     <th className="min-w-200px">Nom</th>
                     <th className="min-w-200px">Adresse</th>
                     <th className="min-w-180px">Contact</th>
@@ -243,11 +239,7 @@ function Suppliers() {
                   {
                     filteredSuppliers.map((supplier, index) => (
                       <tr key={index}>
-                        <td>
-                          <div className="form-check form-check-sm form-check-custom form-check-solid">
-                            <input className="form-check-input widget-9-check" type="checkbox" value="1" />
-                          </div>
-                        </td>
+                        <td>{index+1}</td>
                         <td>
                           <div className="d-flex align-items-center">
                             <div className="d-flex justify-content-start flex-column">

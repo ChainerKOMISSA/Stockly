@@ -71,6 +71,7 @@ const OrdersDetails = () => {
             });
             if (response.ok) {
                 createSuccessAlert();
+                navigate("/orders");
             } else {
                 const errorData = await response.json();
                 failureAlert(errorData);

@@ -671,7 +671,6 @@ function Products() {
                 <thead>
                   <tr className="fw-bold text-muted">
                     <th className="w-25px">#</th>
-                    {/* <th className="min-w-200px">Catégorie</th> */}
                     <th className="min-w-300px">Produit</th>
                     <th className="min-w-100px">Prix (CFA)</th>
                     <th className="min-w-100px">Quantité</th>

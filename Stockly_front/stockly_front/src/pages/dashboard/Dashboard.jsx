@@ -14,6 +14,7 @@ function Dashboard() {
   const [nbproduits, setNbProduits] = useState([]);
   const [nbliquidation, setNbLiquidation] = useState([]);
   const [venteparjour, setVenteparJour] = useState([]);
+  const [chartData, setChartData] = useState({});
   const { userData } = useUser();
   console.log(userData)
 
@@ -89,12 +90,25 @@ function Dashboard() {
       .then(response => response.json())
       .then(data => {
         setNbProduits(data)
-        console.log(nbproduits);
+        // console.log(nbproduits);
       })
       .catch(error => {
         console.error('Erreur lors de la récupération des statistiques du nombre des produits: ', error)
       })
   }, []);
+
+  // Requête pour obtenir les 5 produits les plus vendus
+  // useEffect(() => {
+  //   fetch(`${API_URL}/ventes/top-produits`)
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       setChartData(data)
+  //       console.log(chartData);
+  //     })
+  //     .catch(error => {
+  //       console.error('Erreur lors de la récupération des produits les plus vendus: ', error);
+  //     });
+  // }, []);
 
 
   function getChiffreAffaire(ventes, commandes, depenses) {
@@ -393,12 +407,12 @@ function Dashboard() {
         </div>
 
         <div className="row g-5 g-xl-8">
-          <div className="col-xl-4">
-            <div className="card card-xl-stretch mb-xl-8">
+          <div className="col-xl-6">
+            <div className="card card-xl-stretch mb-xl-8" style={{ alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
               <div className="card-header border-0 py-5">
                 <h3 className="card-title align-items-start flex-column">
-                  <span className="card-label fw-bold fs-3 mb-1">Etat du stock</span>
-                  {/* <span className="text-muted fw-semibold fs-7">Complete your profile setup</span> */}
+                  <span className="card-label fw-bold fs-3 mb-1">Etat actuel du stock</span>
+                  <span className="text-muted fw-semibold fs-7">Ce graphe est mis à jour automatiquement et affiche les valeurs en temps réel</span>
                 </h3>
               </div>
               <div className="card-body">
@@ -408,27 +422,16 @@ function Dashboard() {
                       nbrupture ? (
                         <Doughnut
                           data={{
-                            labels: [],
+                            labels: ['Produits', 'Produits en rupture', 'Produits périmés'],
                             datasets: [
                               {
-                                label: 'Produits',
-                                data: [nbproduits.count],
-                                backgroundColor: 'rgb(0,191,255)'
-                              },
-                              {
-                                label: 'Produits en rupture',
-                                data: [nbrupture.nbRupture],
-                                backgroundColor: 'rgb(255,127,80)'
-                              },
-                              {
-                                label: 'Produits périmés',
-                                data: [nbliquidation.count],
-                                backgroundColor: 'rgb(255,0,0)'
+                                label: 'Nombre',
+                                data: [nbproduits.count, nbrupture.nbRupture, nbliquidation.count],
+                                backgroundColor: ['rgb(0,191,255)', 'rgb(255,127,80)', 'rgb(255,0,0)']
                               }
                             ],
                           }}
                         />
-
                       ) : (
                         infoAlert("Aucun produit en rupture")
                       )
@@ -440,7 +443,7 @@ function Dashboard() {
               </div>
             </div>
           </div>
-          <div className="col-xl-8">
+          <div className="col-xl-6">
             <div className="card card-xl-stretch mb-5 mb-xl-8">
               <div className="card-header border-0 pt-5">
                 <h3 className="card-title align-items-start flex-column">
@@ -449,20 +452,26 @@ function Dashboard() {
                 </h3>
               </div>
               <div className="card-body">
-                <div>
+                {/* <div>
                   {
-                    nbproduits ? (
-                      nbrupture ? (
-                        <p>Pie chart here</p>
+                    chartData ? (
+                      <Pie
+                        data={{
+                          labels: [chartData.nom],
+                          datasets: [
+                            {
+                              label: 'Nombre',
+                              data: [nbproduits.count, nbrupture.nbRupture, nbliquidation.count],
+                              backgroundColor: ['rgb(0,191,255)', 'rgb(255,127,80)', 'rgb(255,0,0)']
+                            }
+                          ],
+                        }} />
 
-                      ) : (
-                        infoAlert("Aucun produit en rupture")
-                      )
                     ) : (
-                      infoAlert("Aucun produit disponible")
+                      <p>Chargement des données ...</p>
                     )
                   }
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
