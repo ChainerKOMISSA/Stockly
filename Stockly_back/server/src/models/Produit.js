@@ -31,4 +31,5 @@ Produit.belongsTo(Categorie, {
     allowNull : false
 });
 
+
 module.exports = Produit;

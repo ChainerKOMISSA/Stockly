@@ -1,5 +1,8 @@
 const Vente = require('../models/Sale');
 const Employe = require('../models/Employe')
+const Produit = require('../models/Produit')
+const ProduitVente = require('../models/ProduitVente')
+const sequelize = require('../models/database')
 
 
 exports.getAllVentes = async (req, res) => {
@@ -67,3 +70,28 @@ exports.deleteVenteById = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 }
+
+// exports.getTop5Produits = async (req, res) => {
+//     try {
+//         const topProduits = await Produit.findAll({
+//             attributes: [
+//                 'id',
+//                 'nom',
+//                 [sequelize.fn('SUM', sequelize.col('ProduitVentes.quantite')), 'total_sold']
+//             ],
+//             include: [{
+//                 model: ProduitVente,
+//                 attributes: [],
+//                 as: 'ventes'
+//             }],
+//             group: ['Produit.id'],
+//             order: [[sequelize.literal('total_sold'), 'DESC']],
+//             limit: 5
+//         });
+
+//         res.status(200).json(topProduits);
+//     } catch (error) {
+//         console.error('Erreur lors de la récupération des produits les plus vendus:', error);
+//         res.status(500).json({ message: 'Erreur interne du serveur' });
+//     }
+// };
