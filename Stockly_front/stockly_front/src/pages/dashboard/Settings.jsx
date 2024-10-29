@@ -3,7 +3,7 @@ import { API_URL } from '../../components/constantes'
 import { useNavigate } from 'react-router-dom'
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../components/alerts'
 import entrepriseData from '../../helpers/parametresBoutique.json'
-
+import image from "../../assets/img/card-logos/visa.svg"
 
 const Settings = () => {
     const navigate = useNavigate()
@@ -16,6 +16,8 @@ const Settings = () => {
             .then(response => response.json())
             .then(data => {
                 setPaiements(data)
+                console.log(data);
+                
             })
             .catch(error => {
                 console.error('Erreur lors de la récupération des moyens de paiement: ', error)
@@ -501,7 +503,7 @@ const Settings = () => {
                                     paiements.map((paiement, index) => (
                                         <div class="d-flex align-items-sm-center mb-7" key={index}>
                                             <div class="symbol symbol-60px symbol-2by3 me-4">
-                                                <div class="symbol-label" style={{ backgroundImage: 'assets/media/stock/600x400/img-20.jpg' }}></div>
+                                                <div class="symbol-label"><img src={image}/></div>
                                             </div>
                                             <div class="d-flex flex-row-fluid flex-wrap align-items-center">
                                                 <div class="flex-grow-1 me-2">
