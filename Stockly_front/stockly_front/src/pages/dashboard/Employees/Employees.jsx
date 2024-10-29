@@ -326,11 +326,19 @@ function Employees() {
                   {
                     employees.map((employee, index) => (
                       <tr key={index}>
-                        <td>{index+1}</td>
+                        <td>{index + 1}</td>
                         <td>
                           <div className="d-flex align-items-center">
-                            <div className="d-flex justify-content-start flex-column">
+                            {/* <div className="d-flex justify-content-start flex-column">
                               <a className="text-gray-900 fw-bold text-hover-primary fs-6">{employee.nom} {employee.prenom}</a>
+                            </div> */}
+                            <div className="d-flex justify-content-start flex-column">
+                              <a className="text-gray-900 fw-bold text-hover-primary fs-6">
+                                {employee.nom} {employee.prenom}
+                                {employee.verified && (
+                                  <i className="ki-outline ki-verify fs-6 text-success ms-2"></i>
+                                )}
+                              </a>
                             </div>
                           </div>
                         </td>
