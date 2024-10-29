@@ -3,6 +3,22 @@ const Role = require('../models/Role')
 const bcrypt = require('bcrypt');
 
 
+// exports.getAllEmployes = async (req, res) => {
+//     try {
+//         var verifiedEmploye
+//         const employes = await Employe.findAll({
+//             include: {
+//                 model: Role,
+//                 attributes: ['libelle']
+//             }
+//         });
+//         res.json(employes);
+//     }
+//     catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// }
+
 exports.getAllEmployes = async (req, res) => {
     try {
         const employes = await Employe.findAll({
@@ -11,7 +27,18 @@ exports.getAllEmployes = async (req, res) => {
                 attributes: ['libelle']
             }
         });
-        res.json(employes);
+        // Vérifier si l'employé a des identifiants
+        // Ajouter le champ "verified" pour chaque employé
+        const employesWithVerification = employes.map(employe => {
+            return {
+                ...employe.toJSON(), // Convertir l'employé en objet pour pouvoir ajouter des champs
+                verified: (employe.username && employe.username !== "") &&
+                    (employe.motdepasse && employe.motdepasse !== "") ? true : false
+            };
+        });
+
+        // Envoyer la réponse avec les employés modifiés
+        res.json(employesWithVerification);
     }
     catch (error) {
         res.status(500).json({ message: error.message });
@@ -116,7 +143,7 @@ exports.verifyEmploye = async (req, res) => {
         if (employe) {
             const passwordMatch = await bcrypt.compare(motdepasse, employe.motdepasse);
             if (passwordMatch) {
-                return res.status(200).json({ success: true, message: "Connexion réussie", data : employe });
+                return res.status(200).json({ success: true, message: "Connexion réussie", data: employe });
             }
             else {
                 return res.status(401).json({ success: false, message: "Mot de passe incorrect" });
