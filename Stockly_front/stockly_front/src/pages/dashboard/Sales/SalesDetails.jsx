@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { API_URL } from '../../../components/constantes'
 import { useParams } from 'react-router-dom'
 import { formatDate } from '../../../helpers/DateFormat'
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import ReceiptRenderer from '../../../helpers/ReceiptRenderer';
+
 
 
 const SalesDetails = () => {
@@ -37,6 +40,42 @@ const SalesDetails = () => {
             return total;
         } else {
             return 0;
+        }
+    }
+
+    function applyDiscount() {
+
+    }
+
+    function printReceipt(listeproduits) {
+        if (listeproduits && listeproduits.length > 0) {
+            return (
+                <PDFDownloadLink
+                    document={<ReceiptRenderer listeproduits={listeproduits} />}
+                    fileName="recu.pdf"
+                    style={{ textDecoration: 'none' }}
+                >
+                    {({ loading }) => (
+                        <button
+                            type="button"
+                            className="btn btn-sm btn-flex btn-light-primary"
+                        >
+                            <i className="ki-outline ki-printer fs-3"></i>
+                            {loading ? 'Génération du PDF...' : 'Imprimer un reçu'}
+                        </button>
+                    )}
+                </PDFDownloadLink>
+            );
+        } else {
+            return (
+                <button
+                    type="button"
+                    className="btn btn-sm btn-flex btn-light-primary"
+                    disabled
+                >
+                    <i className="ki-outline ki-printer fs-3"></i>Imprimer un reçu
+                </button>
+            );
         }
     }
 
@@ -76,9 +115,6 @@ const SalesDetails = () => {
                                         <span className="ms-2 rotate-180">
                                             <i className="ki-outline ki-down fs-3"></i>
                                         </span></div>
-                                    {/* <span data-bs-toggle="tooltip" data-bs-trigger="hover" title="Edit customer details">
-                                        <a href="#" className="btn btn-sm btn-light-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_update_customer"><i className="ki-outline ki-pencil fs-4"></i></a>
-                                    </span> */}
                                 </div>
                                 <div className="separator separator-dashed my-3"></div>
                                 <div id="kt_customer_view_details" className="collapse show">
@@ -108,10 +144,52 @@ const SalesDetails = () => {
                                         <div className="card-title">
                                             <h3>Liste des produits</h3>
                                         </div>
-                                        <div className="card-toolbar">
-                                            <button type="button" className="btn btn-sm btn-flex btn-light-primary">
-                                                <i className="ki-outline ki-printer fs-3"></i>Imprimer un reçu</button>
+                                        <div className="card-toolbar align-items-center gap-2 gap-lg-3">
+                                            <button type="button" className="btn btn-sm btn-flex btn-secondary" data-bs-toogle="modal" data-bs-target="#kt_modal_share">
+                                                <i class="ki-outline ki-discount fs-3"></i>Appliquer une réduction</button>&nbsp;&nbsp;
+                                            {printReceipt(listeproduits)}
                                         </div>
+                                        {/* Create Category Modal */}
+                                        <div className="modal fade" id="kt_modal_share" tabIndex="-1" aria-hidden="true" >
+                                            <div className="modal-dialog modal-dialog-centered mw-800px">
+                                                <div className="modal-content">
+                                                    <div className="modal-header pb-0 border-0 justify-content-end">
+                                                        <div className="btn btn-sm btn-icon btn-active-color-primary" data-bs-dismiss="modal">
+                                                            <i className="ki-outline ki-cross fs-1"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div className="modal-body scroll-y pt-0 pb-15">
+                                                        <div className="mw-lg-600px mx-auto">
+                                                            <div className="mb-13 text-center">
+                                                                <h1 className="mb-3">Enregister un incident</h1>
+                                                                <div className="text-muted fw-semibold fs-5">Entrez les informations pour enregistrer l'incident.
+                                                                </div>
+                                                            </div>
+                                                            <form id="kt_ecommerce_settings_general_form" className="form">
+                                                                <div className="fv-row mb-7">
+                                                                    <label className="fs-6 fw-semibold form-label mt-3">
+                                                                        <span className="required">Libellé de l'incident</span>
+                                                                        <span className="ms-1" data-bs-toggle="tooltip" title="Entrez le libellé de l'incident">
+                                                                            <i className="ki-outline ki-information fs-7"></i>
+                                                                        </span>
+                                                                    </label>
+                                                                    <input type="text" className="form-control form-control-solid" name="libelle" />
+                                                                </div>
+                                                                <div class="separator mb-6"></div>
+                                                                <div class="d-flex justify-content-end">
+                                                                    <button type="reset" data-kt-contacts-type="cancel" class="btn btn-light me-3">Annuler</button>
+                                                                    <button class="btn btn-primary" onClick={applyDiscount}>
+                                                                        <span class="indicator-label">Enregistrer</span>
+                                                                    </button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {/* End Create Modal */}
                                     </div>
                                     <div className="card-body pt-0 pb-5">
                                         <table className="table align-middle table-row-dashed gy-5" id="kt_table_customers_payment">

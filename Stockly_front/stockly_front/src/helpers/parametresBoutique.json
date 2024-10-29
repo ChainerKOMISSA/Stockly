@@ -1,6 +1,10 @@
 {
     "logoBoutique" : "../assets/img/",
     "nomBoutique" : "ETS CHANELLA",
-    "adresseBoutique" : "Derrière la station total Avénou" ,
-    "contactBoutique" : "Téléphone : (+228) 91272901 / 93798240" 
+    "sloganBoutique" : "",
+    "adresseBoutique" : "Avénou - Lomé" ,
+    "villeBoutique" : "Lomé" ,
+    "codePostal" : "04BP264" ,
+    "contactBoutique" : "(+228) 91272901 / 93798240",
+    "emailBoutique" : "" 
 }

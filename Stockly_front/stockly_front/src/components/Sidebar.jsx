@@ -76,7 +76,7 @@ const Sidebar = () => {
                                 </a>
                             </div>
                             <div className="menu-item">
-                                <a className={`menu-link ${activeMenu === 'settings' ? 'active' : ''}`} href="#" onClick={() => handleMenuClick('settings')}>
+                                <a className={`menu-link ${activeMenu === 'settings' ? 'active' : ''}`} href="settings" onClick={() => handleMenuClick('settings')}>
                                     <span className="menu-bullet">
                                         <span className="bullet bullet-dot"></span>
                                     </span>

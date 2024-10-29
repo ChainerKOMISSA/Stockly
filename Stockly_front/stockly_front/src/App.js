@@ -18,6 +18,7 @@ import SalesDetails from './pages/dashboard/Sales/SalesDetails';
 import ListeProduitsGenerator from './pages/dashboard/Products/ListeProduitsGenerator';
 import Profil from './pages/dashboard/Employees/Profil';
 import OrdersDetails from './pages/dashboard/Orders/OrdersDetails';
+import Settings from './pages/dashboard/Settings';
 import { UserProvider } from './pages/UserContext';
 
 
@@ -46,6 +47,7 @@ function App() {
             <Route path="liquidation" element={<Liquidation />} />
             <Route path="rupture" element={<Rupture />} />
             <Route path="profil" element={<Profil />} />
+            <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>
       </UserProvider>
