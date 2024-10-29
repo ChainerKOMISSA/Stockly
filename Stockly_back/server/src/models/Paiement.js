@@ -14,6 +14,10 @@ const Paiement = sequelize.define('Paiement', {
     descriptionPaiement: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+    logoPaiement: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 });
 
