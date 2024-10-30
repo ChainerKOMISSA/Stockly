@@ -3,21 +3,29 @@ import { API_URL } from '../../components/constantes'
 import { useNavigate } from 'react-router-dom'
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../components/alerts'
 import entrepriseData from '../../helpers/parametresBoutique.json'
-import image from "../../assets/img/card-logos/visa.svg"
 
 const Settings = () => {
     const navigate = useNavigate()
     const [paiements, setPaiements] = useState([])
     const [formData, setFormData] = useState({});
-    const [updateData, setUpdateData] = useState({});
+    const [boutiqueData, setBoutiqueData] = useState({});
+    const [updateData, setUpdateData] = useState({
+        nomBoutique: '',
+        sloganBoutique: '',
+        adresseBoutique: '',
+        ville: '',
+        pays: '',
+        codePostal: '',
+        contactBoutique: '',
+        emailBoutique: '',
+        monnaie: ''
+    });
 
     useEffect(() => {
         fetch(`${API_URL}/paiements`)
             .then(response => response.json())
             .then(data => {
                 setPaiements(data)
-                console.log(data);
-                
             })
             .catch(error => {
                 console.error('Erreur lors de la récupération des moyens de paiement: ', error)
@@ -67,9 +75,54 @@ const Settings = () => {
         });
     }
 
-    const updateBoutique = () => {
+    useEffect(() => {
+        fetch(`${API_URL}/boutique`)
+            .then(response => response.json())
+            .then(data => {
+                setBoutiqueData(data)
+            })
+            .catch(error => {
+                console.error("Erreur de chargement des données :", error)
+            });
+    }, []);
 
-    }
+    // const updateBoutique = () => {
+    //     fetch(`${API_URL}/boutique`, {
+    //         method: 'PUT',
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify(updateData)
+    //     })
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             setBoutiqueData({ ...boutiqueData, ...updateData });
+    //             createSuccessAlert()
+    //             navigate(0)
+    //         })
+    //         .catch(error => console.error("Erreur de mise à jour des données :", error));
+    // };
+
+    const updateBoutique = () => {
+        fetch(`${API_URL}/boutique`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updateData)
+                .then(data => {
+                    setBoutiqueData({ ...boutiqueData, ...updateData });
+                    createSuccessAlert();
+                    navigate(0);
+                })
+                .catch(error => {
+                    console.error(error);
+                    // Affichez un message d'erreur à l'utilisateur ici
+                    failureAlert(error.message); // Assurez-vous d'avoir une fonction pour afficher l'alerte d'erreur
+                })
+        })
+    };
+
 
 
     return (
@@ -106,7 +159,7 @@ const Settings = () => {
                                     <span className="text-muted mt-1 fw-semibold fs-7">Identité de l'entreprise</span>
                                 </h3>
                                 <div className="card-toolbar">
-                                    <button type="button" className="btn btn-sm btn-icon btn-color-primary btn-active-light-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_share_earn2">
+                                    <button type="button" className="btn btn-sm btn-icon btn-color-primary btn-active-primary btn-light-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_share_earn2">
                                         <i className="ki-outline ki-pencil fs-6"></i>
                                     </button>
                                 </div>
@@ -120,25 +173,29 @@ const Settings = () => {
                                     </div>
                                     <div className="separator"></div>
                                     <div className="fw-bold mt-5">Nom de l'entreprise</div>
-                                    <div className="text-gray-600">{entrepriseData.nomBoutique}</div>
+                                    <div className="text-gray-600">{boutiqueData.nomBoutique ? boutiqueData.nomBoutique : "Aucun nom renseigné"}</div>
 
                                     <div className="fw-bold mt-5">Slogan</div>
-                                    <div className="text-gray-600">{entrepriseData.sloganBoutique}</div>
+                                    <div className="text-gray-600">{boutiqueData.sloganBoutique ? boutiqueData.sloganBoutique : "Aucun slogan renseigné"}</div>
 
                                     <div className="fw-bold mt-5">Adresse</div>
-                                    <div className="text-gray-600">{entrepriseData.adresseBoutique}</div>
+                                    <div className="text-gray-600">{boutiqueData.adresseBoutique ? boutiqueData.adresseBoutique : "Aucune adresse renseignée"}</div>
 
                                     <div className="fw-bold mt-5">Téléphone</div>
-                                    <div className="text-gray-600">{entrepriseData.contactBoutique}</div>
+                                    <div className="text-gray-600">{boutiqueData.contactBoutique ? boutiqueData.contactBoutique : "Aucun contact renseigné"}</div>
 
                                     <div className="fw-bold mt-5">Email</div>
-                                    <div className="text-gray-600">{entrepriseData.emailBoutique}</div>
+                                    <div className="text-gray-600">{boutiqueData.emailBoutique ? boutiqueData.emailBoutique : "Aucun email renseigné"}</div>
 
                                     <div className="fw-bold mt-5">Ville</div>
-                                    <div className="text-gray-600">{entrepriseData.villeBoutique}</div>
+                                    <div className="text-gray-600">{boutiqueData.ville ? boutiqueData.ville : "Aucune ville renseignée"}</div>
 
                                     <div className="fw-bold mt-5">Code postal</div>
-                                    <div className="text-gray-600">{entrepriseData.codePostal}</div>
+                                    <div className="text-gray-600">{boutiqueData.codePostal ? boutiqueData.codePostal : "Aucun code postal renseigné"}</div>
+
+                                    <div className="fw-bold mt-5">Monnaie de transaction</div>
+                                    <div className="text-gray-600">{boutiqueData.monnaie ? boutiqueData.monnaie : "Aucune monnaie renseignée"}</div>
+
                                 </div>
                             </div>
                             <div className="modal fade" id="kt_modal_share_earn2" tabIndex="-1" aria-hidden="true" >
@@ -181,13 +238,13 @@ const Settings = () => {
                                                         <div class="row mb-6">
                                                             <label class="col-lg-4 col-form-label required fw-semibold fs-6">Nom de la boutique</label>
                                                             <div class="col-lg-8 fv-row">
-                                                                <input type="text" name="nom" class="form-control form-control-lg form-control-solid" placeholder="Nom" value="" onChange={handleUpdateChange} />
+                                                                <input type="text" name="nomBoutique" class="form-control form-control-lg form-control-solid" placeholder={boutiqueData.nomBoutique ? boutiqueData.nomBoutique : "Renseignez un nom"} value={updateData.nomBoutique} onChange={handleUpdateChange} />
                                                             </div>
                                                         </div>
                                                         <div class="row mb-6">
                                                             <label class="col-lg-4 col-form-label fw-semibold fs-6">Slogan</label>
                                                             <div class="col-lg-8 fv-row">
-                                                                <input type="text" name="slogan" class="form-control form-control-lg form-control-solid" placeholder="Slogan" value="" onChange={handleUpdateChange} />
+                                                                <input type="text" name="sloganBoutique" class="form-control form-control-lg form-control-solid" placeholder={boutiqueData.sloganBoutique ? boutiqueData.sloganBoutique : "Renseignez un slogan"} value={updateData.sloganBoutique} onChange={handleUpdateChange} />
                                                             </div>
                                                         </div>
                                                         <div class="row mb-6">
@@ -198,13 +255,13 @@ const Settings = () => {
                                                                 </span>
                                                             </label>
                                                             <div class="col-lg-8 fv-row">
-                                                                <input type="tel" name="phone" class="form-control form-control-lg form-control-solid" placeholder="Téléphone" value="" onChange={handleUpdateChange}/>
+                                                                <input type="tel" name="contactBoutique" class="form-control form-control-lg form-control-solid" placeholder={boutiqueData.contactBoutique ? boutiqueData.contactBoutique : "Renseignez un numéro de téléphone"} value={updateData.contactBoutique} onChange={handleUpdateChange} />
                                                             </div>
                                                         </div>
                                                         <div class="row mb-6">
                                                             <label class="col-lg-4 col-form-label fw-semibold fs-6">Email</label>
                                                             <div class="col-lg-8 fv-row">
-                                                                <input type="text" name="website" class="form-control form-control-lg form-control-solid" placeholder="Email" value="" onChange={handleUpdateChange} />
+                                                                <input type="text" name="emailBoutique" class="form-control form-control-lg form-control-solid" placeholder={boutiqueData.emailBoutique ? boutiqueData.emailBoutique : "Entrez une adresse mail"} value={updateData.emailBoutique} onChange={handleUpdateChange} />
                                                             </div>
                                                         </div>
                                                         <div class="row mb-6">
@@ -215,7 +272,7 @@ const Settings = () => {
                                                                 </span>
                                                             </label>
                                                             <div class="col-lg-8 fv-row">
-                                                                <select name="country" aria-label="Select a Country" data-control="select2" data-placeholder="Sélectionnez un pays..." class="form-select form-select-solid form-select-lg fw-semibold" onChange={handleUpdateChange}>
+                                                                <select name="pays" aria-label="Select a Country" data-control="select2" data-placeholder={boutiqueData.pays ? boutiqueData.pays : "Sélectionnez un pays..."} class="form-select form-select-solid form-select-lg fw-semibold" value={updateData.pays} onChange={handleUpdateChange}>
                                                                     <option value="">Sélectionnez un pays...</option>
                                                                     <option data-kt-flag="flags/afghanistan.svg" value="AF">Afghanistan</option>
                                                                     <option data-kt-flag="flags/aland-islands.svg" value="AX">Aland Islands</option>
@@ -447,20 +504,26 @@ const Settings = () => {
                                                         <div class="row mb-6">
                                                             <label class="col-lg-4 col-form-label fw-semibold fs-6">Ville</label>
                                                             <div class="col-lg-8 fv-row">
-                                                                <input type="text" name="website" class="form-control form-control-lg form-control-solid" placeholder="Ville" value="" onChange={handleUpdateChange}/>
+                                                                <input type="text" name="ville" class="form-control form-control-lg form-control-solid" placeholder={boutiqueData.ville ? boutiqueData.ville : "Renseignez la ville"} value={updateData.ville} onChange={handleUpdateChange} />
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-6">
+                                                            <label class="col-lg-4 col-form-label fw-semibold fs-6">Code Postal</label>
+                                                            <div class="col-lg-8 fv-row">
+                                                                <input type="text" name="codePostal" class="form-control form-control-lg form-control-solid" placeholder={boutiqueData.codePostal ? boutiqueData.codePostal : "Renseignez le code postal"} value={updateData.codePostal} onChange={handleUpdateChange} />
                                                             </div>
                                                         </div>
                                                         <div class="row mb-6">
                                                             <label class="col-lg-4 col-form-label fw-semibold fs-6">Adresse</label>
-                                                            <div class="col-lg-8 fv-row">
-                                                                <input type="text" name="website" class="form-control form-control-lg form-control-solid" placeholder="Adresse" value="" onChange={handleUpdateChange}/>
+                                                            <div class="col-lg-8 fv-row">boutiqueData
+                                                                <input type="text" name="adresseBoutique" class="form-control form-control-lg form-control-solid" placeholder={boutiqueData.adresseBoutique ? boutiqueData.adresseBoutique : "Renseignez une adresse"} value={updateData.adresseBoutique} onChange={handleUpdateChange} />
                                                             </div>
                                                         </div>
 
                                                         <div class="row mb-6">
                                                             <label class="col-lg-4 col-form-label fw-semibold fs-6">Monnaie</label>
                                                             <div class="col-lg-8 fv-row">
-                                                                <select name="currnecy" aria-label="Select a Currency" data-control="select2" data-placeholder="Sélectionner une monnaie.." class="form-select form-select-solid form-select-lg" onChange={handleUpdateChange}>
+                                                                <select name="monnaie" aria-label="Select a Currency" data-control="select2" data-placeholder={boutiqueData.monnaiee ? boutiqueData.monnaie : "Sélectionner une monnaie.."} class="form-select form-select-solid form-select-lg" value={updateData.monnaie} onChange={handleUpdateChange}>
                                                                     <option value="">Sélectionner une monnaie..</option>
                                                                     <option data-kt-flag="flags/united-states.svg" value="FCFA">
                                                                         <b>FCFA</b>&nbsp;-&nbsp;Franc CFA</option>
@@ -493,7 +556,7 @@ const Settings = () => {
                                     <span class="text-muted mt-1 fw-semibold fs-7">Affichage en bas du reçu</span>
                                 </h3>
                                 <div class="card-toolbar">
-                                    <button type="button" class="btn btn-sm btn-icon btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_share_earn">
+                                    <button type="button" class="btn btn-sm btn-icon btn-light-primary btn-active-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_share_earn">
                                         <i class="ki-outline ki-plus fs-6"></i>
                                     </button>
                                 </div>
@@ -503,11 +566,11 @@ const Settings = () => {
                                     paiements.map((paiement, index) => (
                                         <div class="d-flex align-items-sm-center mb-7" key={index}>
                                             <div class="symbol symbol-60px symbol-2by3 me-4">
-                                                <div class="symbol-label"><img src={image}/></div>
+                                                <div class="symbol-label bg-light-primary"><i class="ki-outline ki-credit-cart text-primary fs-2qx"></i></div>
                                             </div>
                                             <div class="d-flex flex-row-fluid flex-wrap align-items-center">
                                                 <div class="flex-grow-1 me-2">
-                                                    <a href="#" class="text-gray-800 fw-bold text-hover-primary fs-6">{paiement.libellePaiement}</a>
+                                                    <a class="text-gray-800 fw-bold text-hover-primary fs-6">{paiement.libellePaiement}</a>
                                                     <span class="text-muted fw-semibold d-block pt-1">{paiement.descriptionPaiement}</span>
                                                 </div>
                                                 <span class="badge badge-light-success fs-8 fw-bold my-2">Disponible</span>

@@ -5,8 +5,8 @@ import boutiqueData from "../helpers/parametresBoutique.json"
 const ReceiptRenderer = ({ listeproduits, nomvendeur, datevente }) => {
     // Calcul du total
     const total = listeproduits.reduce((acc, item) => acc + item.prix * item.quantite, 0);
-    const tva = total * 0.02; // Exemple de calcul de la TVA (9%)
-    const totalTTC = total + tva;
+    const discount = 0;
+    const totalTTC = total - discount;
 
 
     return (
@@ -55,7 +55,7 @@ const ReceiptRenderer = ({ listeproduits, nomvendeur, datevente }) => {
                     <Text style={styles.summaryText}>Total HT : {total} FCFA</Text>
                 </View>
                 <View style={styles.summary}>
-                    <Text style={styles.summaryText}>TVA (2%) : {tva.toFixed(2)} FCFA</Text>
+                    <Text style={styles.summaryText}>Réduction : {discount.toFixed(2)} FCFA</Text>
                 </View>
                 <View style={styles.summary}>
                     <Text style={styles.summaryText}>Total TTC : {totalTTC.toFixed(2)} FCFA</Text>

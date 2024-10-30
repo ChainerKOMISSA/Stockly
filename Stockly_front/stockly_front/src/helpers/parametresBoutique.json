@@ -3,8 +3,10 @@
     "nomBoutique" : "ETS CHANELLA",
     "sloganBoutique" : "",
     "adresseBoutique" : "Avénou - Lomé" ,
-    "villeBoutique" : "Lomé" ,
+    "ville" : "Lomé" ,
+    "pays" : "TOGO",
     "codePostal" : "04BP264" ,
-    "contactBoutique" : "(+228) 91272901 / 93798240",
-    "emailBoutique" : "" 
+    "contactBoutique" : "(+228)22363662",
+    "emailBoutique" : "",
+    "monnaie" : "FCFA"
 }
