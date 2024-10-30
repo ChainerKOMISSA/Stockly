@@ -23,6 +23,10 @@ const Produit = sequelize.define('Produit', {
     datePeremption: {
         type: DataTypes.DATE,
         allowNull: true
+    },
+    tva: {
+        type: DataTypes.INTEGER,
+        allowNull: true
     }
 });
 
