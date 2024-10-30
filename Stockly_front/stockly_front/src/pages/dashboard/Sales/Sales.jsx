@@ -102,7 +102,7 @@ function Sales() {
           ...formData,
           id: prd.id,
           nom: prd.nom,
-          prix: prd.prix,
+          prix: prd.prix + ((prd.prix * prd.tva)/100),
         });
       }
     }
@@ -232,7 +232,7 @@ function Sales() {
       let select = document.querySelector(".produit_select")
       select.selectedIndex = 0;
     } else {
-      //afficher qu'on a pas selectionner de produit
+      //afficher qu'on a pas sélectionné de produit
     }
 
   }
@@ -428,7 +428,7 @@ function Sales() {
                   {
                     filteredSales.map((sale, index) => (
                       <tr key={index}>
-                        <td>{index+1}</td>
+                        <td>{index + 1}</td>
                         <td>
                           <div className="d-flex align-items-center">
                             <div className="d-flex justify-content-start flex-column">
