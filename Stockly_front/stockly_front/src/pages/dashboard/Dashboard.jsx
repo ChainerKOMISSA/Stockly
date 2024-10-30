@@ -239,7 +239,7 @@ function Dashboard() {
               <a href="#" className="card bg-light-danger hoverable card-xl-stretch mb-xl-8 hover-scale">
                 <div className="card-body">
                   <i className="ki-outline ki-information-2 text-danger fs-2x ms-n1"></i>
-                  <div className="fw-bold text-gray-900 fs-1 mb-2 mt-5">{nbrupture.nbRupture}<span className="fw-semibold text-muted fs-7">produits</span></div>
+                  <div className="fw-bold text-gray-900 fs-1 mb-2 mt-5">{nbrupture.nbRupture}<span className="fw-semibold text-muted fs-7"> produits</span></div>
                   <div className="fw-semibold text-danger">Alerte stock</div>
                 </div>
               </a>
