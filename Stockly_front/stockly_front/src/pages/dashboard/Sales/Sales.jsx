@@ -396,7 +396,7 @@ function Sales() {
       <div id="kt_app_content" className="app-content">
         <div className="card mb-5 mb-xl-8">
           <div className="card-header border-0 pt-5">
-            <div className="card-toolbar align-items-center gap-2 gap-lg-3" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover" title="Click to add a user">
+            <div className="card-toolbar align-items-center gap-2 gap-lg-3" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover" title="Nouvelle vente">
               <a href="#" className="btn btn-sm btn-light btn-active-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_share_earn">
                 <i className="ki-outline ki-plus fs-2"></i>
                 Nouvelle vente

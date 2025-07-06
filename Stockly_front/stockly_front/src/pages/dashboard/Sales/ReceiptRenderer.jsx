@@ -1,12 +1,25 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { API_URL } from '../../../components/constantes';
 import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
-import boutiqueData from "../helpers/parametresBoutique.json"
 
 const ReceiptRenderer = ({ listeproduits, nomvendeur, datevente }) => {
+    const [boutiqueData, setBoutiqueData] = useState({});
+
     // Calcul du total
     const total = listeproduits.reduce((acc, item) => acc + item.prix * item.quantite, 0);
     const discount = 0;
     const totalTTC = total - discount;
+
+    useEffect(() => {
+        fetch(`${API_URL}/boutique`)
+            .then(response => response.json())
+            .then(data => {
+                setBoutiqueData(data)
+            })
+            .catch(error => {
+                console.error("Erreur de chargement des données :", error)
+            });
+    }, []);
 
 
     return (
@@ -20,23 +33,23 @@ const ReceiptRenderer = ({ listeproduits, nomvendeur, datevente }) => {
                 <View style={styles.clientInfo}>
                     <View style={styles.clientInfoRow}>
                         <Text>Client :</Text>
-                        <Text>Date :</Text>
+                        <Text>Date : {datevente}</Text>
                     </View>
                     <View style={styles.clientInfoRow}>
-                        <Text>Adresse : Avénou, Lomé - TOGO</Text>
-                        <Text>Téléphone : +228 22 36 36 62</Text>
+                        <Text>Adresse : {boutiqueData.adresseBoutique}</Text>
+                        <Text>Téléphone : {boutiqueData.contactBoutique}</Text>
                     </View>
                     <View style={styles.clientInfoRow}>
-                        <Text>Ville : Lomé</Text>
-                        <Text>Code Postal : 04BP264</Text>
+                        <Text>Ville : {boutiqueData.ville}</Text>
+                        <Text>Code Postal : {boutiqueData.codePostal}</Text>
                     </View>
                 </View>
 
                 {/* Tableau des produits */}
                 <View style={styles.tableContainer}>
                     <View style={styles.tableHeader}>
-                        <Text style={styles.tableHeaderText}>Qté.</Text>
-                        <Text style={styles.tableHeaderText}>Produit/Description</Text>
+                        <Text style={styles.tableHeaderText}>Quantité</Text>
+                        <Text style={styles.tableHeaderText}>Produit</Text>
                         <Text style={styles.tableHeaderText}>Prix unitaire</Text>
                         <Text style={styles.tableHeaderText}>Total</Text>
                     </View>
@@ -44,28 +57,27 @@ const ReceiptRenderer = ({ listeproduits, nomvendeur, datevente }) => {
                         <View key={index} style={styles.tableRow}>
                             <Text style={styles.tableCell}>{produit.quantite}</Text>
                             <Text style={styles.tableCell}>{produit.nom}</Text>
-                            <Text style={styles.tableCell}>{produit.prix} FCFA</Text>
-                            <Text style={styles.tableCell}>{produit.prix * produit.quantite} FCFA</Text>
+                            <Text style={styles.tableCell}>{produit.prix} {boutiqueData.monnaie}</Text>
+                            <Text style={styles.tableCell}>{produit.prix * produit.quantite} {boutiqueData.monnaie}</Text>
                         </View>
                     ))}
                 </View>
-
                 {/* Résumé des montants */}
                 <View style={styles.summary}>
-                    <Text style={styles.summaryText}>Total HT : {total} FCFA</Text>
+                    <Text style={styles.summaryText}>Total HT : {total} {boutiqueData.monnaie}</Text>
                 </View>
                 <View style={styles.summary}>
-                    <Text style={styles.summaryText}>Réduction : {discount.toFixed(2)} FCFA</Text>
+                    <Text style={styles.summaryText}>Réduction : {discount.toFixed(2)} {boutiqueData.monnaie}</Text>
                 </View>
                 <View style={styles.summary}>
-                    <Text style={styles.summaryText}>Total TTC : {totalTTC.toFixed(2)} FCFA</Text>
+                    <Text style={styles.summaryText}>Total TTC : {totalTTC.toFixed(2)} {boutiqueData.monnaie}</Text>
                 </View>
 
                 {/* Informations de paiement */}
-                <View style={styles.paymentInfo}>
+                {/* <View style={styles.paymentInfo}>
                     <Text>__ Espèces __ Visa/MasterCard/American Express</Text>
                     <Text>Date d'expiration :</Text>
-                </View>
+                </View> */}
 
                 {/* Pied de page */}
                 <Text style={styles.footer}>
@@ -102,6 +114,7 @@ const styles = StyleSheet.create({
     clientInfoRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+        marginTop : 2
     },
     tableContainer: {
         borderWidth: 1,
