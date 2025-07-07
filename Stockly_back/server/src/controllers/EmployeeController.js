@@ -138,7 +138,7 @@ exports.verifyEmploye = async (req, res) => {
     const { username, motdepasse } = req.body;
     try {
         const employe = await Employe.findOne({
-            where: { username: username } // Explicitly define the where clause
+            where: { username: username } 
         });
         if (employe) {
             const passwordMatch = await bcrypt.compare(motdepasse, employe.motdepasse);
