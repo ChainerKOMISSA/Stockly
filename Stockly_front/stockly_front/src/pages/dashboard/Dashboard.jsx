@@ -5,6 +5,7 @@ import { useUser } from '../UserContext';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js/auto";
 import { Doughnut, Line, Bar, PolarArea, Pie } from "react-chartjs-2";
 import { failureAlert, infoAlert } from '../../components/alerts';
+import { formatNumber } from '../../helpers/functions';
 
 function Dashboard() {
   const [nbrupture, setNbrupture] = useState([]);
@@ -16,7 +17,6 @@ function Dashboard() {
   const [venteparjour, setVenteparJour] = useState([]);
   const [chartData, setChartData] = useState({});
   const { userData } = useUser();
-  console.log(userData)
 
   ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -206,7 +206,7 @@ function Dashboard() {
               <a href="#" className="card bg-light-success hoverable card-xl-stretch mb-xl-8 hover-scale">
                 <div className="card-body">
                   <i className="ki-outline ki-basket text-success fs-2x ms-n1"></i>
-                  <div className="fw-bold text-gray-900 fs-1 mb-2 mt-5">{sumventes.somme} <span className="fw-semibold text-muted fs-7">FCFA</span></div>
+                  <div className="fw-bold text-gray-900 fs-1 mb-2 mt-5">{formatNumber(sumventes.somme)} <span className="fw-semibold text-muted fs-7">FCFA</span></div>
                   <div className="fw-semibold text-success">Ventes réalisées</div>
                 </div>
               </a>
@@ -217,7 +217,7 @@ function Dashboard() {
               <a href="#" className="card bg-light-warning hoverable card-xl-stretch mb-xl-8 hover-scale">
                 <div className="card-body">
                   <i className="ki-outline ki-chart-line-down text-warning fs-2x ms-n1"></i>
-                  <div className="fw-bold text-gray-900 fs-1 mb-2 mt-5">{sumdepenses.somme} <span className="fw-semibold text-muted fs-7">FCFA</span></div>
+                  <div className="fw-bold text-gray-900 fs-1 mb-2 mt-5">{formatNumber(sumdepenses.somme)} <span className="fw-semibold text-muted fs-7">FCFA</span></div>
                   <div className="fw-semibold text-warning">Dépenses effectuées</div>
                 </div>
               </a>
@@ -228,7 +228,7 @@ function Dashboard() {
               <a href="#" className="card bg-light-primary hoverable card-xl-stretch mb-xl-8 hover-scale">
                 <div className="card-body">
                   <i className="ki-outline ki-cheque text-primary fs-2x ms-n1"></i>
-                  <div className="fw-bold text-gray-900 fs-1 mb-2 mt-5">{sumcommandes.somme} <span className="fw-semibold text-muted fs-7">FCFA</span></div>
+                  <div className="fw-bold text-gray-900 fs-1 mb-2 mt-5">{formatNumber(sumcommandes.somme)} <span className="fw-semibold text-muted fs-7">FCFA</span></div>
                   <div className="fw-semibold text-primary">Commandes effectuées</div>
                 </div>
               </a>
@@ -269,7 +269,7 @@ function Dashboard() {
               <div className="card-body d-flex flex-column">
                 <div className="flex-grow-1">
                   <div className="d-flex align-items-center">
-                    <span className="fs-2hx fw-bold text-gray-900 me-2 lh-1 ls-n2">{getChiffreAffaire(sumventes.somme, sumcommandes.somme, sumdepenses.somme)}</span>
+                    <span className="fs-2hx fw-bold text-gray-900 me-2 lh-1 ls-n2">{formatNumber(getChiffreAffaire(sumventes.somme, sumcommandes.somme, sumdepenses.somme))}</span>
                     <span className="fs-4 fw-semibold text-gray-500 me-1 align-self-start">FCFA</span>
                   </div>
                 </div>

@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { formatDate } from "../../../helpers/DateFormat";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import ReceiptRenderer from "./ReceiptRenderer";
+import { formatNumber } from "../../../helpers/functions";
 
 const SalesDetails = () => {
     const [salesdetails, setSalesDetails] = useState(null);
@@ -203,10 +204,10 @@ const SalesDetails = () => {
                                                         <tr key={index}>
                                                             <td>{index + 1}</td>
                                                             <td>{produit.nom}</td>
-                                                            <td>{produit.prix}</td>
+                                                            <td>{formatNumber(produit.prix)}</td>
                                                             <td>{produit.quantite}</td>
                                                             <td id="montant">
-                                                                {produit.prix * produit.quantite}
+                                                                {formatNumber(produit.prix * produit.quantite)}
                                                             </td>
                                                         </tr>
                                                     ))
@@ -221,7 +222,7 @@ const SalesDetails = () => {
                                                         name="montanttotal"
                                                         colSpan={5}
                                                     >
-                                                        Total : {getMontantTotal(listeproduits)} FCFA
+                                                        Total : {formatNumber(getMontantTotal(listeproduits))} FCFA
                                                     </td>
                                                 </tr>
                                             </tbody>

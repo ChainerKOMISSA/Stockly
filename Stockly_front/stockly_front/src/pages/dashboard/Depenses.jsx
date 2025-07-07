@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAlert } from '../../components/alerts'
 import { getCurrentDate } from '../../helpers/CalendarControl';
 import { formatDate } from '../../helpers/DateFormat';
+import { formatNumber } from '../../helpers/functions';
 
 
 function Depenses() {
@@ -205,7 +206,7 @@ function Depenses() {
                           <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{depense.libelle}</a>
                         </td>
                         <td>
-                          <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{depense.montant}</a>
+                          <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{formatNumber(depense.montant)}</a>
                         </td>
                         {/* <td>
                         <div className="d-flex justify-content-end flex-shrink-0">

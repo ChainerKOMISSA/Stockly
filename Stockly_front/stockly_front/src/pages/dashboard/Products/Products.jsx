@@ -5,9 +5,9 @@ import { createSuccessAlert, failureAlert, updateSuccessAlert, deleteSuccessAler
 import { getCurrentDate } from '../../../helpers/CalendarControl'
 import { formatDate, formatDate2 } from '../../../helpers/DateFormat'
 import Swal from 'sweetalert2'
-import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
 import ListeProduitsGenerator from './ListeProduitsGenerator'
 import ReactPaginate from 'react-paginate'
+import { formatNumber } from '../../../helpers/functions'
 
 
 
@@ -700,7 +700,7 @@ function Products() {
                           <td className="text-end">
                             <div className="d-flex flex-column w-100 me-2">
                               <div className="d-flex flex-stack mb-2">
-                                <span className="text-gray-700 fw-bold text-hover-primary d-block fs-6">{produit.prix}</span>
+                                <span className="text-gray-700 fw-bold text-hover-primary d-block fs-6">{formatNumber(produit.prix)}</span>
                               </div>
                             </div>
                           </td>
