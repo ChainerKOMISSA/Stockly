@@ -27,6 +27,10 @@ const Produit = sequelize.define('Produit', {
     tva: {
         type: DataTypes.INTEGER,
         allowNull: true
+    },
+    codeBarre: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 });
 
