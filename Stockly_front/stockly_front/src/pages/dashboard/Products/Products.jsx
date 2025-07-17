@@ -59,6 +59,7 @@ function Products() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     try {
       const response = await fetch(`${API_URL}/produits`, {
         method: 'POST',
@@ -578,18 +579,18 @@ function Products() {
         </div>
         <div className="card mb-5 mb-xl-8">
           <div className="card-header border-0 pt-5">
-            {/* <h3 className="card-title align-items-start flex-column">
-              <span className="card-label fw-bold fs-3 mb-1">Members Statistics</span>
-              <span className="text-muted mt-1 fw-semibold fs-7">Over 500 members</span>
-            </h3> */}
             <div className="card-toolbar align-items-center gap-2 gap-lg-3" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover" title="Click to add a user">
-              <a href="#" className="btn btn-sm btn-light btn-active-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_share_earn">
+              <a className="btn btn-sm btn-light btn-active-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_share_earn">
                 <i className="ki-outline ki-plus fs-2"></i>
                 Nouveau produit
               </a>
               <a className="btn btn-sm btn-light-primary" href='/products/liste' id='generer_produits' hidden={false}>
                 <i className="ki-outline ki-printer fs-2"></i>
-                Générer la liste des produits
+                Télécharger la liste des produits
+              </a>
+              <a className="btn btn-sm btn-light-info" href="products/codebarres" id='generer_codebarre' hidden={false}>
+                <i className="ki-outline ki-printer fs-2"></i>
+                Télécharger la liste des codes barres
               </a>
               <a className="btn btn-sm btn-primary" href='/products' id='btn_all_products' hidden={true}>
                 <i className="ki-outline ki-document fs-2"></i>
@@ -599,74 +600,6 @@ function Products() {
           </div>
           <div className="card-body py-3">
             <div className="table-responsive">
-              {/* <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4" id='tableProduits'>
-                <thead>
-                  <tr className="fw-bold text-muted">
-                    <th className="w-25px">#</th>
-                    <th className="min-w-200px">Catégorie</th>
-                    <th className="min-w-300px">Produit</th>
-                    <th className="min-w-100px">Prix (CFA)</th>
-                    <th className="min-w-100px">Quantité</th>
-                    <th className="min-w-100px">Péremption</th>
-                    <th className="min-w-100px text-end">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {
-                    produits.map((produit, index) => (
-                      <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>
-                          <div className="d-flex align-items-center">
-                            <div className="d-flex justify-content-start flex-column">
-                              <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{produit.Categorie.libelle}</a>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <a href="#" className="text-gray-900 fw-bold text-hover-primary fs-6">{produit.nom}</a>
-                        </td>
-                        <td className="text-end">
-                          <div className="d-flex flex-column w-100 me-2">
-                            <div className="d-flex flex-stack mb-2">
-                              <span className="text-gray-700 fw-bold text-hover-primary d-block fs-6">{produit.prix}</span>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="text-end">
-                          <div className="d-flex flex-column w-100 me-2">
-                            <div className="d-flex flex-stack mb-2">
-                              <span className="text-gray-700 fw-bold text-hover-primary d-block fs-6">{produit.quantiteStock}</span>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="text-end">
-                          <div className="d-flex flex-column w-100 me-2">
-                            <div className="d-flex flex-stack mb-2">
-                              <span className="text-gray-700 fw-bold text-hover-primary d-block fs-6">{formatDate(produit.datePeremption)}</span>
-                            </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div className="d-flex justify-content-end flex-shrink-0">
-                            <a href="#"
-                              className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
-                              data-bs-toggle="modal"
-                              data-bs-target="#kt_modal_edit"
-                              onClick={() => handleProductSelection(produit.id)}>
-                              <i className="ki-outline ki-pencil fs-2"></i>
-                            </a>
-                            <a href="#" className="btn btn-icon btn-bg-light btn-active-color-danger btn-sm" onClick={(e) => confirmDelete(produit.id)}>
-                              <i className="ki-outline ki-trash fs-2"></i>
-                            </a>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  }
-                </tbody>
-              </table> */}
-
               <table className="table table-row-dashed table-row-gray-300 align-middle gs-0 gy-4" id='tableProduits'>
                 <thead>
                   <tr className="fw-bold text-muted">
