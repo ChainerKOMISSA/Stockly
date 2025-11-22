@@ -82,6 +82,8 @@ Ce projet est open source. Libre à vous de l'utiliser, le modifier ou le distri
 
 ---
 
+![CI](https://github.com/ChainerKOMISSA/Stockly/actions/workflows/ci.yml/badge.svg)
+
 ## 📬 Contribution
 Les contributions sont les bienvenues !
 Forkez le projet, créez une branche, apportez vos améliorations et ouvrez une Pull Request.
