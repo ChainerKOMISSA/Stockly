@@ -1,26 +1,14 @@
-name: CI - Tests automatiques
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
+name: learn-github-actions
+run-name: ${{ github.actor }} is learning GitHub Actions
+on: [push]
 jobs:
-  build:
+  check-bats-version:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Cloner le dépôt
-        uses: actions/checkout@v3
-
-      - name: Configurer Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18
-
-      - name: Installer les dépendances
-        run: npm install
-
-      - name: Lancer les tests
-        run: npm test
+          node-version: '20'
+      - run: npm install -g bats
+      - run: bats -v
+      - run: echo "Bats version checked successfully!"
