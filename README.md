@@ -82,6 +82,8 @@ Ce projet est open source. Libre à vous de l'utiliser, le modifier ou le distri
 
 ---
 
+## Pipelines CI/CD
+
 ![CI](https://github.com/ChainerKOMISSA/Stockly/actions/workflows/ci.yml/badge.svg)
 
 ## 📬 Contribution
